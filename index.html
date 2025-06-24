@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lyre JS Notebook</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { fontFamily: { 'sans': ['Roboto', 'sans-serif'] } } }
+  </script>
+
+  <script>
+    const tests = [
+      { n: 0, expected: 1 },
+      { n: 1, expected: 1 },
+      { n: 3, expected: 6 },
+      { n: 5, expected: 120 },
+      { n: 7, expected: 5040 },
+    ];
+
+    function init() {
+      renderTests();
+      document.getElementById("run").onclick = runTests;
+    }
+
+    function renderTests(results = null) {
+      const container = document.getElementById("results");
+      container.innerHTML = tests.map((test, i) => {
+        const status = results
+          ? (results[i].value === test.expected ? '🟢' : '🔴')
+          : '⚪️';
+        const got = results ? ` | Got: ${results[i].value}` : '';
+        return `<div class=\"border-b border-black py-2\">${status} <strong>!(${test.n}) = ${test.expected}</strong>${got}</div>`;
+      }).join('');
+    }
+
+    function runTests() {
+      const userCode = document.getElementById("user-code").innerText;
+      let results = [];
+      try {
+        const func = new Function(`${userCode}; return factorial;`)();
+        results = tests.map(test => ({ n: test.n, value: func(test.n) }));
+      } catch (e) {
+        document.getElementById("results").innerHTML =
+          `<div class=\"text-red-500\"><strong>Error:</strong> ${e.message}</div>`;
+        return;
+      }
+      renderTests(results);
+    }
+
+    window.onload = init;
+  </script>
+</head>
+
+<body class="font-sans bg-white text-black p-8">
+
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4">Implement factorial</h2>
+
+    <p class="mb-4">Fill in the <code class="bg-gray-200 px-1">factorial</code> function below:</p>
+
+    <pre class="border border-black">
+      <code id="user-code" contenteditable="true" class="language-javascript block w-full p-4">
+function factorial(n) {
+  // your code here
+}
+      </code>
+    </pre>
+
+    <button id="run" class="mt-4 py-2 px-4 border border-black hover:bg-black hover:text-white transition">Run
+      Tests</button>
+
+    <div id="results" class="mt-6 border-t border-black"></div>
+  </div>
+
+</body>
+
+</html>
