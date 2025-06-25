@@ -5,79 +5,227 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lyre JS Notebook</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = { theme: { fontFamily: { 'sans': ['Roboto', 'sans-serif'] } } }
+    tailwind.config = { theme: { fontFamily: { 'sans': ['Nunito', 'sans-serif'] } } }
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.js"></script>
 
-  <script>
-    const tests = [
-      { n: 0, expected: 1 },
-      { n: 1, expected: 1 },
-      { n: 3, expected: 6 },
-      { n: 5, expected: 120 },
-      { n: 7, expected: 5040 },
-    ];
-
-    function init() {
-      renderTests();
-      document.getElementById("run").onclick = runTests;
+  <style>
+    .material-shadow {
+      box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
     }
 
-    function renderTests(results = null) {
-      const container = document.getElementById("results");
-      container.innerHTML = tests.map((test, i) => {
-        const status = results
-          ? (results[i].value === test.expected ? '🟢' : '🔴')
-          : '⚪️';
-        const got = results ? ` | Got: ${results[i].value}` : '';
-        return `<div class=\"border-b border-black py-2\">${status} <strong>!(${test.n}) = ${test.expected}</strong>${got}</div>`;
-      }).join('');
+    #editor {
+      min-height: 80px;
+      width: 100%;
+      position: relative;
+      font-family: 'IBM Plex Mono', monospace !important;
     }
 
-    function runTests() {
-      const userCode = document.getElementById("user-code").innerText;
-      let results = [];
-      try {
-        const func = new Function(`${userCode}; return factorial;`)();
-        results = tests.map(test => ({ n: test.n, value: func(test.n) }));
-      } catch (e) {
-        document.getElementById("results").innerHTML =
-          `<div class=\"text-red-500\"><strong>Error:</strong> ${e.message}</div>`;
-        return;
-      }
-      renderTests(results);
+    .monaco-editor .monaco-editor-background,
+    .monaco-editor .inputarea.ime-input {
+      font-family: 'IBM Plex Mono', monospace !important;
     }
 
-    window.onload = init;
-  </script>
+    .run-action {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      z-index: 100;
+      background: white;
+      color: #2ea043;
+      border: 1px solid #e0e0e0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .run-action:hover {
+      background: #f6f8fa;
+      border-color: #2ea043;
+    }
+
+    .run-action svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    #results {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .results-item {
+      padding: 8px;
+      background: #f6f8fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+    }
+
+    .test-success {
+      color: #2ea043;
+    }
+
+    .test-failure {
+      color: #f85149;
+    }
+
+    .test-pending {
+      color: #6e7681;
+    }
+  </style>
 </head>
 
-<body class="font-sans bg-white text-black p-8">
-
+<body class="font-sans bg-gray-100 text-gray-900 p-8">
   <div class="max-w-3xl mx-auto">
-    <h2 class="text-2xl font-bold mb-4">Implement factorial</h2>
+    <div class="bg-white material-shadow p-6">
+      <h2 class="text-2xl font-medium mb-4">Implement factorial</h2>
 
-    <p class="mb-4">Fill in the <code class="bg-gray-200 px-1">factorial</code> function below:</p>
+      <p class="mb-4 text-gray-700">Fill in the <code class="bg-gray-100 px-2 py-1">factorial</code> function below:</p>
 
-    <pre class="border border-black">
-      <code id="user-code" contenteditable="true" class="language-javascript block w-full p-4">
-function factorial(n) {
-  // your code here
-}
-      </code>
-    </pre>
+      <div class="material-shadow">
+        <div id="editor"></div>
+      </div>
 
-    <button id="run" class="mt-4 py-2 px-4 border border-black hover:bg-black hover:text-white transition">Run
-      Tests</button>
-
-    <div id="results" class="mt-6 border-t border-black"></div>
+      <div id="results" class="mt-6"></div>
+    </div>
   </div>
 
+  <script>
+    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+    require(['vs/editor/editor.main'], function () {
+      // Define custom theme
+      monaco.editor.defineTheme('lyreTheme', {
+        base: 'vs',
+        inherit: true,
+        rules: [],
+        colors: {
+          'editor.background': '#f6f8fa',
+        }
+      });
+
+      const editor = monaco.editor.create(document.getElementById('editor'), {
+        value: `function factorial(n) {
+  // your code here
+}`,
+        language: 'javascript',
+        theme: 'lyreTheme',
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        lineNumbers: 'on',
+        roundedSelection: false,
+        padding: { top: 4, bottom: 4 },
+        automaticLayout: true,
+        lineHeight: 20,
+        fontFamily: 'IBM Plex Mono',
+        fontLigatures: false,
+        fontSize: 14,
+        renderLineHighlight: 'none',
+      });
+
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+        runTests();
+      });
+
+      // Add run button to editor
+      const editorElement = document.getElementById('editor');
+      const runButton = document.createElement('button');
+      runButton.className = 'run-action';
+      runButton.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+      runButton.title = 'Run Tests';
+      editorElement.appendChild(runButton);
+
+      // Configure the editor to automatically adjust its height
+      const updateEditorHeight = () => {
+        const lineCount = editor.getModel().getLineCount();
+        const lineHeight = 20;
+        const padding = 8; // reduced from 16 to 8
+        const editorElement = document.getElementById('editor');
+        const newHeight = (lineCount * lineHeight) + padding;
+        editorElement.style.height = `${newHeight}px`;
+        editor.updateOptions({
+          scrollBeyondLastLine: false,
+          overviewRulerBorder: false,
+          hideCursorInOverviewRuler: true,
+          overviewRulerLanes: 0,
+          scrollbar: {
+            vertical: 'hidden',
+            horizontal: 'hidden'
+          }
+        });
+        editor.layout();
+      };
+
+      editor.getModel().onDidChangeContent(() => {
+        updateEditorHeight();
+      });
+
+      updateEditorHeight();
+
+      const tests = [
+        { n: 0, expected: 1 },
+        { n: 1, expected: 1 },
+        { n: 3, expected: 6 },
+        { n: 5, expected: 120 },
+        { n: 7, expected: 5040 },
+        { n: 10, expected: 3628800 }
+      ];
+
+      function renderTests(results = null) {
+        const container = document.getElementById("results");
+        container.innerHTML = tests.map((test, i) => {
+          if (!results) {
+            return `<div class="results-item">
+              <span class="test-pending">!(${test.n}) = ${test.expected}</span>
+            </div>`;
+          }
+
+          const isSuccess = results[i].value === test.expected;
+          const resultClass = isSuccess ? 'test-success' : 'test-failure';
+
+          if (isSuccess) {
+            return `<div class="results-item">
+              <span class="test-success">!(${test.n}) = ${test.expected}</span>
+            </div>`;
+          } else {
+            return `<div class="results-item">
+              <span class="test-failure">!(${test.n}) ${test.expected} != ${results[i].value}</span>
+            </div>`;
+          }
+        }).join('');
+      }
+
+      function runTests() {
+        const userCode = editor.getValue();
+        let results = [];
+        try {
+          const func = new Function(`${userCode}; return factorial;`)();
+          results = tests.map(test => ({ n: test.n, value: func(test.n) }));
+        } catch (e) {
+          document.getElementById("results").innerHTML =
+            `<div class="text-red-500"><strong>Error:</strong> ${e.message}</div>`;
+          return;
+        }
+        renderTests(results);
+      }
+
+      runButton.onclick = runTests;
+      renderTests();
+    });
+  </script>
 </body>
 
 </html>
