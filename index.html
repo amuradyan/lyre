@@ -86,21 +86,113 @@
     .test-pending {
       color: #6e7681;
     }
+
+    .next-chapter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+      padding: 12px 24px;
+      background: #f3f4f6;
+      border: none;
+      color: #9ca3af;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      cursor: not-allowed;
+      transition: all 0.2s;
+    }
+
+    .next-chapter.enabled {
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
+
+    .next-chapter.enabled:hover {
+      background: #1d4ed8;
+    }
+
+    .next-chapter svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .status-message {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-top: 8px;
+    }
   </style>
 </head>
 
 <body class="font-sans bg-gray-100 text-gray-900 p-8">
   <div class="max-w-3xl mx-auto">
     <div class="bg-white material-shadow p-6">
-      <h2 class="text-2xl font-medium mb-4">Implement factorial</h2>
+      <h2 class="text-2xl font-medium mb-4">Factorial Calculator</h2>
 
-      <p class="mb-4 text-gray-700">Fill in the <code class="bg-gray-100 px-2 py-1">factorial</code> function below:</p>
+      <div class="space-y-4 mb-6">
+        <div>
+          <h3 class="text-lg font-semibold mb-2">Problem Description</h3>
+          <p class="text-gray-700">
+            Write a function that calculates the factorial of a non-negative integer n, denoted as n!
+          </p>
+        </div>
 
-      <div class="material-shadow">
+        <div>
+          <h4 class="font-medium mb-2">Definition</h4>
+          <p class="text-gray-700">
+            The factorial of a non-negative integer n is the product of all positive integers less than or equal to n.
+            <br>
+            n! = n × (n-1) × (n-2) × ... × 2 × 1
+          </p>
+          <p class="text-gray-700 mt-2">
+            Note: By definition, 0! = 1 and 1! = 1
+          </p>
+        </div>
+
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 text-sm">
+          <strong class="text-yellow-800">Tip:</strong>
+          <span class="text-yellow-700">Think about how you can use recursion or a loop to multiply the numbers.
+            Remember to handle the special case of 0!</span>
+        </div>
+
+        <div>
+          <h4 class="font-medium mb-2">Examples</h4>
+          <div class="bg-gray-50 p-3 rounded font-mono text-sm">
+            <div>5! = 5 × 4 × 3 × 2 × 1 = 120</div>
+            <div>3! = 3 × 2 × 1 = 6</div>
+            <div>0! = 1</div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-medium mb-2">Task</h4>
+          <p class="text-gray-700">
+            Complete the <code class="bg-gray-100 px-2 py-1 rounded">factorial</code> function below. The function:
+          </p>
+          <ul class="list-disc list-inside text-gray-700 mt-2 space-y-1">
+            <li>Takes a non-negative integer n as input</li>
+            <li>Returns the factorial of n (n!)</li>
+            <li>Should handle inputs from 0 to 10</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="code-container material-shadow">
         <div id="editor"></div>
       </div>
 
       <div id="results" class="mt-6"></div>
+
+      <div class="flex flex-col items-center mt-8">
+        <button id="nextChapter" class="next-chapter">
+          Next Chapter
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        <div id="statusMessage" class="status-message">Complete all tests to unlock the next chapter</div>
+      </div>
     </div>
   </div>
 
@@ -184,6 +276,29 @@
         { n: 10, expected: 3628800 }
       ];
 
+      function checkAllTestsPassing(results) {
+        if (!results) return false;
+        return results.every((result, i) => result.value === tests[i].expected);
+      }
+
+      function updateNextChapterButton(results) {
+        const nextButton = document.getElementById('nextChapter');
+        const statusMessage = document.getElementById('statusMessage');
+
+        if (checkAllTestsPassing(results)) {
+          nextButton.classList.add('enabled');
+          statusMessage.textContent = 'All tests passed! You can proceed to the next chapter.';
+          nextButton.onclick = () => {
+            // You can replace this with the actual next chapter URL
+            alert('Congratulations! Moving to next chapter...');
+          };
+        } else {
+          nextButton.classList.remove('enabled');
+          statusMessage.textContent = 'Complete all tests to unlock the next chapter';
+          nextButton.onclick = null;
+        }
+      }
+
       function renderTests(results = null) {
         const container = document.getElementById("results");
         container.innerHTML = tests.map((test, i) => {
@@ -206,6 +321,7 @@
             </div>`;
           }
         }).join('');
+        updateNextChapterButton(results);
       }
 
       function runTests() {
