@@ -61,18 +61,35 @@
     #results {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      gap: 12px;
       margin-top: 24px;
     }
 
     .results-item {
-      padding: 8px;
+      padding: 8px 0;
       background: #f6f8fa;
       display: flex;
-      justify-content: center;
       align-items: center;
       font-family: 'IBM Plex Mono', monospace;
       font-size: 13px;
+    }
+
+    .test-name {
+      text-align: left;
+      padding: 0 10px;
+      white-space: nowrap;
+      width: fit-content;
+    }
+
+    .test-value {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .test-result {
+      text-align: right;
     }
 
     .test-success {
@@ -199,7 +216,6 @@
   <script>
     require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
     require(['vs/editor/editor.main'], function () {
-      // Define custom theme
       monaco.editor.defineTheme('lyreTheme', {
         base: 'vs',
         inherit: true,
@@ -232,7 +248,6 @@
         runTests();
       });
 
-      // Add run button to editor
       const editorElement = document.getElementById('editor');
       const runButton = document.createElement('button');
       runButton.className = 'run-action';
@@ -240,11 +255,10 @@
       runButton.title = 'Run Tests';
       editorElement.appendChild(runButton);
 
-      // Configure the editor to automatically adjust its height
       const updateEditorHeight = () => {
         const lineCount = editor.getModel().getLineCount();
         const lineHeight = 20;
-        const padding = 8; // reduced from 16 to 8
+        const padding = 8;
         const editorElement = document.getElementById('editor');
         const newHeight = (lineCount * lineHeight) + padding;
         editorElement.style.height = `${newHeight}px`;
@@ -289,7 +303,6 @@
           nextButton.classList.add('enabled');
           statusMessage.textContent = 'All tests passed! You can proceed to the next chapter.';
           nextButton.onclick = () => {
-            // You can replace this with the actual next chapter URL
             alert('Congratulations! Moving to next chapter...');
           };
         } else {
@@ -304,22 +317,22 @@
         container.innerHTML = tests.map((test, i) => {
           if (!results) {
             return `<div class="results-item">
-              <span class="test-pending">!(${test.n}) = ${test.expected}</span>
+          <span class="test-name test-pending" style="width: ${`${test.n}!`.length * 8}px; display: inline-block; text-align: center;">${test.n}!</span>
+              <div class="test-value" style="text-align: center;">
+          <span class="test-pending">? = ${test.expected}</span>
+              </div>
             </div>`;
           }
 
           const isSuccess = results[i].value === test.expected;
           const resultClass = isSuccess ? 'test-success' : 'test-failure';
 
-          if (isSuccess) {
-            return `<div class="results-item">
-              <span class="test-success">!(${test.n}) = ${test.expected}</span>
-            </div>`;
-          } else {
-            return `<div class="results-item">
-              <span class="test-failure">!(${test.n}) ${test.expected} != ${results[i].value}</span>
-            </div>`;
-          }
+          return `<div class="results-item">
+            <span class="test-name ${resultClass}" style="width: ${`${test.n}!`.length * 8}px; display: inline-block; text-align: center;">${test.n}!</span>
+            <div class="test-value" style="text-align: center;">
+              <span class="${resultClass}">${results[i].value} ${isSuccess ? '=' : '≠'} ${test.expected}</span>
+            </div>
+          </div>`;
         }).join('');
         updateNextChapterButton(results);
       }
