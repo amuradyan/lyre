@@ -1,0 +1,90 @@
+body {
+  margin: 0;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f3f4f6;
+}
+
+code {
+  font-family: 'IBM Plex Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.material-shadow {
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.results-item {
+  padding: 8px 0;
+  background: #f6f8fa;
+  display: flex;
+  align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+}
+
+.test-name {
+  text-align: left;
+  padding: 0 10px;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.test-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.test-success {
+  color: #2ea043;
+}
+
+.test-failure {
+  color: #f85149;
+}
+
+.test-pending {
+  color: #6e7681;
+}
+
+.next-chapter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 12px 24px;
+  background: #f3f4f6;
+  border: none;
+  color: #9ca3af;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  cursor: not-allowed;
+  transition: all 0.2s;
+  border-radius: 6px;
+}
+
+.next-chapter.enabled {
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.next-chapter.enabled:hover {
+  background: #1d4ed8;
+}
+
+.next-chapter svg {
+  width: 20px;
+  height: 20px;
+}
+
+.status-message {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 8px;
+}
