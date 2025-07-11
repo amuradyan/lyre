@@ -1,14 +1,13 @@
 {
   "tasks": {
-    "dev": "deno run --allow-net --allow-read --allow-env --watch dev.ts",
-    "build": "deno run --allow-net --allow-read --allow-write --allow-env build.ts",
-    "serve": "deno run --allow-net --allow-read serve.ts"
+    "dev": "deno run --allow-net --allow-read --allow-env --watch server.ts",
+    "build": "deno run --allow-all build.ts"
   },
   "imports": {
-    "react": "https://esm.sh/react@18.2.0",
-    "react-dom": "https://esm.sh/react-dom@18.2.0",
-    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-    "@monaco-editor/react": "https://esm.sh/@monaco-editor/react@4.6.0"
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
