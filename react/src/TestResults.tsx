@@ -21,21 +21,43 @@ export default function TestResults({ results }: TestResultsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-3 mt-6">
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: '12px',
+      marginTop: '24px'
+    }}>
       {testCases.map((test, i) => {
         const result = results?.[i];
 
         if (!result) {
           // Show pending state - match static version exactly
           return (
-            <div key={i} className="py-2 bg-gray-50 flex items-center font-mono text-xs" style={{ background: '#f6f8fa' }}>
-              <span className="text-center px-2.5 whitespace-nowrap" style={{
+            <div key={i} style={{
+              padding: '8px 0',
+              background: '#f6f8fa',
+              display: 'flex',
+              alignItems: 'center',
+              fontFamily: 'IBM Plex Mono, monospace',
+              fontSize: '13px'
+            }}>
+              <span style={{
+                textAlign: 'center',
+                padding: '0 10px',
+                whiteSpace: 'nowrap',
                 width: `${test.n}!`.length * 8 + 'px',
+                display: 'inline-block',
                 color: '#6e7681'
               }}>
                 {test.n}!
               </span>
-              <div className="flex-1 text-center">
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                textAlign: 'center'
+              }}>
                 <span style={{ color: '#6e7681' }}>? = {test.expected}</span>
               </div>
             </div>
@@ -46,14 +68,31 @@ export default function TestResults({ results }: TestResultsProps) {
         const color = isSuccess ? '#2ea043' : '#f85149';
 
         return (
-          <div key={i} className="py-2 flex items-center font-mono text-xs" style={{ background: '#f6f8fa' }}>
-            <span className="text-center px-2.5 whitespace-nowrap" style={{
+          <div key={i} style={{
+            padding: '8px 0',
+            background: '#f6f8fa',
+            display: 'flex',
+            alignItems: 'center',
+            fontFamily: 'IBM Plex Mono, monospace',
+            fontSize: '13px'
+          }}>
+            <span style={{
+              textAlign: 'center',
+              padding: '0 10px',
+              whiteSpace: 'nowrap',
               width: `${test.n}!`.length * 8 + 'px',
+              display: 'inline-block',
               color: color
             }}>
               {test.n}!
             </span>
-            <div className="flex-1 text-center">
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+              textAlign: 'center'
+            }}>
               <span style={{ color: color }}>
                 {isNaN(result.value) ? 'Error' : result.value} {isSuccess ? '=' : '≠'} {result.expected}
               </span>
