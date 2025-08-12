@@ -1,19 +1,3 @@
-interface ProblemDescriptionProps {
-  title: string;
-  description: string;
-  definition: {
-    text: string;
-    formula: string;
-    note: string;
-  };
-  tip: string;
-  examples: string[];
-  task: {
-    description: string;
-    requirements: string[];
-  };
-}
-
 export default function ProblemDescription({
   title,
   description,
@@ -21,17 +5,15 @@ export default function ProblemDescription({
   tip,
   examples,
   task
-}: ProblemDescriptionProps) {
+}) {
   return (
     <>
       <h2 className="text-2xl font-medium mb-4 text-left">{title}</h2>
-
       <div className="space-y-4 mb-6 text-left">
         <div>
           <h3 className="text-lg font-semibold mb-2 text-left">Problem Description</h3>
           <p className="text-gray-700 text-left">{description}</p>
         </div>
-
         <div>
           <h4 className="font-medium mb-2 text-left">Definition</h4>
           <p className="text-gray-700 text-left">
@@ -41,12 +23,10 @@ export default function ProblemDescription({
           </p>
           <p className="text-gray-700 mt-2 text-left">{definition.note}</p>
         </div>
-
         <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 text-sm text-left">
           <strong className="text-yellow-800">Tip:</strong>
           <span className="text-yellow-700"> {tip}</span>
         </div>
-
         <div>
           <h4 className="font-medium mb-2 text-left">Examples</h4>
           <div className="bg-gray-50 p-3 rounded font-mono text-sm text-left">
@@ -55,13 +35,12 @@ export default function ProblemDescription({
             ))}
           </div>
         </div>
-
         <div>
           <h4 className="font-medium mb-2 text-left">Task</h4>
           <p className="text-gray-700 text-left">{task.description}</p>
           <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1 text-left">
-            {task.requirements.map((requirement, index) => (
-              <li key={index}>{requirement}</li>
+            {task.requirements.map((req, index) => (
+              <li key={index}>{req}</li>
             ))}
           </ul>
         </div>
