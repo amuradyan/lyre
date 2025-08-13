@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 import Editor from '@monaco-editor/react';
 
-export default function CodeEditor({
-  initialValue = `function factorial(n) {\n  // your code here\n}`,
-  onChange,
-  onRunTests
-}) {
+export default function CodeEditor({ value, onChange, onRunTests }) {
   const editorRef = useRef(null);
+
+  const runWithCurrentValue = () => {
+    const current = editorRef.current?.getValue ? editorRef.current.getValue() : value;
+    onRunTests?.(current ?? '');
+  };
 
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -17,9 +18,7 @@ export default function CodeEditor({
       colors: { 'editor.background': '#f6f8fa' }
     });
     monaco.editor.setTheme('lyreTheme');
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-      onRunTests?.();
-    });
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runWithCurrentValue);
   };
 
   return (
@@ -27,14 +26,14 @@ export default function CodeEditor({
       <Editor
         height="120px"
         defaultLanguage="javascript"
-        value={initialValue}
-        onChange={(value) => onChange?.(value || '')}
+        value={value}
+        onChange={(v) => onChange?.(v || '')}
         onMount={handleEditorDidMount}
         options={{
           minimap: { enabled: false },
           scrollBeyondLastLine: false,
           lineNumbers: 'on',
-            roundedSelection: false,
+          roundedSelection: false,
           padding: { top: 4, bottom: 4 },
           automaticLayout: true,
           lineHeight: 20,
@@ -46,7 +45,7 @@ export default function CodeEditor({
         }}
       />
       <button
-        onClick={onRunTests}
+        onClick={runWithCurrentValue}
         className="absolute flex items-center justify-center cursor-pointer transition-colors duration-200"
         style={{
           top: '4px', right: '4px', zIndex: 100, background: 'white', color: '#2ea043', border: '1px solid #e0e0e0', width: '24px', height: '24px'

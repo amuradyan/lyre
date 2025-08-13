@@ -33,7 +33,7 @@ export default function TestResults({ results }) {
           );
         }
         const isSuccess = result.passed;
-        const color = isSuccess ? '#2ea043' : '#f85149';
+        const color = result.error ? '#f85149' : (isSuccess ? '#2ea043' : '#f85149');
         return (
           <div key={i} style={{
             padding: '8px 0', background: '#f6f8fa', display: 'flex', alignItems: 'center',
@@ -43,9 +43,13 @@ export default function TestResults({ results }) {
               {test.n}!
             </span>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, textAlign: 'center' }}>
-              <span style={{ color }}>
-                {isNaN(result.value) ? 'Error' : result.value} {isSuccess ? '=' : '≠'} {result.expected}
-              </span>
+              {result.error ? (
+                <span style={{ color }}>{result.error}</span>
+              ) : (
+                <span style={{ color }}>
+                  {isNaN(result.value) ? 'Error' : result.value} {isSuccess ? '=' : '≠'} {result.expected}
+                </span>
+              )}
             </div>
           </div>
         );

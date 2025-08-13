@@ -10,8 +10,10 @@ export default function Slide({ problem, initialCode = `function factorial(n) {\
   const [userCode, setUserCode] = useState(initialCode);
   const [testResults, setTestResults] = useState(null);
 
-  const handleRunTests = () => {
-    const results = executeTests(userCode);
+  const handleRunTests = (codeArg) => {
+    const codeUsed = typeof codeArg === 'string' ? codeArg : userCode;
+    const results = executeTests(codeUsed);
+    setUserCode(codeUsed); // keep state in sync with what was executed
     setTestResults(results);
   };
 
@@ -21,7 +23,7 @@ export default function Slide({ problem, initialCode = `function factorial(n) {\
     <div className="bg-white material-shadow p-6">
       <ProblemDescription {...problem} />
       <CodeEditor
-        initialValue={userCode}
+        value={userCode}
         onChange={setUserCode}
         onRunTests={handleRunTests}
       />
