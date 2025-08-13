@@ -17,7 +17,9 @@ Source file: `sintez.js`
 | (Later) | (not in numbered steps) | Saving WAV / presets | async/await, ArrayBuffer, DataView, object literals for presets |
 
 ---
+
 ## Step 01 – Making a Sound (Tone Generation)
+
 New concepts introduced here.
 
 ```javascript
@@ -40,6 +42,7 @@ function generatePCM(frequency, duration, offset = 0) {
 ```
 
 Highlights:
+
 - Number literals (lines 3, 4, 15) - `const AMPLITUDE = 32767;`, `const SAMPLE_RATE = 44100;`
 - `const` vs `let` (lines 15, 20) - immutable vs mutable variables
 - Function declaration (line 14) - `function generatePCM(...) {}`
@@ -48,6 +51,7 @@ Highlights:
 - Array creation & `push` (lines 18–24) - building sample arrays incrementally
 
 ## Step 02 – Flat Tokenization
+
 Introduce interpreting strings into tokens.
 
 ```javascript
@@ -65,6 +69,7 @@ const typeify = (token) => {
 ```
 
 Highlights:
+
 - `Array.from` (line 159) - convert string to character array
 - `trim()` (line 159) - remove leading/trailing whitespace
 - `Number.parseFloat` & `Number.isNaN` (line 142–143) - string to number conversion
@@ -72,6 +77,7 @@ Highlights:
 - Ternary operator (line 143) - concise conditional expression
 
 ## Step 03 – Nested Tokenization & Evaluator Skeleton
+
 Adds recursion, list structure, switch.
 
 ```javascript
@@ -109,6 +115,7 @@ const loop = (
 ```
 
 Evaluator skeletal recursion:
+
 ```javascript
 // sintez.js:247-276
 const evaluate = (expression) => {
@@ -136,6 +143,7 @@ const evaluate = (expression) => {
 ```
 
 Highlights:
+
 - Recursion (`loop` calling itself, `evaluate` calling itself)
 - Destructuring `[graphemeAtHand, ...restOfGraphemes]` - extract head and tail
 - Default parameter `tokenSoFar = ""` - fallback value
@@ -146,6 +154,7 @@ Highlights:
 - Spread in function calls - unpack arguments
 
 ## Step 04 – Sequencing & Fades
+
 Adds helper closures, typed arrays, default params already seen.
 
 ```javascript
@@ -170,6 +179,7 @@ const samples = new Int16Array([...attack, ...sustain, ...decay]); // typed arra
 ```
 
 Highlights:
+
 - Rest parameter (line 70) - collect variable arguments
 - Nested `for...of` (lines 72, 76–77) - iterate over collections
 - Accumulation pattern (lines 71–73) - building up totals
@@ -177,6 +187,7 @@ Highlights:
 - Spread concatenation - merge arrays efficiently
 
 ## Step 05 – Parallel (Chords)
+
 Parallel computation & higher-order functions.
 
 ```javascript
@@ -197,6 +208,7 @@ function parallel(...PCMs) {
 ```
 
 Highlights:
+
 - `Math.max` with spread (line 88) - find maximum from array
 - Arrow callback in `map` (lines 88, 92) - inline function expressions
 - Fallback `|| 0` (line 92) - handle undefined values
@@ -204,6 +216,7 @@ Highlights:
 - Division for averaging (lines 93–94) - mathematical computation
 
 ## Step 06 – Repetition
+
 Repeat function.
 
 ```javascript
@@ -220,11 +233,13 @@ function repeat(times, PCM) {
 ```
 
 Highlights:
+
 - Outer classic `for` loop (line 103) - count-based iteration
 - Inner `for...of` (line 104) - value-based iteration
 - Reusing accumulation idiom - consistent pattern application
 
 ## Step 07 – Environment Lookup (Notes & Silence)
+
 Lookup and error handling.
 
 ```javascript
@@ -253,6 +268,7 @@ const lookupInEnvironment = (name) => {
 ```
 
 Highlights:
+
 - `find` with destructuring (line 229) - search with pattern matching
 - Arrow function predicate (line 229) - inline comparison function
 - `console.error` (line 233) - diagnostic output
@@ -260,6 +276,7 @@ Highlights:
 - Silence implementation: arrow producing PCM with frequency 0 (line 295)
 
 ## Step 08 – Definitions (`define` Special Form)
+
 Environment mutation & control flow in evaluator.
 
 ```javascript
@@ -278,12 +295,14 @@ if (Array.isArray(first) && first[0] === atom("define")) { // special form detec
 ```
 
 Highlights:
+
 - Pattern match for special form (line 260) - recognize define syntax
 - Throwaway binding `_` in destructuring (line 261) - ignore unused values
 - Environment mutation via `unshift` (line 263) - add new bindings at front
 - Conditional branch on remaining program (lines 265–268) - handle program flow
 
 ## Later (Not in Core Step Sequence)
+
 WAV encoding & presets (advanced I/O & data layout).
 
 ```javascript
@@ -323,6 +342,7 @@ async function encodeWAV( // async function
 ```
 
 Highlights:
+
 - `async` / `await` (lines 110, 134) - asynchronous programming
 - `ArrayBuffer`, `DataView` (lines 117–118) - binary data manipulation
 - Binary writes (`setUint8`, `setUint16`, `setUint32`, `setInt16`) - low-level data encoding
@@ -330,8 +350,11 @@ Highlights:
 - Object literal configuration values - structured data
 
 ---
+
 ## Deferred / Not Used in Current Implementation
+
 The following JavaScript features are intentionally NOT introduced (avoid premature teaching):
+
 - `for...in`, `while`, `do...while`
 - `try/catch/finally`
 - `class` syntax
@@ -340,13 +363,17 @@ The following JavaScript features are intentionally NOT introduced (avoid premat
 - Module `import` statements (only `export { ... }` appears at line 0)
 
 ---
+
 ## Suggested Lesson Gating
+
 - Only introduce each construct the step *before* or *at* first required use.
 - Provide micro-exercises: e.g. Step 05: rewrite `parallel` using manual summation before `reduce` is shown.
 - Delay async/binary internals to an "Exporting Audio" bonus chapter.
 
 ---
+
 ## Quick Index (Concept → First Line Reference)
+
 - Function declaration: 14
 - Arrow function (helper): 18, 141
 - Recursion: 163–207 (loop), 247–276 (evaluate)
