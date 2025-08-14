@@ -1,7 +1,18 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const WORKSPACE_ROOT = resolve(__dirname, '..');
 
 export default defineConfig({
   plugins: [react()],
-  server: { port: 8000 }
+  server: {
+    port: 8000,
+    fs: {
+      allow: [WORKSPACE_ROOT]
+    }
+  }
 });

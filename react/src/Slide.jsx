@@ -13,7 +13,7 @@ export default function Slide({ problem, initialCode = `function factorial(n) {\
   const handleRunTests = (codeArg) => {
     const codeUsed = typeof codeArg === 'string' ? codeArg : userCode;
     const results = executeTests(codeUsed);
-    setUserCode(codeUsed); // keep state in sync with what was executed
+    setUserCode(codeUsed);
     setTestResults(results);
   };
 
