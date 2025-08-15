@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 
-export default function CodeEditor({ value, onChange, onRunTests, showRun = true }) {
+export default function CodeEditor({ value, onChange, onRunTests, showRun = true, readOnly = false }) {
   const editorRef = useRef(null);
   const [height, setHeight] = useState(120);
 
@@ -19,7 +19,7 @@ export default function CodeEditor({ value, onChange, onRunTests, showRun = true
       colors: { 'editor.background': '#f6f8fa' }
     });
     monaco.editor.setTheme('lyreTheme');
-    if (showRun) {
+    if (showRun && !readOnly) {
       editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runWithCurrentValue);
     }
 
@@ -65,10 +65,11 @@ export default function CodeEditor({ value, onChange, onRunTests, showRun = true
           fontSize: 14,
           renderLineHighlight: 'none',
           wordWrap: 'on',
-          scrollbar: { vertical: 'hidden', horizontal: 'hidden' }
+          scrollbar: { vertical: 'hidden', horizontal: 'hidden' },
+          readOnly
         }}
       />
-      {showRun && (
+      {showRun && !readOnly && (
         <button
           onClick={runWithCurrentValue}
           className="absolute flex items-center justify-center cursor-pointer transition-colors duration-200"

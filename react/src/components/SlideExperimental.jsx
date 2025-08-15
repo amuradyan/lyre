@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import CodeEditor from './CodeEditor.jsx';
+import CodeEditor from './codeblock/CodeEditor.jsx';
 
 function joinUrlFs(absPath) {
   return encodeURI(`/@fs${absPath}`);
