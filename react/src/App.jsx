@@ -1,4 +1,3 @@
-import './App.css';
 import Slide from './components/Slide.jsx';
 
 const factorialProblem = {

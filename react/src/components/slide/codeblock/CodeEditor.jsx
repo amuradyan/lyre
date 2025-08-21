@@ -1,14 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 
-export default function CodeEditor({ value, onChange, onRunTests, showRun = true, readOnly = false }) {
+export default function CodeEditor({ value, onChange, readOnly = false }) {
   const editorRef = useRef(null);
   const [height, setHeight] = useState(120);
-
-  const runWithCurrentValue = () => {
-    const current = editorRef.current?.getValue ? editorRef.current.getValue() : value;
-    onRunTests?.(current ?? '');
-  };
 
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -19,9 +14,6 @@ export default function CodeEditor({ value, onChange, onRunTests, showRun = true
       colors: { 'editor.background': '#f6f8fa' }
     });
     monaco.editor.setTheme('lyreTheme');
-    if (showRun && !readOnly) {
-      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runWithCurrentValue);
-    }
 
     const applyHeight = (h) => {
       const next = Math.max(120, Math.ceil(h || 0));
@@ -69,28 +61,6 @@ export default function CodeEditor({ value, onChange, onRunTests, showRun = true
           readOnly
         }}
       />
-      {showRun && !readOnly && (
-        <button
-          onClick={runWithCurrentValue}
-          className="absolute flex items-center justify-center cursor-pointer transition-colors duration-200"
-          style={{
-            top: '4px', right: '4px', zIndex: 100, background: 'white', color: '#2ea043', border: '1px solid #e0e0e0', width: '24px', height: '24px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#f6f8fa';
-            e.currentTarget.style.borderColor = '#2ea043';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'white';
-            e.currentTarget.style.borderColor = '#e0e0e0';
-          }}
-          title="Run Tests (Ctrl+Enter)"
-        >
-          <svg viewBox="0 0 24 24" style={{ width: '14px', height: '14px', fill: 'currentColor' }}>
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </button>
-      )}
     </div>
   );
 }

@@ -10,8 +10,6 @@
  */
 export function evaluateCode(code) {
   try {
-    console.log('Evaluating code:', code);
-
     // Split code into lines and find the last executable line
     const lines = code.trim().split('\n').map(line => line.trim()).filter(line => line);
     const lastLine = lines[lines.length - 1];
@@ -42,15 +40,12 @@ export function evaluateCode(code) {
       result = func();
     }
 
-    console.log('Evaluation result:', result, 'type:', typeof result);
-
     return {
       success: true,
       result: result,
       error: null
     };
   } catch (error) {
-    console.log('Evaluation error:', error.message);
     return {
       success: false,
       result: null,
@@ -93,8 +88,6 @@ export function parseTestComment(comment) {
  * @returns {Object} - Test results with success/failure details
  */
 export function runMarkdownTest(evaluationResult, testSpec) {
-  console.log('Running markdown test with:', { evaluationResult, testSpec });
-
   if (!evaluationResult.success) {
     return {
       success: false,
@@ -115,7 +108,6 @@ export function runMarkdownTest(evaluationResult, testSpec) {
 
   // Check if the result is a function
   if (typeof result === 'function') {
-    console.log('Result is a function, doing function tests');
     // Test spec should be an object with input->expected mappings
     if (typeof testSpec !== 'object' || testSpec === null || Array.isArray(testSpec)) {
       return {
@@ -166,10 +158,8 @@ export function runMarkdownTest(evaluationResult, testSpec) {
       results
     };
   } else {
-    console.log('Result is not a function, doing value comparison');
     // Direct value comparison
     const passed = result === testSpec;
-    console.log('Value comparison:', result, '===', testSpec, '→', passed);
 
     return {
       success: passed,

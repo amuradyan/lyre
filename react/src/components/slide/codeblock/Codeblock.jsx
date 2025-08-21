@@ -15,27 +15,14 @@ export default function Codeblock({
 
   const runTests = useCallback((codeToTest) => {
     if (testComment) {
-      console.log('Running tests with code:', codeToTest);
-      console.log('Test comment:', testComment);
-
       const results = executeMarkdownTest(codeToTest, testComment);
-      console.log('Test results:', results);
-
       setTestResults(results);
       return results;
     }
     return null;
   }, [testComment]);
 
-  const handleRunTests = useCallback((codeArg) => {
-    const codeUsed = typeof codeArg === 'string' ? codeArg : userCode;
-    console.log('Play button clicked, running tests with:', codeUsed);
-    runTests(codeUsed);
-    setUserCode(codeUsed);
-  }, [userCode, runTests]);
-
   const handleCodeChange = (newCode) => {
-    console.log('Code changed to:', newCode);
     setUserCode(newCode);
     // Run tests automatically on change if there are test comments
     if (testComment) {
@@ -46,7 +33,6 @@ export default function Codeblock({
   // Run initial tests when component mounts
   useEffect(() => {
     if (testComment && code) {
-      console.log('Initial test run on mount');
       runTests(code);
     }
   }, [testComment, code, runTests]);
@@ -56,8 +42,6 @@ export default function Codeblock({
       <CodeEditor
         value={userCode}
         onChange={handleCodeChange}
-        onRunTests={handleRunTests}
-        showRun={hasTests}
         readOnly={readOnly}
       />
       {hasTests && (

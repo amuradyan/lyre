@@ -2,8 +2,6 @@
 
 We want to be able to describe the machine it's function, and tell it to perform /call the function/, and this is how we do it in JavaScript.
 
-!!NOTE: The snippet below should be the excercise with the test section below
-
 ```js
 function ???() {
   return "beep"; // returning a value lets callers use it
@@ -11,7 +9,7 @@ function ???() {
 
 ???();
 ```
-<!-- "beep" -->
+<!-- "glopp" -->
 
 !!NOTE TO SELF!!: if the student messes with the code, respond with a message about importance of the name actually describing the function and not just being a random word. Note that in real life nothing would stop him from doing it wrong.
 
