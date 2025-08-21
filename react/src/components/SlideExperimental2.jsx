@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import CodeEditor from './codeblock/CodeEditor.jsx';
+import MarkdownTestResults from './codeblock/MarkdownTestResults.jsx';
+import { executeMarkdownTest } from './codeblock/MarkdownTestRunner.js';
 
 function joinUrlFs(absPath) {
   return encodeURI(`/@fs${absPath}`);
@@ -30,8 +32,7 @@ function parseMarkdown(md) {
         paragraphs.push(currentPara.join(' ').trim());
         currentPara = [];
       }
-      inNext = true; 
-      
+      inNext = true;
       continue;
     }
 
@@ -47,7 +48,20 @@ function parseMarkdown(md) {
 
     if (line.startsWith('```')) {
       if (inCode) {
-        codeBlocks.push(codeBuffer.join('\n'));
+        // End of code block - look for test comment on next line
+        const code = codeBuffer.join('\n');
+        let testComment = null;
+
+        // Check if next line has a test comment
+        if (i + 1 < lines.length) {
+          const nextLine = lines[i + 1].trim();
+          if (nextLine.startsWith('<!--') && nextLine.includes('-->')) {
+            testComment = nextLine;
+            i++; // Skip the test comment line in main parsing
+          }
+        }
+
+        codeBlocks.push({ code, testComment });
         codeBuffer = [];
         inCode = false;
       } else {
@@ -65,7 +79,7 @@ function parseMarkdown(md) {
       continue;
     }
 
-   if (/^#/.test(line)) {
+    if (/^#/.test(line)) {
       if (currentPara.length) {
         paragraphs.push(currentPara.join(' ').trim());
         currentPara = [];
@@ -88,11 +102,12 @@ function parseMarkdown(md) {
   return { title, paragraphs, codeBlocks, nextHref, nextText };
 }
 
-export default function SlideExperimental({ initialMarkdownPath }) {
+export default function SlideExperimental2({ initialMarkdownPath }) {
   const [mdPath, setMdPath] = useState(initialMarkdownPath);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [testResults, setTestResults] = useState({});
 
   const parsed = useMemo(() => parseMarkdown(content || ''), [content]);
 
@@ -118,6 +133,29 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     return () => { cancelled = true; };
   }, [mdPath]);
 
+  const handleCodeChange = (index, newCode) => {
+    // Update the code block and run tests if there's a test comment
+    const codeBlock = parsed.codeBlocks[index];
+    if (codeBlock?.testComment) {
+      const result = executeMarkdownTest(newCode, codeBlock.testComment);
+      setTestResults(prev => ({
+        ...prev,
+        [index]: result
+      }));
+    }
+  };
+
+  const handleRunTests = (index, code) => {
+    const codeBlock = parsed.codeBlocks[index];
+    if (codeBlock?.testComment) {
+      const result = executeMarkdownTest(code, codeBlock.testComment);
+      setTestResults(prev => ({
+        ...prev,
+        [index]: result
+      }));
+    }
+  };
+
   const handleNext = () => {
     const { nextHref } = parsed;
     if (!nextHref) return;
@@ -137,8 +175,21 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }
 
     setMdPath(nextAbs);
+    setTestResults({}); // Clear test results when navigating
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Run initial tests for code blocks with test comments
+  useEffect(() => {
+    const newTestResults = {};
+    parsed.codeBlocks.forEach((block, i) => {
+      if (block.testComment) {
+        const result = executeMarkdownTest(block.code, block.testComment);
+        newTestResults[i] = result;
+      }
+    });
+    setTestResults(newTestResults);
+  }, [parsed.codeBlocks]);
 
   return (
     <div className="bg-white material-shadow" style={{ padding: '32px 32px 32px 32px' }}>
@@ -155,9 +206,17 @@ export default function SlideExperimental({ initialMarkdownPath }) {
             ))}
           </div>
           <div className="flex flex-col space-y-6">
-            {parsed.codeBlocks.map((code, i) => (
+            {parsed.codeBlocks.map((block, i) => (
               <div key={i}>
-                <CodeEditor value={code} onChange={() => {}} onRunTests={() => {}} showRun={false} />
+                <CodeEditor
+                  value={block.code}
+                  onChange={(newCode) => handleCodeChange(i, newCode)}
+                  onRunTests={(code) => handleRunTests(i, code)}
+                  showRun={!!block.testComment}
+                />
+                {testResults[i] && (
+                  <MarkdownTestResults testResult={testResults[i]} />
+                )}
               </div>
             ))}
           </div>

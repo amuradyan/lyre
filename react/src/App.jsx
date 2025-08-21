@@ -1,6 +1,7 @@
 import './App.css';
 import Slide from './components/Slide.jsx';
 import SlideExperimental from './components/SlideExperimental.jsx';
+// import SlideExperimental2 from './components/SlideExperimental2.jsx';
 
 const factorialProblem = {
   title: 'Factorial Calculator',
@@ -30,6 +31,7 @@ export default function App() {
   return (
     <div className="font-sans bg-gray-100 text-gray-900 p-8">
       <div className="max-w-3xl mx-auto">
+        {/* <SlideExperimental2 initialMarkdownPath="/home/spectrum/playground/lyre/notes/Making a sound/0 Describing Sound.md" /> */}
         <SlideExperimental initialMarkdownPath="/home/spectrum/playground/lyre/notes/Making a sound/0 Describing Sound.md" />
         <Slide problem={factorialProblem} />
       </div>

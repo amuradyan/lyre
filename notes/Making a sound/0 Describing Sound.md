@@ -10,4 +10,4 @@ Before we do that, we’ll make sure we can give the computer clear, precise ins
 
 ## Next
 
-- [Instruct, shall we?](notes/Making%20a%20sound/Slide1.md)
+- [Instruct, shall we?](notes/Making%20a%20sound/1%20Describing%20Functions.md)
