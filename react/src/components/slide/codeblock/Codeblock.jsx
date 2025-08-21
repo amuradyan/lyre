@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import TestResults from './tests/TestResults.jsx';
 import { executeMarkdownTest } from './tests/runner/TestRunner.js';
@@ -13,31 +13,43 @@ export default function Codeblock({
 
   const hasTests = !!testComment;
 
+  const runTests = useCallback((codeToTest) => {
+    if (testComment) {
+      console.log('Running tests with code:', codeToTest);
+      console.log('Test comment:', testComment);
+
+      const results = executeMarkdownTest(codeToTest, testComment);
+      console.log('Test results:', results);
+
+      setTestResults(results);
+      return results;
+    }
+    return null;
+  }, [testComment]);
+
   const handleRunTests = useCallback((codeArg) => {
     const codeUsed = typeof codeArg === 'string' ? codeArg : userCode;
-    if (testComment) {
-      const results = executeMarkdownTest(codeUsed, testComment);
-      setTestResults(results);
-    }
+    console.log('Play button clicked, running tests with:', codeUsed);
+    runTests(codeUsed);
     setUserCode(codeUsed);
-  }, [userCode, testComment]);
+  }, [userCode, runTests]);
 
   const handleCodeChange = (newCode) => {
+    console.log('Code changed to:', newCode);
     setUserCode(newCode);
     // Run tests automatically on change if there are test comments
     if (testComment) {
-      const results = executeMarkdownTest(newCode, testComment);
-      setTestResults(results);
+      runTests(newCode);
     }
   };
 
   // Run initial tests when component mounts
-  useState(() => {
+  useEffect(() => {
     if (testComment && code) {
-      const results = executeMarkdownTest(code, testComment);
-      setTestResults(results);
+      console.log('Initial test run on mount');
+      runTests(code);
     }
-  }, []);
+  }, [testComment, code, runTests]);
 
   return (
     <div>

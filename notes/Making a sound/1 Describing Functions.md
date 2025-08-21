@@ -5,11 +5,11 @@ We want to be able to describe the machine it's function, and tell it to perform
 !!NOTE: The snippet below should be the excercise with the test section below
 
 ```js
-function ____() {
+function ???() {
   return "beep"; // returning a value lets callers use it
 }
 
-____();
+???();
 ```
 <!-- "beep" -->
 
