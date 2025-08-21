@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import CodeEditor from './CodeEditor.jsx';
-import TestResults from './TestResults.jsx';
-import { executeMarkdownTest } from './MarkdownTestRunner.js';
+import TestResults from './tests/TestResults.jsx';
+import { executeMarkdownTest } from './tests/runner/TestRunner.js';
 
 export default function Codeblock({
   code,
