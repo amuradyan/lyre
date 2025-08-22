@@ -24,13 +24,11 @@ export default function Codeblock({
 
   const handleCodeChange = (newCode) => {
     setUserCode(newCode);
-    // Run tests automatically on change if there are test comments
     if (testComment) {
       runTests(newCode);
     }
   };
 
-  // Run initial tests when component mounts
   useEffect(() => {
     if (testComment && code) {
       runTests(code);
@@ -38,7 +36,7 @@ export default function Codeblock({
   }, [testComment, code, runTests]);
 
   return (
-    <div>
+    <div style={{ marginTop: '2vh' }}>
       <CodeEditor
         value={userCode}
         onChange={handleCodeChange}

@@ -22,7 +22,6 @@ function assertTrue(condition, message = '') {
   }
 }
 
-// Test evaluateCode function
 test('evaluateCode - simple expression', () => {
   const result = evaluateCode('2 + 2');
   assertTrue(result.success, 'Should succeed');
@@ -56,11 +55,10 @@ test('evaluateCode - arrow function', () => {
 test('evaluateCode - syntax error', () => {
   const result = evaluateCode('function broken( {');
   assertTrue(!result.success, 'Should fail on syntax error');
-  console.log('Actual error message:', result.error); // Debug log
+  console.log('Actual error message:', result.error);
   assertTrue(result.error && result.error.length > 0, 'Should have error message');
 });
 
-// Test parseTestComment function
 test('parseTestComment - string value', () => {
   const result = parseTestComment('<!-- "hello" -->');
   assertEquals(result, "hello", 'Should parse string');
@@ -77,14 +75,12 @@ test('parseTestComment - object value', () => {
 });
 
 test('parseTestComment - invalid comment', () => {
-  // Temporarily suppress console.warn for this test
   const originalWarn = console.warn;
-  console.warn = () => { }; // Suppress warning
+  console.warn = () => { };
 
   const result = parseTestComment('<!-- invalid json -->');
   assertEquals(result, null, 'Should return null for invalid JSON');
 
-  // Restore console.warn
   console.warn = originalWarn;
 });
 
@@ -128,7 +124,7 @@ test('runMarkdownTest - function test success', () => {
 test('runMarkdownTest - function test failure', () => {
   const double = x => x * 2;
   const evalResult = { success: true, result: double, error: null };
-  const testSpec = { "2": 5, "3": 6 }; // 2*2 should be 4, not 5
+  const testSpec = { "2": 5, "3": 6 };
   const result = runMarkdownTest(evalResult, testSpec);
 
   assertTrue(!result.success, 'Test should fail');
@@ -147,42 +143,36 @@ test('runMarkdownTest - evaluation error', () => {
 });
 
 test('runMarkdownTest - function runtime crash', () => {
-  // Function that will crash when called
   const crashingFunction = x => {
     if (x === 5) {
       throw new Error('Custom crash reason');
     }
     if (x === 10) {
-      // Accessing property on undefined
       return undefined.someProperty;
     }
-    return x * 2; // Normal case
+    return x * 2;
   };
 
   const evalResult = { success: true, result: crashingFunction, error: null };
-  const testSpec = { "3": 6, "5": 10, "10": 20 }; // 5 and 10 will crash
+  const testSpec = { "3": 6, "5": 10, "10": 20 };
   const result = runMarkdownTest(evalResult, testSpec);
 
   assertTrue(!result.success, 'Test should fail due to crashes');
   assertEquals(result.type, 'function', 'Should be function type');
   assertEquals(result.results.length, 3, 'Should have 3 test results');
 
-  // First test should pass (3 * 2 = 6)
   assertEquals(result.results[0].passed, true, 'First test should pass');
   assertEquals(result.results[0].actual, 6, 'First test result should be 6');
 
-  // Second test should fail with custom error (5 throws "Custom crash reason")
   assertEquals(result.results[1].passed, false, 'Second test should fail');
   assertEquals(result.results[1].actual, null, 'Second test actual should be null on crash');
   assertEquals(result.results[1].error, 'Custom crash reason', 'Should capture custom error message');
 
-  // Third test should fail with TypeError (10 accesses undefined.someProperty)
   assertEquals(result.results[2].passed, false, 'Third test should fail');
   assertEquals(result.results[2].actual, null, 'Third test actual should be null on crash');
   assertTrue(result.results[2].error.includes('Cannot read'), 'Should capture TypeError message');
 });
 
-// Test executeMarkdownTest integration
 test('executeMarkdownTest - complete pipeline value', () => {
   const code = '"test string"';
   const comment = '<!-- "test string" -->';

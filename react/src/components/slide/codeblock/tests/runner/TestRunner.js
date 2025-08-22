@@ -10,34 +10,21 @@
  */
 export function evaluateCode(code) {
   try {
-    // Split code into lines and find the last executable line
-    const lines = code.trim().split('\n').map(line => line.trim()).filter(line => line);
-    const lastLine = lines[lines.length - 1];
+    let result = eval(code);
 
-    // Check if the last line is an expression (not a declaration)
-    const isExpression = lastLine &&
-      !lastLine.startsWith('function ') &&
-      !lastLine.startsWith('const ') &&
-      !lastLine.startsWith('let ') &&
-      !lastLine.startsWith('var ') &&
-      !lastLine.startsWith('//') &&
-      !lastLine.startsWith('/*') &&
-      !lastLine.includes('=') && // Not an assignment
-      lastLine.length > 0;
+    if (result === undefined) {
+      const functionMatch = code.match(/function\s+(\w+)\s*\(/);
 
-    let result;
-    if (isExpression) {
-      // More robust approach: execute all code, then evaluate the last line separately
-      const codeWithoutLastLine = lines.slice(0, -1).join('\n');
-      const func = new Function(`
-        ${codeWithoutLastLine}
-        return ${lastLine};
-      `);
-      result = func();
-    } else {
-      // If last line is a declaration or assignment, just execute and return undefined
-      const func = new Function(code);
-      result = func();
+      if (functionMatch) {
+        const functionName = functionMatch[1];
+
+        try {
+          result = eval(functionName);
+        } catch (e) {
+          const modifiedCode = `${code}\nreturn ${functionName};`;
+          result = eval(`(function() { ${modifiedCode} })()`);
+        }
+      }
     }
 
     return {
@@ -65,7 +52,6 @@ export function parseTestComment(comment) {
   if (!comment) return null;
 
   try {
-    // Remove HTML comment markers and trim
     const content = comment
       .replace(/<!--\s*/, '')
       .replace(/\s*-->/, '')
@@ -73,7 +59,6 @@ export function parseTestComment(comment) {
 
     if (!content) return null;
 
-    // Parse as JSON
     return JSON.parse(content);
   } catch (error) {
     console.warn('Failed to parse test comment:', comment, error);
@@ -88,14 +73,6 @@ export function parseTestComment(comment) {
  * @returns {Object} - Test results with success/failure details
  */
 export function runMarkdownTest(evaluationResult, testSpec) {
-  if (!evaluationResult.success) {
-    return {
-      success: false,
-      error: `Code evaluation failed: ${evaluationResult.error}`,
-      results: []
-    };
-  }
-
   const { result } = evaluationResult;
 
   if (testSpec === null || testSpec === undefined) {
@@ -106,9 +83,43 @@ export function runMarkdownTest(evaluationResult, testSpec) {
     };
   }
 
-  // Check if the result is a function
+  if (!evaluationResult.success) {
+    if (typeof testSpec === 'object' && testSpec !== null && !Array.isArray(testSpec)) {
+      const results = [];
+      for (const [input, expected] of Object.entries(testSpec)) {
+        let parsedInput = input;
+        const numInput = Number(input);
+        if (!isNaN(numInput) && isFinite(numInput) && numInput.toString() === input) {
+          parsedInput = numInput;
+        }
+
+        results.push({
+          input: parsedInput,
+          expected,
+          actual: '?',
+          passed: false
+        });
+      }
+
+      return {
+        success: false,
+        type: 'function',
+        results
+      };
+    } else {
+      return {
+        success: false,
+        type: 'value',
+        results: [{
+          expected: testSpec,
+          actual: '?',
+          passed: false
+        }]
+      };
+    }
+  }
+
   if (typeof result === 'function') {
-    // Test spec should be an object with input->expected mappings
     if (typeof testSpec !== 'object' || testSpec === null || Array.isArray(testSpec)) {
       return {
         success: false,
@@ -122,7 +133,6 @@ export function runMarkdownTest(evaluationResult, testSpec) {
 
     for (const [input, expected] of Object.entries(testSpec)) {
       try {
-        // Convert input to appropriate type (try parsing as number first)
         let parsedInput = input;
         const numInput = Number(input);
         if (!isNaN(numInput) && isFinite(numInput) && numInput.toString() === input) {
@@ -158,7 +168,6 @@ export function runMarkdownTest(evaluationResult, testSpec) {
       results
     };
   } else {
-    // Direct value comparison
     const passed = result === testSpec;
 
     return {

@@ -212,7 +212,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
               <p key={i} className="text-gray-700 text-left">{p}</p>
             ))}
           </div>
-          <div className="flex flex-col space-y-6">
+          <div className="flex flex-col space-y-18">
             {parsed.codeBlocks.map((block, i) => (
               <Codeblock
                 key={i}

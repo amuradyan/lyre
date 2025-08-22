@@ -8,10 +8,8 @@ export default function TestCase({
   message,
   color
 }) {
-  // Determine display color
   const displayColor = color || (error ? '#f85149' : (passed ? '#2ea043' : '#f85149'));
 
-  // Format values for display
   const formatValue = (val) => {
     if (val === null) return 'null';
     if (val === undefined) return 'undefined';
@@ -19,7 +17,6 @@ export default function TestCase({
     return JSON.stringify(val);
   };
 
-  // Determine what to display in the main message area
   let displayMessage;
   if (message) {
     displayMessage = message;
@@ -37,7 +34,6 @@ export default function TestCase({
     }
   }
 
-  // Calculate input display
   const inputDisplay = inputLabel || (input !== undefined ? `f(${formatValue(input)})` : '');
   const inputWidth = inputDisplay ? Math.max(inputDisplay.length * 8 + 20, 60) : 0;
 

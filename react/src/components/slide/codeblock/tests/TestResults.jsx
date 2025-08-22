@@ -1,13 +1,11 @@
 import TestCase from './TestCase.jsx';
 
 export default function TestResults({ testCases, testResult }) {
-  // Handle MarkdownTestRunner format (testResult prop)
   if (testResult) {
     if (!testResult) {
       return null;
     }
 
-    // Handle evaluation errors
     if (!testResult.success && testResult.error) {
       const errorTestCase = {
         message: `Test Error: ${testResult.error}`,
@@ -23,7 +21,7 @@ export default function TestResults({ testCases, testResult }) {
           display: 'grid',
           gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
           gap: '12px',
-          marginTop: '24px'
+          marginTop: '12px'
         }}>
           {cases.map((testCase, i) => (
             <TestCase key={i} {...testCase} />
@@ -32,7 +30,6 @@ export default function TestResults({ testCases, testResult }) {
       );
     }
 
-    // Handle "no test" case
     if (testResult.message) {
       const noTestCase = {
         message: testResult.message,
@@ -47,7 +44,7 @@ export default function TestResults({ testCases, testResult }) {
           display: 'grid',
           gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
           gap: '12px',
-          marginTop: '24px'
+          marginTop: '12px'
         }}>
           {cases.map((testCase, i) => (
             <TestCase key={i} {...testCase} />
@@ -58,7 +55,6 @@ export default function TestResults({ testCases, testResult }) {
 
     const { results, type } = testResult;
 
-    // Convert MarkdownTestRunner results to TestCase format
     const convertedTestCases = results.map((result) => {
       const { input, expected, actual, passed, error } = result;
 
@@ -79,7 +75,7 @@ export default function TestResults({ testCases, testResult }) {
         display: 'grid',
         gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
         gap: '12px',
-        marginTop: '24px'
+        marginTop: '12px'
       }}>
         {convertedTestCases.map((testCase, i) => (
           <TestCase key={i} {...testCase} />
@@ -88,12 +84,10 @@ export default function TestResults({ testCases, testResult }) {
     );
   }
 
-  // Handle direct testCases format (legacy support if needed)
   if (!testCases || testCases.length === 0) {
     return null;
   }
 
-  // Determine grid columns (1-3 max)
   const columnCount = Math.min(testCases.length, 3);
 
   return (
@@ -101,7 +95,7 @@ export default function TestResults({ testCases, testResult }) {
       display: 'grid',
       gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
       gap: '12px',
-      marginTop: '24px'
+      marginTop: '12px'
     }}>
       {testCases.map((testCase, i) => (
         <TestCase key={i} {...testCase} />

@@ -9,7 +9,14 @@ function ???() {
 
 ???();
 ```
-<!-- "glopp" -->
+<!-- "beep" -->
+
+```js
+function doublee(n) {
+  return n * ???; // Fill in the ??? to double the input
+}
+```
+<!-- { "3":6, "1":2, "8":16 } -->
 
 !!NOTE TO SELF!!: if the student messes with the code, respond with a message about importance of the name actually describing the function and not just being a random word. Note that in real life nothing would stop him from doing it wrong.
 
