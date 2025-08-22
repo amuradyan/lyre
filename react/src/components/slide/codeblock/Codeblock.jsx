@@ -6,7 +6,8 @@ import { executeMarkdownTest } from './tests/runner/TestRunner.js';
 export default function Codeblock({
   code,
   testComment,
-  readOnly = false
+  readOnly = false,
+  onTestStatusChange
 }) {
   const [userCode, setUserCode] = useState(code);
   const [testResults, setTestResults] = useState(null);
@@ -17,6 +18,12 @@ export default function Codeblock({
     if (testComment) {
       const results = executeMarkdownTest(codeToTest, testComment);
       setTestResults(results);
+
+      // Report test status to parent if callback exists
+      if (onTestStatusChange) {
+        onTestStatusChange(results.success);
+      }
+
       return results;
     }
     return null;
@@ -32,6 +39,9 @@ export default function Codeblock({
   useEffect(() => {
     if (testComment && code) {
       runTests(code);
+    } else if (onTestStatusChange) {
+      // If no tests, consider it as passing
+      onTestStatusChange(true);
     }
   }, [testComment, code, runTests]);
 

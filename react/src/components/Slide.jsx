@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import Codeblock from './slide/codeblock/Codeblock.jsx';
 
 function joinUrlFs(absPath) {
@@ -129,8 +129,44 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [testStatuses, setTestStatuses] = useState({});
 
   const parsed = useMemo(() => parseMarkdown(content || ''), [content]);
+
+  // Check if all tests are passing
+  const allTestsPassing = useMemo(() => {
+    const codeBlocksWithTests = parsed.codeBlocks?.filter(block => block.testComment) || [];
+
+    // If no tests exist, allow navigation
+    if (codeBlocksWithTests.length === 0) {
+      return true;
+    }
+
+    // Check if we have test results for all code blocks with tests
+    const hasAllResults = codeBlocksWithTests.every((_, index) =>
+      testStatuses[index] !== undefined
+    );
+
+    // If we don't have all results yet, disable the button
+    if (!hasAllResults) {
+      return false;
+    }
+
+    // Check if all tests are passing
+    return codeBlocksWithTests.every((_, index) => testStatuses[index] === true);
+  }, [parsed.codeBlocks, testStatuses]);
+
+  const handleTestStatusChange = useCallback((blockIndex, isPassing) => {
+    setTestStatuses(prev => ({
+      ...prev,
+      [blockIndex]: isPassing
+    }));
+  }, []);
+
+  // Reset test statuses when content changes
+  useEffect(() => {
+    setTestStatuses({});
+  }, [content]);
 
   useEffect(() => {
     let cancelled = false;
@@ -156,7 +192,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   const handleNext = () => {
     const { nextHref } = parsed;
-    if (!nextHref) return;
+    if (!nextHref || !allTestsPassing) return;
     const idx = mdPath.indexOf('/notes/');
     const repoRoot = idx >= 0 ? mdPath.slice(0, idx) : mdPath.substring(0, mdPath.lastIndexOf('/'));
     const mdDir = mdPath.substring(0, mdPath.lastIndexOf('/'));
@@ -212,12 +248,13 @@ export default function SlideExperimental({ initialMarkdownPath }) {
               <p key={i} className="text-gray-700 text-left">{p}</p>
             ))}
           </div>
-          <div className="flex flex-col space-y-18">
+          <div className="flex flex-col space-y-8">
             {parsed.codeBlocks.map((block, i) => (
               <Codeblock
                 key={i}
                 code={block.code}
                 testComment={block.testComment}
+                onTestStatusChange={(isPassing) => handleTestStatusChange(i, isPassing)}
               />
             ))}
           </div>
@@ -245,12 +282,16 @@ export default function SlideExperimental({ initialMarkdownPath }) {
               {parsed.nextHref && (
                 <button
                   onClick={handleNext}
+                  disabled={!allTestsPassing}
                   className="inline-flex items-center font-semibold transition-all duration-200"
                   style={{
                     gap: '8px', padding: '12px 24px',
-                    background: '#2563eb', border: 'none',
-                    color: 'white', fontFamily: 'Nunito, sans-serif',
-                    fontWeight: 600, cursor: 'pointer'
+                    background: allTestsPassing ? '#2563eb' : '#f3f4f6',
+                    border: 'none',
+                    color: allTestsPassing ? 'white' : '#9ca3af',
+                    fontFamily: 'Nunito, sans-serif',
+                    fontWeight: 600,
+                    cursor: allTestsPassing ? 'pointer' : 'not-allowed'
                   }}
                 >
                   {parsed.nextText || 'Next'}
