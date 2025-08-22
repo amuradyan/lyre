@@ -15,3 +15,7 @@ Exercises:
 1. Log `coarseWave().length`.
 2. Add an intermediate value between 1 and 0 near the descent (e.g. 0.5). What does that attempt to improve?
 3. Comment: Why can’t we just always add infinite points?
+
+## Back
+
+- [Describing Functions](notes/Making%20a%20sound/1%20Describing%20Functions.md)
