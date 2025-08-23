@@ -20,6 +20,12 @@ function parseMarkdown(md) {
   let inNext = false;
   let inBack = false;
 
+  const processInlineCode = (text) => {
+    return text.replace(/`([^`]+)`/g, (match, code) => {
+      return `<code class="inline-code">${code}</code>`;
+    });
+  };
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
@@ -30,7 +36,8 @@ function parseMarkdown(md) {
 
     if (!inCode && /^##\s+Next(\s+section)?\s*$/i.test(line.trim())) {
       if (currentPara.length) {
-        paragraphs.push(currentPara.join(' ').trim());
+        const paraText = currentPara.join(' ').trim();
+        paragraphs.push(processInlineCode(paraText));
         currentPara = [];
       }
       inNext = true;
@@ -40,7 +47,8 @@ function parseMarkdown(md) {
 
     if (!inCode && /^##\s+Back(\s+section)?\s*$/i.test(line.trim())) {
       if (currentPara.length) {
-        paragraphs.push(currentPara.join(' ').trim());
+        const paraText = currentPara.join(' ').trim();
+        paragraphs.push(processInlineCode(paraText));
         currentPara = [];
       }
       inBack = true;
@@ -70,11 +78,9 @@ function parseMarkdown(md) {
 
     if (line.startsWith('```')) {
       if (inCode) {
-        // End of code block - look for test comment on next line
         const code = codeBuffer.join('\n');
         let testComment = null;
 
-        // Check if next line has a test comment
         if (i + 1 < lines.length) {
           const nextLine = lines[i + 1].trim();
           if (nextLine.startsWith('<!--') && nextLine.includes('-->')) {
@@ -89,7 +95,8 @@ function parseMarkdown(md) {
       } else {
         inCode = true;
         if (currentPara.length) {
-          paragraphs.push(currentPara.join(' ').trim());
+          const paraText = currentPara.join(' ').trim();
+          paragraphs.push(processInlineCode(paraText));
           currentPara = [];
         }
       }
@@ -103,7 +110,8 @@ function parseMarkdown(md) {
 
     if (/^#/.test(line)) {
       if (currentPara.length) {
-        paragraphs.push(currentPara.join(' ').trim());
+        const paraText = currentPara.join(' ').trim();
+        paragraphs.push(processInlineCode(paraText));
         currentPara = [];
       }
       continue;
@@ -111,7 +119,8 @@ function parseMarkdown(md) {
 
     if (line.trim() === '') {
       if (currentPara.length) {
-        paragraphs.push(currentPara.join(' ').trim());
+        const paraText = currentPara.join(' ').trim();
+        paragraphs.push(processInlineCode(paraText));
         currentPara = [];
       }
     } else {
@@ -119,7 +128,10 @@ function parseMarkdown(md) {
     }
   }
 
-  if (currentPara.length) paragraphs.push(currentPara.join(' ').trim());
+  if (currentPara.length) {
+    const paraText = currentPara.join(' ').trim();
+    paragraphs.push(processInlineCode(paraText));
+  }
 
   return { title, paragraphs, codeBlocks, nextHref, nextText, backHref, backText };
 }
@@ -133,26 +145,21 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   const parsed = useMemo(() => parseMarkdown(content || ''), [content]);
 
-  // Check if all tests are passing
   const allTestsPassing = useMemo(() => {
     const codeBlocksWithTests = parsed.codeBlocks?.filter(block => block.testComment) || [];
 
-    // If no tests exist, allow navigation
     if (codeBlocksWithTests.length === 0) {
       return true;
     }
 
-    // Check if we have test results for all code blocks with tests
     const hasAllResults = codeBlocksWithTests.every((_, index) =>
       testStatuses[index] !== undefined
     );
 
-    // If we don't have all results yet, disable the button
     if (!hasAllResults) {
       return false;
     }
 
-    // Check if all tests are passing
     return codeBlocksWithTests.every((_, index) => testStatuses[index] === true);
   }, [parsed.codeBlocks, testStatuses]);
 
@@ -163,7 +170,6 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }));
   }, []);
 
-  // Reset test statuses when content changes
   useEffect(() => {
     setTestStatuses({});
   }, [content]);
@@ -245,7 +251,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
           )}
           <div className="space-y-6 text-left">
             {parsed.paragraphs.map((p, i) => (
-              <p key={i} className="text-gray-700 text-left">{p}</p>
+              <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: p }} />
             ))}
           </div>
           <div className="flex flex-col space-y-8">

@@ -19,7 +19,6 @@ export default function Codeblock({
       const results = executeMarkdownTest(codeToTest, testComment);
       setTestResults(results);
 
-      // Report test status to parent if callback exists
       if (onTestStatusChange) {
         onTestStatusChange(results.success);
       }
@@ -40,7 +39,6 @@ export default function Codeblock({
     if (testComment && code) {
       runTests(code);
     } else if (onTestStatusChange) {
-      // If no tests, consider it as passing
       onTestStatusChange(true);
     }
   }, [testComment, code, runTests]);
