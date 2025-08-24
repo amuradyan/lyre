@@ -1,4 +1,4 @@
-import Slide from './components/Slide.jsx';
+import Slide from './components/slide/Slide.jsx';
 
 const factorialProblem = {
   title: 'Factorial Calculator',

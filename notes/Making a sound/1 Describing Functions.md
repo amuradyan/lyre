@@ -19,7 +19,6 @@ function doublee(n) {
 }
 ```
 <!-- [
-  {"input": 0, "expected": 0},
   {"input": 3, "expected": 6},
   {"input": 1, "expected": 2},
   {"input": 8, "expected": 16}

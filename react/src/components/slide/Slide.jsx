@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
-import Codeblock from './slide/codeblock/Codeblock.jsx';
+import Codeblock from './codeblock/Codeblock.jsx';
 
 function joinUrlFs(path) {
   if (path.startsWith('/')) {
