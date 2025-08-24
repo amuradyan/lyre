@@ -11,12 +11,15 @@ function ???() {
 ```
 <!-- {"expected": "beep"} -->
 
+!!NOTE TO SELF!!: if the student messes with the code, respond with a message about importance of the name actually describing the function and not just being a random word. Note that in real life nothing would stop him from doing it wrong.
+
 ```js
 function doublee(n) {
   return n * ???; // Fill in the ??? to double the input
 }
 ```
 <!-- [
+  {"input": 0, "expected": 0},
   {"input": 3, "expected": 6},
   {"input": 1, "expected": 2},
   {"input": 8, "expected": 16}
@@ -28,8 +31,6 @@ function pnduk() {
 }
 ```
 <!-- {"expected": [1, 2, 3]} -->
-
-!!NOTE TO SELF!!: if the student messes with the code, respond with a message about importance of the name actually describing the function and not just being a random word. Note that in real life nothing would stop him from doing it wrong.
 
 Note the `()` after the name: it means "call this function". Calling `beep()` gives back data. This is very helpful because we will be doing a lot of manipulations with data.
 

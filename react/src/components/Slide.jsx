@@ -15,8 +15,7 @@ function parseMarkdown(md) {
   let title = '';
   let inCode = false;
   let currentPara = [];
-  const paragraphs = [];
-  const codeBlocks = [];
+  const content = [];
   let codeBuffer = [];
   let nextHref = null;
   let nextText = null;
@@ -31,6 +30,17 @@ function parseMarkdown(md) {
     });
   };
 
+  const flushParagraph = () => {
+    if (currentPara.length) {
+      const paraText = currentPara.join(' ').trim();
+      content.push({
+        type: 'paragraph',
+        content: processInlineCode(paraText)
+      });
+      currentPara = [];
+    }
+  };
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
@@ -40,22 +50,14 @@ function parseMarkdown(md) {
     }
 
     if (!inCode && /^##\s+Next(\s+section)?\s*$/i.test(line.trim())) {
-      if (currentPara.length) {
-        const paraText = currentPara.join(' ').trim();
-        paragraphs.push(processInlineCode(paraText));
-        currentPara = [];
-      }
+      flushParagraph();
       inNext = true;
       inBack = false;
       continue;
     }
 
     if (!inCode && /^##\s+Back(\s+section)?\s*$/i.test(line.trim())) {
-      if (currentPara.length) {
-        const paraText = currentPara.join(' ').trim();
-        paragraphs.push(processInlineCode(paraText));
-        currentPara = [];
-      }
+      flushParagraph();
       inBack = true;
       inNext = false;
       continue;
@@ -119,16 +121,16 @@ function parseMarkdown(md) {
           }
         }
 
-        codeBlocks.push({ code, testComment });
+        content.push({
+          type: 'codeblock',
+          code,
+          testComment
+        });
         codeBuffer = [];
         inCode = false;
       } else {
+        flushParagraph();
         inCode = true;
-        if (currentPara.length) {
-          const paraText = currentPara.join(' ').trim();
-          paragraphs.push(processInlineCode(paraText));
-          currentPara = [];
-        }
       }
       continue;
     }
@@ -139,31 +141,20 @@ function parseMarkdown(md) {
     }
 
     if (/^#/.test(line)) {
-      if (currentPara.length) {
-        const paraText = currentPara.join(' ').trim();
-        paragraphs.push(processInlineCode(paraText));
-        currentPara = [];
-      }
+      flushParagraph();
       continue;
     }
 
     if (line.trim() === '') {
-      if (currentPara.length) {
-        const paraText = currentPara.join(' ').trim();
-        paragraphs.push(processInlineCode(paraText));
-        currentPara = [];
-      }
+      flushParagraph();
     } else {
       currentPara.push(line.trim());
     }
   }
 
-  if (currentPara.length) {
-    const paraText = currentPara.join(' ').trim();
-    paragraphs.push(processInlineCode(paraText));
-  }
+  flushParagraph();
 
-  return { title, paragraphs, codeBlocks, nextHref, nextText, backHref, backText };
+  return { title, content, nextHref, nextText, backHref, backText };
 }
 
 export default function SlideExperimental({ initialMarkdownPath }) {
@@ -176,7 +167,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   const parsed = useMemo(() => parseMarkdown(content || ''), [content]);
 
   const allTestsPassing = useMemo(() => {
-    const codeBlocksWithTests = parsed.codeBlocks?.filter(block => block.testComment) || [];
+    const codeBlocksWithTests = parsed.content?.filter(block => block.type === 'codeblock' && block.testComment) || [];
 
     if (codeBlocksWithTests.length === 0) {
       return true;
@@ -191,7 +182,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }
 
     return codeBlocksWithTests.every((_, index) => testStatuses[index] === true);
-  }, [parsed.codeBlocks, testStatuses]);
+  }, [parsed.content, testStatuses]);
 
   const handleTestStatusChange = useCallback((blockIndex, isPassing) => {
     setTestStatuses(prev => ({
@@ -280,19 +271,21 @@ export default function SlideExperimental({ initialMarkdownPath }) {
             <h1 className="text-3xl font-bold text-left">{parsed.title}</h1>
           )}
           <div className="space-y-6 text-left">
-            {parsed.paragraphs.map((p, i) => (
-              <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: p }} />
-            ))}
-          </div>
-          <div className="flex flex-col space-y-8">
-            {parsed.codeBlocks.map((block, i) => (
-              <Codeblock
-                key={i}
-                code={block.code}
-                testComment={block.testComment}
-                onTestStatusChange={(isPassing) => handleTestStatusChange(i, isPassing)}
-              />
-            ))}
+            {parsed.content.map((item, i) => {
+              if (item.type === 'paragraph') {
+                return <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: item.content }} />;
+              } else if (item.type === 'codeblock') {
+                return (
+                  <Codeblock
+                    key={i}
+                    code={item.code}
+                    testComment={item.testComment}
+                    onTestStatusChange={(isPassing) => handleTestStatusChange(i, isPassing)}
+                  />
+                );
+              }
+              return null;
+            })}
           </div>
           {(parsed.backHref || parsed.nextHref) && (
             <div className="flex justify-between" style={{ marginTop: '48px' }}>
