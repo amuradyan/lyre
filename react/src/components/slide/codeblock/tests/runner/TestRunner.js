@@ -43,8 +43,8 @@ export function evaluateCode(code) {
 
 /**
  * Parse test value from HTML comment
- * <!-- "beep!" --> becomes "beep!"
- * <!-- {2:"a"} --> becomes {2:"a"}
+ * <!-- "beep!" --> becomes "beep!" (for value tests)
+ * <!-- [{"input": [1,2,3], "expected": 3}] --> becomes array format (for function tests)
  * @param {string} comment - HTML comment string
  * @returns {any|null} - Parsed JSON value or null if invalid
  */
@@ -59,7 +59,8 @@ export function parseTestComment(comment) {
 
     if (!content) return null;
 
-    return JSON.parse(content);
+    const parsed = JSON.parse(content);
+    return parsed;
   } catch (error) {
     console.warn('Failed to parse test comment:', comment, error);
     return null;
@@ -100,7 +101,7 @@ function deepEqual(a, b) {
 /**
  * Run tests based on the evaluation result and test specification
  * @param {Object} evaluationResult - Result from evaluateCode
- * @param {any} testSpec - Expected value or test object from comment
+ * @param {any} testSpec - Expected value object {"expected": value} or array of test cases (for functions)
  * @returns {Object} - Test results with success/failure details
  */
 export function runMarkdownTest(evaluationResult, testSpec) {
@@ -115,27 +116,29 @@ export function runMarkdownTest(evaluationResult, testSpec) {
   }
 
   if (!evaluationResult.success) {
-    if (typeof testSpec === 'object' && testSpec !== null && !Array.isArray(testSpec)) {
-      const results = [];
-      for (const [input, expected] of Object.entries(testSpec)) {
-        let parsedInput = input;
-        const numInput = Number(input);
-        if (!isNaN(numInput) && isFinite(numInput) && numInput.toString() === input) {
-          parsedInput = numInput;
-        }
-
-        results.push({
-          input: parsedInput,
-          expected,
-          actual: '?',
-          passed: false
-        });
-      }
+    if (Array.isArray(testSpec)) {
+      const results = testSpec.map(testCase => ({
+        input: testCase.input,
+        expected: testCase.expected,
+        actual: '?',
+        passed: false
+      }));
 
       return {
         success: false,
         type: 'function',
         results
+      };
+    }
+    else if (typeof testSpec === 'object' && testSpec !== null && testSpec.hasOwnProperty('expected')) {
+      return {
+        success: false,
+        type: 'value',
+        results: [{
+          expected: testSpec.expected,
+          actual: '?',
+          passed: false
+        }]
       };
     } else {
       return {
@@ -151,61 +154,105 @@ export function runMarkdownTest(evaluationResult, testSpec) {
   }
 
   if (typeof result === 'function') {
-    if (typeof testSpec !== 'object' || testSpec === null || Array.isArray(testSpec)) {
-      return {
-        success: false,
-        error: 'Function tests require an object with input->expected mappings',
-        results: []
-      };
-    }
-
-    const results = [];
-    let allPassed = true;
-
-    for (const [input, expected] of Object.entries(testSpec)) {
+    if (typeof testSpec === 'object' && testSpec !== null && testSpec.hasOwnProperty('expected') && !Array.isArray(testSpec)) {
       try {
-        let parsedInput = input;
-        const numInput = Number(input);
-        if (!isNaN(numInput) && isFinite(numInput) && numInput.toString() === input) {
-          parsedInput = numInput;
-        }
+        const actual = result();
+        const passed = deepEqual(actual, testSpec.expected);
 
-        const actual = result(parsedInput);
-        const passed = deepEqual(actual, expected);
-
-        results.push({
-          input: parsedInput,
-          expected,
-          actual,
-          passed
-        });
-
-        if (!passed) allPassed = false;
+        return {
+          success: passed,
+          type: 'function',
+          results: [{
+            input: undefined,
+            expected: testSpec.expected,
+            actual,
+            passed
+          }]
+        };
       } catch (error) {
-        results.push({
-          input: parsedInput,
-          expected,
-          actual: null,
-          passed: false,
-          error: error.message
-        });
-        allPassed = false;
+        return {
+          success: false,
+          type: 'function',
+          results: [{
+            input: undefined,
+            expected: testSpec.expected,
+            actual: null,
+            passed: false,
+            error: error.message
+          }]
+        };
       }
     }
 
-    return {
-      success: allPassed,
-      type: 'function',
-      results
-    };
+    if (Array.isArray(testSpec)) {
+      const results = [];
+      let allPassed = true;
+
+      for (const testCase of testSpec) {
+        if (!testCase.hasOwnProperty('input') || !testCase.hasOwnProperty('expected')) {
+          results.push({
+            input: testCase.input || 'undefined',
+            expected: testCase.expected || 'undefined',
+            actual: null,
+            passed: false,
+            error: 'Test case must have "input" and "expected" properties'
+          });
+          allPassed = false;
+          continue;
+        }
+
+        try {
+          const actual = result(testCase.input);
+          const passed = deepEqual(actual, testCase.expected);
+
+          results.push({
+            input: testCase.input,
+            expected: testCase.expected,
+            actual,
+            passed
+          });
+
+          if (!passed) allPassed = false;
+        } catch (error) {
+          results.push({
+            input: testCase.input,
+            expected: testCase.expected,
+            actual: null,
+            passed: false,
+            error: error.message
+          });
+          allPassed = false;
+        }
+      }
+
+      return {
+        success: allPassed,
+        type: 'function',
+        results
+      };
+    } else {
+      return {
+        success: false,
+        error: 'Function tests require either an array of test cases with {input, expected} format or a simple {expected} format for parameterless functions',
+        results: []
+      };
+    }
   } else {
-    const passed = deepEqual(result, testSpec);
+    let expectedValue;
+
+    if (typeof testSpec === 'object' && testSpec !== null && testSpec.hasOwnProperty('expected')) {
+      expectedValue = testSpec.expected;
+    } else {
+      expectedValue = testSpec;
+    }
+
+    const passed = deepEqual(result, expectedValue);
 
     return {
       success: passed,
       type: 'value',
       results: [{
-        expected: testSpec,
+        expected: expectedValue,
         actual: result,
         passed
       }]

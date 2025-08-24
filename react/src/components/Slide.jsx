@@ -87,10 +87,35 @@ function parseMarkdown(md) {
         let testComment = null;
 
         if (i + 1 < lines.length) {
-          const nextLine = lines[i + 1].trim();
-          if (nextLine.startsWith('<!--') && nextLine.includes('-->')) {
-            testComment = nextLine;
-            i++; // Skip the test comment line in main parsing
+          let commentLines = [];
+          let j = i + 1;
+          let foundStart = false;
+          let foundEnd = false;
+
+          while (j < lines.length && !foundEnd) {
+            const currentLine = lines[j].trim();
+
+            if (!foundStart && currentLine.startsWith('<!--')) {
+              foundStart = true;
+              commentLines.push(lines[j]);
+              if (currentLine.includes('-->')) {
+                foundEnd = true;
+              }
+            } else if (foundStart && !foundEnd) {
+              commentLines.push(lines[j]);
+              if (currentLine.includes('-->')) {
+                foundEnd = true;
+              }
+            } else if (!foundStart && currentLine !== '') {
+              break;
+            }
+
+            j++;
+          }
+
+          if (foundStart && foundEnd) {
+            testComment = commentLines.join('\n');
+            i = j - 1;
           }
         }
 
