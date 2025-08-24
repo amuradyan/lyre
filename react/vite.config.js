@@ -14,5 +14,8 @@ export default defineConfig({
     fs: {
       allow: [WORKSPACE_ROOT]
     }
+  },
+  define: {
+    __WORKSPACE_ROOT__: JSON.stringify(WORKSPACE_ROOT)
   }
 });

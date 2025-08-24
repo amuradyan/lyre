@@ -28,7 +28,7 @@ export default function App() {
   return (
     <div className="font-sans bg-gray-100 text-gray-900 p-8">
       <div className="max-w-3xl mx-auto">
-        <Slide initialMarkdownPath="/home/spectrum/playground/lyre/notes/Making a sound/0 Describing Sound.md" />
+        <Slide initialMarkdownPath="../notes/Making a sound/0 Describing Sound.md" />
       </div>
     </div>
   );

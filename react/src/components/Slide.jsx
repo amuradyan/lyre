@@ -1,8 +1,13 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import Codeblock from './slide/codeblock/Codeblock.jsx';
 
-function joinUrlFs(absPath) {
-  return encodeURI(`/@fs${absPath}`);
+function joinUrlFs(path) {
+  if (path.startsWith('/')) {
+    return encodeURI(`/@fs${path}`);
+  }
+
+  const absolutePath = `${__WORKSPACE_ROOT__}/${path.replace(/^\.\.\//, '')}`;
+  return encodeURI(`/@fs${absolutePath}`);
 }
 
 function parseMarkdown(md) {
