@@ -275,12 +275,15 @@ export default function SlideExperimental({ initialMarkdownPath }) {
               if (item.type === 'paragraph') {
                 return <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: item.content }} />;
               } else if (item.type === 'codeblock') {
+                const codeBlocksWithTests = parsed.content.filter(block => block.type === 'codeblock' && block.testComment);
+                const testBlockIndex = codeBlocksWithTests.findIndex(block => block === item);
+
                 return (
                   <Codeblock
                     key={i}
                     code={item.code}
                     testComment={item.testComment}
-                    onTestStatusChange={(isPassing) => handleTestStatusChange(i, isPassing)}
+                    onTestStatusChange={(isPassing) => handleTestStatusChange(testBlockIndex, isPassing)}
                   />
                 );
               }
