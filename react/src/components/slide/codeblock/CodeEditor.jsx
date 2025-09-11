@@ -10,7 +10,11 @@ export default function CodeEditor({ value, onChange, readOnly = false }) {
     monaco.editor.defineTheme('lyreTheme', {
       base: 'vs',
       inherit: true,
-      rules: [],
+      rules: [
+        { token: 'comment', foreground: '6a737d' },
+        { token: 'comment.line.double-slash', foreground: '6a737d' },
+        { token: 'comment.block', foreground: '6a737d' }
+      ],
       colors: { 'editor.background': '#f6f8fa' }
     });
     monaco.editor.setTheme('lyreTheme');
