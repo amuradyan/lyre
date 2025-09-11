@@ -2,14 +2,18 @@ import { useState, useCallback, useEffect } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import TestResults from './tests/TestResults.jsx';
 import { executeMarkdownTest } from './tests/runner/TestRunner.js';
+import { saveCodeBlock } from '../../../utils/slideStorage.js';
 
 export default function Codeblock({
   code,
+  savedCode,
+  slideId,
+  blockIndex,
   testComment,
   readOnly = false,
   onTestStatusChange
 }) {
-  const [userCode, setUserCode] = useState(code);
+  const [userCode, setUserCode] = useState(savedCode || code);
   const [testResults, setTestResults] = useState(null);
 
   const hasTests = !!testComment;
@@ -23,10 +27,14 @@ export default function Codeblock({
         onTestStatusChange(results.success);
       }
 
+      if (results.success && slideId !== undefined && blockIndex !== undefined) {
+        saveCodeBlock(slideId, blockIndex, codeToTest);
+      }
+
       return results;
     }
     return null;
-  }, [testComment]);
+  }, [testComment, slideId, blockIndex]);
 
   const handleCodeChange = (newCode) => {
     setUserCode(newCode);
@@ -36,12 +44,17 @@ export default function Codeblock({
   };
 
   useEffect(() => {
-    if (testComment && code) {
-      runTests(code);
+    const initialCode = savedCode || code;
+    if (testComment && initialCode) {
+      runTests(initialCode);
     } else if (onTestStatusChange) {
       onTestStatusChange(true);
     }
-  }, [testComment, code, runTests]);
+  }, [testComment, savedCode, code, runTests]);
+
+  useEffect(() => {
+    setUserCode(savedCode || code);
+  }, [savedCode, code]);
 
   return (
     <div style={{ marginTop: '2vh' }}>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import Codeblock from './codeblock/Codeblock.jsx';
+import { loadCodeBlock } from '../../utils/slideStorage.js';
 
 function joinUrlFs(path) {
   if (path.startsWith('/')) {
@@ -13,6 +14,7 @@ function joinUrlFs(path) {
 function parseMarkdown(md) {
   const lines = md.replace(/\r\n?/g, '\n').split('\n');
   let title = '';
+  let slideId = null;
   let inCode = false;
   let currentPara = [];
   const content = [];
@@ -46,6 +48,14 @@ function parseMarkdown(md) {
 
     if (!inCode && line.startsWith('# ')) {
       if (!title) title = line.replace(/^#\s+/, '').trim();
+      continue;
+    }
+
+    if (!inCode && line.trim().startsWith('<!-- slide-id:')) {
+      const match = line.match(/<!--\s*slide-id:\s*([a-f0-9-]+)\s*-->/i);
+      if (match) {
+        slideId = match[1].trim();
+      }
       continue;
     }
 
@@ -154,7 +164,7 @@ function parseMarkdown(md) {
 
   flushParagraph();
 
-  return { title, content, nextHref, nextText, backHref, backText };
+  return { title, slideId, content, nextHref, nextText, backHref, backText };
 }
 
 export default function SlideExperimental({ initialMarkdownPath }) {
@@ -278,10 +288,15 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                 const codeBlocksWithTests = parsed.content.filter(block => block.type === 'codeblock' && block.testComment);
                 const testBlockIndex = codeBlocksWithTests.findIndex(block => block === item);
 
+                const savedCode = parsed.slideId ? loadCodeBlock(parsed.slideId, i) : null;
+
                 return (
                   <Codeblock
                     key={i}
                     code={item.code}
+                    savedCode={savedCode}
+                    slideId={parsed.slideId}
+                    blockIndex={i}
                     testComment={item.testComment}
                     onTestStatusChange={(isPassing) => handleTestStatusChange(testBlockIndex, isPassing)}
                   />
