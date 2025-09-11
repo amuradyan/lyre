@@ -1,4 +1,5 @@
 # Motion Becomes a List (Arrays)
+<!-- slide-id: c3d4e5f6-a7b8-9012-cdef-345678901234 -->
 
 A wave is motion through time. To model motion we first capture a crude cycle manually: positions rising, peaking, falling, resting. We only care about one dimension (height), so a simple list works.
 
