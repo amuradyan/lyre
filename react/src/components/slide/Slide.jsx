@@ -173,6 +173,64 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [testStatuses, setTestStatuses] = useState({});
+  const [slugToPathMap, setSlugToPathMap] = useState({});
+
+  const pathToSlug = (path) => {
+    const filename = path.split('/').pop();
+    const nameWithoutExt = filename.replace(/\.md$/, '');
+    const nameWithoutNumber = nameWithoutExt.replace(/^\d+\s+/, '');
+    return nameWithoutNumber
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+  };
+
+  const updateUrl = (path) => {
+    const slug = pathToSlug(path);
+    setSlugToPathMap(prev => ({ ...prev, [slug]: path }));
+    const hash = '#' + slug;
+    window.history.pushState({ slidePath: path }, '', hash);
+  };
+
+  const handleBrowserNavigation = useCallback((event) => {
+    if (event.state && event.state.slidePath) {
+      setMdPath(event.state.slidePath);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (window.location.hash) {
+      const slug = window.location.hash.slice(1);
+      if (slugToPathMap[slug]) {
+        setMdPath(slugToPathMap[slug]);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  }, [slugToPathMap]);
+
+  useEffect(() => {
+    window.addEventListener('popstate', handleBrowserNavigation);
+    return () => {
+      window.removeEventListener('popstate', handleBrowserNavigation);
+    };
+  }, [handleBrowserNavigation]);
+
+  useEffect(() => {
+    if (window.location.hash) {
+      const slug = window.location.hash.slice(1);
+      if (slugToPathMap[slug]) {
+        setMdPath(slugToPathMap[slug]);
+      }
+    } else if (mdPath) {
+      updateUrl(mdPath);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (mdPath) {
+      const slug = pathToSlug(mdPath);
+      setSlugToPathMap(prev => ({ ...prev, [slug]: mdPath }));
+    }
+  }, [mdPath]);
 
   const parsed = useMemo(() => parseMarkdown(content || ''), [content]);
 
@@ -246,6 +304,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }
 
     setMdPath(nextAbs);
+    updateUrl(nextAbs);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -268,6 +327,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }
 
     setMdPath(backAbs);
+    updateUrl(backAbs);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
