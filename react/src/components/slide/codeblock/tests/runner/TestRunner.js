@@ -13,35 +13,35 @@ const tryEvaluate = (code) => {
   }
 };
 
-const evaluateFunctionByName = (functionName) => 
+const evaluateFunctionByName = (functionName) =>
   tryEvaluate(functionName);
 
-const evaluateFunctionWithReturn = (code, functionName) => 
+const evaluateFunctionWithReturn = (code, functionName) =>
   tryEvaluate(`(function() { ${code}\nreturn ${functionName}; })()`);
 
 const handleUndefinedResult = (code) => {
   const functionName = extractFunctionName(code);
   if (!functionName) return createResult(true, undefined);
-  
+
   const directEval = evaluateFunctionByName(functionName);
-  return directEval.success 
+  return directEval.success
     ? createResult(true, directEval.result)
     : (() => {
-        const withReturn = evaluateFunctionWithReturn(code, functionName);
-        return withReturn.success 
-          ? createResult(true, withReturn.result)
-          : createResult(false, null, withReturn.error);
-      })();
+      const withReturn = evaluateFunctionWithReturn(code, functionName);
+      return withReturn.success
+        ? createResult(true, withReturn.result)
+        : createResult(false, null, withReturn.error);
+    })();
 };
 
 export const evaluateCode = (code) => {
   const initialEval = tryEvaluate(code);
-  
+
   if (!initialEval.success) {
     return createResult(false, null, initialEval.error);
   }
-  
-  return initialEval.result === undefined 
+
+  return initialEval.result === undefined
     ? handleUndefinedResult(code)
     : createResult(true, initialEval.result);
 };
@@ -63,7 +63,7 @@ const safeJsonParse = (content) => {
 
 export const parseTestComment = (comment) => {
   if (!comment) return null;
-  
+
   const content = cleanCommentContent(comment);
   return content ? safeJsonParse(content) : null;
 };
@@ -74,24 +74,24 @@ const areArraysEqual = (a, b) =>
 const areObjectsEqual = (a, b) => {
   const keysA = Object.keys(a);
   const keysB = Object.keys(b);
-  
+
   return keysA.length === keysB.length &&
-         keysA.every(key => keysB.includes(key) && deepEqual(a[key], b[key]));
+    keysA.every(key => keysB.includes(key) && deepEqual(a[key], b[key]));
 };
 
 const deepEqual = (a, b) => {
   if (a === b) return true;
   if (a == null || b == null) return a === b;
   if (typeof a !== typeof b) return false;
-  
+
   if (Array.isArray(a) && Array.isArray(b)) {
     return areArraysEqual(a, b);
   }
-  
+
   if (typeof a === 'object' && typeof b === 'object') {
     return areObjectsEqual(a, b);
   }
-  
+
   return false;
 };
 
@@ -118,24 +118,24 @@ const createPassedResult = (input, expected, actual) => ({
   passed: deepEqual(actual, expected)
 });
 
-const handleNoTestSpec = () => 
+const handleNoTestSpec = () =>
   createTestResult(true, 'value', [], null, 'No test specified');
 
 const handleFailedEvaluation = (testSpec) => {
   if (Array.isArray(testSpec)) {
-    const results = testSpec.map(testCase => 
+    const results = testSpec.map(testCase =>
       createFailedResult(testCase.input, testCase.expected)
     );
     return createTestResult(false, 'function', results);
   }
-  
-  const isObjectWithExpected = typeof testSpec === 'object' && 
-                              testSpec !== null && 
-                              testSpec.hasOwnProperty('expected');
-  
+
+  const isObjectWithExpected = typeof testSpec === 'object' &&
+    testSpec !== null &&
+    testSpec.hasOwnProperty('expected');
+
   const expected = isObjectWithExpected ? testSpec.expected : testSpec;
   const results = [createFailedResult(undefined, expected)];
-  
+
   return createTestResult(false, 'value', results);
 };
 
@@ -157,9 +157,9 @@ const executeParameterlessFunction = (fn, testSpec) => {
 };
 
 const executeTestCase = (fn, testCase) => {
-  const hasRequiredProperties = testCase.hasOwnProperty('input') && 
-                               testCase.hasOwnProperty('expected');
-  
+  const hasRequiredProperties = testCase.hasOwnProperty('input') &&
+    testCase.hasOwnProperty('expected');
+
   if (!hasRequiredProperties) {
     return createFailedResult(
       testCase.input || 'undefined',
@@ -167,7 +167,7 @@ const executeTestCase = (fn, testCase) => {
       'Test case must have "input" and "expected" properties'
     );
   }
-  
+
   try {
     const actual = fn(testCase.input);
     return createPassedResult(testCase.input, testCase.expected, actual);
@@ -183,43 +183,43 @@ const executeTestCase = (fn, testCase) => {
 };
 
 const executeFunctionTests = (fn, testSpec) => {
-  const isParameterlessTest = typeof testSpec === 'object' && 
-                             testSpec !== null && 
-                             testSpec.hasOwnProperty('expected') && 
-                             !Array.isArray(testSpec);
-  
+  const isParameterlessTest = typeof testSpec === 'object' &&
+    testSpec !== null &&
+    testSpec.hasOwnProperty('expected') &&
+    !Array.isArray(testSpec);
+
   if (isParameterlessTest) {
     return executeParameterlessFunction(fn, testSpec);
   }
-  
+
   if (Array.isArray(testSpec)) {
     const results = testSpec.map(testCase => executeTestCase(fn, testCase));
     const allPassed = results.every(result => result.passed);
     return createTestResult(allPassed, 'function', results);
   }
-  
+
   return createTestResult(
-    false, 
-    'function', 
-    [], 
+    false,
+    'function',
+    [],
     'Function tests require either an array of test cases with {input, expected} format or a simple {expected} format for parameterless functions'
   );
 };
 
 const executeValueTest = (result, testSpec) => {
-  const expectedValue = typeof testSpec === 'object' && 
-                       testSpec !== null && 
-                       testSpec.hasOwnProperty('expected') 
-    ? testSpec.expected 
+  const expectedValue = typeof testSpec === 'object' &&
+    testSpec !== null &&
+    testSpec.hasOwnProperty('expected')
+    ? testSpec.expected
     : testSpec;
-  
+
   const passed = deepEqual(result, expectedValue);
   const testResult = {
     expected: expectedValue,
     actual: result,
     passed
   };
-  
+
   return createTestResult(passed, 'value', [testResult]);
 };
 
@@ -227,13 +227,13 @@ export const runMarkdownTest = (evaluationResult, testSpec) => {
   if (testSpec === null || testSpec === undefined) {
     return handleNoTestSpec();
   }
-  
+
   if (!evaluationResult.success) {
     return handleFailedEvaluation(testSpec);
   }
-  
+
   const { result } = evaluationResult;
-  
+
   return typeof result === 'function'
     ? executeFunctionTests(result, testSpec)
     : executeValueTest(result, testSpec);
