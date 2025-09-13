@@ -1,13 +1,3 @@
-/**
- * Test runner for markdown code blocks with inline test comments
- * Format: <!-- "value" --> or <!-- {2:"a"} -->
- */
-
-/**
- * Safely evaluate JavaScript code and return the result
- * @param {string} code - JavaScript code to evaluate
- * @returns {Object} - {success: boolean, result: any, error: string|null}
- */
 export function evaluateCode(code) {
   try {
     let result = eval(code);
@@ -41,13 +31,6 @@ export function evaluateCode(code) {
   }
 }
 
-/**
- * Parse test value from HTML comment
- * <!-- "beep!" --> becomes "beep!" (for value tests)
- * <!-- [{"input": [1,2,3], "expected": 3}] --> becomes array format (for function tests)
- * @param {string} comment - HTML comment string
- * @returns {any|null} - Parsed JSON value or null if invalid
- */
 export function parseTestComment(comment) {
   if (!comment) return null;
 
@@ -67,9 +50,6 @@ export function parseTestComment(comment) {
   }
 }
 
-/**
- * Deep equality check for comparing values including arrays and objects
- */
 function deepEqual(a, b) {
   if (a === b) return true;
 
@@ -98,12 +78,6 @@ function deepEqual(a, b) {
   return false;
 }
 
-/**
- * Run tests based on the evaluation result and test specification
- * @param {Object} evaluationResult - Result from evaluateCode
- * @param {any} testSpec - Expected value object {"expected": value} or array of test cases (for functions)
- * @returns {Object} - Test results with success/failure details
- */
 export function runMarkdownTest(evaluationResult, testSpec) {
   const { result } = evaluationResult;
 
@@ -260,12 +234,6 @@ export function runMarkdownTest(evaluationResult, testSpec) {
   }
 }
 
-/**
- * Complete test execution pipeline
- * @param {string} code - JavaScript code to evaluate
- * @param {string} testComment - HTML comment with test specification
- * @returns {Object} - Complete test results
- */
 export function executeMarkdownTest(code, testComment) {
   const evaluationResult = evaluateCode(code);
   const testSpec = parseTestComment(testComment);
