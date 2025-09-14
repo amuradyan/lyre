@@ -5,7 +5,7 @@ import { dirname, resolve } from 'node:path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const WORKSPACE_ROOT = resolve(__dirname, '..');
+const WORKSPACE_ROOT = __dirname;
 
 export default defineConfig({
   plugins: [react()],
