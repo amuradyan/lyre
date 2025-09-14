@@ -4,6 +4,24 @@ This repository accompanies a course on implementing a programming language from
 
 For the looks and the mechanics of our language, we'll draw inspiration from an old and powerful family of programming languages - the LISPs, and we'll use JS to actually build and use the tool. We won't get into details with any of these languages, and, I hope, you'll be surprised to learn how far one can go in their experiments relying on a few fundamental ideas.
 
+Here'show one might write the "Twinkle Twinkle Little Star" song in Lyre:
+
+```lisp
+(sequence
+  (silence 500)
+
+  ;  Twin-            kle,          twin-         kle,
+  (tone C4 500) (tone C4 500) (tone G4 500) (tone G4 500)
+  ;  Lit-             tle           star
+  (tone A4 500) (tone A4 500) (tone G4 1000)
+  ;  How              I             won-          der
+  (tone F4 500) (tone F4 500) (tone E4 500) (tone E4 500)
+  ;  what             you           are
+  (tone D4 500) (tone D4 500) (tone C4 1000)
+
+  (silence 500)
+```
+
 Starting from a single note, we'll then explore the ways of combining them, changing our system piece by piece, to be able to write more complex pieces. From there we shall look into the repetitive nature of music and the ability to name certain passages in a piece.
 
 Lyre is the tool, that we'll be working on through the course. It is a lisp-like language for writing music. Below is the epic intro from Beethoven's 5th symphony in it:
