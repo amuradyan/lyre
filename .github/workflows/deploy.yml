@@ -1,0 +1,34 @@
+name: Deploy Lyre
+
+on:
+  push:
+    branches:
+      - zero
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Set up SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to Amazon Server
+        run: |
+          scp -r -o StrictHostKeyChecking=no dist/* ${{ secrets.USERNAME }}@${{ secrets.REMOTE_HOST }}:/var/www/lyre/
