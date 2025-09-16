@@ -46,11 +46,20 @@ export default function Codeblock({
   useEffect(() => {
     const initialCode = savedCode || code;
     if (testComment && initialCode) {
-      runTests(initialCode);
+      const results = executeMarkdownTest(initialCode, testComment);
+      setTestResults(results);
+      
+      if (onTestStatusChange) {
+        onTestStatusChange(results.success);
+      }
+      
+      if (results.success && slideId !== undefined && blockIndex !== undefined) {
+        saveCodeBlock(slideId, blockIndex, initialCode);
+      }
     } else if (onTestStatusChange) {
       onTestStatusChange(true);
     }
-  }, [testComment, savedCode, code, runTests]);
+  }, [testComment, savedCode, code, slideId, blockIndex, onTestStatusChange]);
 
   useEffect(() => {
     setUserCode(savedCode || code);
