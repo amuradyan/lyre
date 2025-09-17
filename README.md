@@ -19,7 +19,7 @@ Here'show one might write the "Twinkle Twinkle Little Star" song in Lyre:
   ;  what             you           are
   (tone D4 500) (tone D4 500) (tone C4 1000)
 
-  (silence 500)
+  (silence 500))
 ```
 
 Starting from a single note, we'll then explore the ways of combining them, changing our system piece by piece, to be able to write more complex pieces. From there we shall look into the repetitive nature of music and the ability to name certain passages in a piece.
