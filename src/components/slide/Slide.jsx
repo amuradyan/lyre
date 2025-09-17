@@ -115,7 +115,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   useEffect(() => {
     setTestStatuses({});
-  }, [content]);
+  }, [mdPath]);
 
   useEffect(() => {
     let cancelled = false;
@@ -195,29 +195,30 @@ export default function SlideExperimental({ initialMarkdownPath }) {
             <h1 className="text-3xl font-bold text-left">{parsed.title}</h1>
           )}
           <div className="space-y-6 text-left">
-            {parsed.content.map((item, i) => {
-              if (item.type === 'paragraph') {
-                return <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: item.content }} />;
-              } else if (item.type === 'codeblock') {
-                const codeBlocksWithTests = parsed.content.filter(block => block.type === 'codeblock' && block.testComment);
-                const testBlockIndex = codeBlocksWithTests.findIndex(block => block === item);
+            {(() => {
+              let testBlockCounter = 0;
+              return parsed.content.map((item, i) => {
+                if (item.type === 'paragraph') {
+                  return <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: item.content }} />;
+                } else if (item.type === 'codeblock') {
+                  const testBlockIndex = item.testComment ? testBlockCounter++ : -1;
+                  const savedCode = parsed.slideId ? loadCodeBlock(parsed.slideId, i) : null;
 
-                const savedCode = parsed.slideId ? loadCodeBlock(parsed.slideId, i) : null;
-
-                return (
-                  <Codeblock
-                    key={i}
-                    code={item.code}
-                    savedCode={savedCode}
-                    slideId={parsed.slideId}
-                    blockIndex={i}
-                    testComment={item.testComment}
-                    onTestStatusChange={(isPassing) => handleTestStatusChange(testBlockIndex, isPassing)}
-                  />
-                );
-              }
-              return null;
-            })}
+                  return (
+                    <Codeblock
+                      key={i}
+                      code={item.code}
+                      savedCode={savedCode}
+                      slideId={parsed.slideId}
+                      blockIndex={i}
+                      testComment={item.testComment}
+                      onTestStatusChange={testBlockIndex >= 0 ? (isPassing) => handleTestStatusChange(testBlockIndex, isPassing) : undefined}
+                    />
+                  );
+                }
+                return null;
+              });
+            })()}
           </div>
           {(parsed.backHref || parsed.nextHref) && (
             <div className="flex justify-between" style={{ marginTop: '48px' }}>

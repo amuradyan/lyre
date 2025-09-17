@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import TestResults from './tests/TestResults.jsx';
 import { executeMarkdownTest } from './tests/runner/TestRunner.js';
@@ -15,16 +15,21 @@ export default function Codeblock({
 }) {
   const [userCode, setUserCode] = useState(savedCode || code);
   const [testResults, setTestResults] = useState(null);
+  const onTestStatusChangeRef = useRef(onTestStatusChange);
 
   const hasTests = !!testComment;
+  
+  useEffect(() => {
+    onTestStatusChangeRef.current = onTestStatusChange;
+  }, [onTestStatusChange]);
 
   const runTests = useCallback((codeToTest) => {
     if (testComment) {
       const results = executeMarkdownTest(codeToTest, testComment);
       setTestResults(results);
 
-      if (onTestStatusChange) {
-        onTestStatusChange(results.success);
+      if (onTestStatusChangeRef.current) {
+        onTestStatusChangeRef.current(results.success);
       }
 
       if (results.success && slideId !== undefined && blockIndex !== undefined) {
@@ -48,18 +53,18 @@ export default function Codeblock({
     if (testComment && initialCode) {
       const results = executeMarkdownTest(initialCode, testComment);
       setTestResults(results);
-      
-      if (onTestStatusChange) {
-        onTestStatusChange(results.success);
+
+      if (onTestStatusChangeRef.current) {
+        onTestStatusChangeRef.current(results.success);
       }
-      
+
       if (results.success && slideId !== undefined && blockIndex !== undefined) {
         saveCodeBlock(slideId, blockIndex, initialCode);
       }
-    } else if (onTestStatusChange) {
-      onTestStatusChange(true);
+    } else if (onTestStatusChangeRef.current) {
+      onTestStatusChangeRef.current(true);
     }
-  }, [testComment, savedCode, code, slideId, blockIndex, onTestStatusChange]);
+  }, [testComment, savedCode, code, slideId, blockIndex]);
 
   useEffect(() => {
     setUserCode(savedCode || code);
