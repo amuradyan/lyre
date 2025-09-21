@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import Codeblock from './codeblock/Codeblock.jsx';
 import AudioPlayer from '../AudioPlayer.jsx';
+import StreamingAudioPlayer from '../StreamingAudioPlayer.jsx';
 import { loadCodeBlock } from '../../utils/slideStorage.js';
 import { parseMarkdown } from '../../utils/markdownParser.js';
 
@@ -193,6 +194,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       {!loading && !error && (
         <div className="px-6 sm:px-10 md:px-16">
           <AudioPlayer />
+          <StreamingAudioPlayer />
           {parsed.title && (
             <h1 className="text-3xl font-bold text-left">{parsed.title}</h1>
           )}
