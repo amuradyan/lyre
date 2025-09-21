@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { createAudioContext, loadAndConvertSamples, playAudioBuffer, stopAudioSource } from '../utils/audioPlayer.js';
 
 export default function AudioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -7,28 +8,18 @@ export default function AudioPlayer() {
   const sourceNodeRef = useRef(null);
   const audioBufferRef = useRef(null);
 
-  const createAudioContext = () => {
+  const getAudioContext = () => {
     if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      audioContextRef.current = createAudioContext();
     }
     return audioContextRef.current;
   };
 
-  const loadAndConvertSamples = async () => {
+  const loadSamples = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/samples.json');
-      const samples = await response.json();
-
-      const audioContext = createAudioContext();
-      const sampleRate = 44100;
-      const audioBuffer = audioContext.createBuffer(1, samples.length, sampleRate);
-      const channelData = audioBuffer.getChannelData(0);
-
-      for (let i = 0; i < samples.length; i++) {
-        channelData[i] = samples[i] / 32768.0;
-      }
-
+      const audioContext = getAudioContext();
+      const audioBuffer = await loadAndConvertSamples(audioContext);
       audioBufferRef.current = audioBuffer;
       return audioBuffer;
     } catch (error) {
@@ -41,28 +32,19 @@ export default function AudioPlayer() {
 
   const play = async () => {
     try {
-      const audioContext = createAudioContext();
-
-      if (audioContext.state === 'suspended') {
-        await audioContext.resume();
-      }
+      const audioContext = getAudioContext();
 
       let audioBuffer = audioBufferRef.current;
       if (!audioBuffer) {
-        audioBuffer = await loadAndConvertSamples();
+        audioBuffer = await loadSamples();
       }
 
-      const source = audioContext.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioContext.destination);
-
-      source.onended = () => {
+      const source = await playAudioBuffer(audioContext, audioBuffer, () => {
         setIsPlaying(false);
         sourceNodeRef.current = null;
-      };
+      });
 
       sourceNodeRef.current = source;
-      source.start();
       setIsPlaying(true);
     } catch (error) {
       console.error('Failed to play audio:', error);
@@ -71,10 +53,8 @@ export default function AudioPlayer() {
   };
 
   const stop = () => {
-    if (sourceNodeRef.current) {
-      sourceNodeRef.current.stop();
-      sourceNodeRef.current = null;
-    }
+    stopAudioSource(sourceNodeRef.current);
+    sourceNodeRef.current = null;
     setIsPlaying(false);
   };
 
