@@ -7,7 +7,7 @@ import { parseMarkdown } from '../../utils/markdownParser.js';
 
 function joinUrlFs(path) {
   const isDev = import.meta.env.DEV;
-  
+
   if (isDev) {
     if (path.startsWith('/')) {
       return encodeURI(`/@fs${path}`);
@@ -206,7 +206,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                   return <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: item.content }} />;
                 } else if (item.type === 'codeblock') {
                   const testBlockIndex = item.testComment ? testBlockCounter++ : -1;
-                  const savedCode = parsed.slideId ? loadCodeBlock(parsed.slideId, i) : null;
+                  const savedCode = parsed.slideId ? loadCodeBlock(parsed.slideId, item.code) : null;
 
                   return (
                     <Codeblock

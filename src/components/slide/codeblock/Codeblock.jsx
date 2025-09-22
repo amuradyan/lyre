@@ -13,7 +13,8 @@ export default function Codeblock({
   readOnly = false,
   onTestStatusChange
 }) {
-  const [userCode, setUserCode] = useState(savedCode || code);
+  const initialCode = code;
+  const [userCode, setUserCode] = useState(savedCode || initialCode);
   const [testResults, setTestResults] = useState(null);
   const onTestStatusChangeRef = useRef(onTestStatusChange);
 
@@ -32,8 +33,8 @@ export default function Codeblock({
         onTestStatusChangeRef.current(results.success);
       }
 
-      if (results.success && slideId !== undefined && blockIndex !== undefined) {
-        saveCodeBlock(slideId, blockIndex, codeToTest);
+      if (results.success && slideId !== undefined) {
+        saveCodeBlock(slideId, initialCode, codeToTest);
       }
 
       return results;
@@ -58,8 +59,8 @@ export default function Codeblock({
         onTestStatusChangeRef.current(results.success);
       }
 
-      if (results.success && slideId !== undefined && blockIndex !== undefined) {
-        saveCodeBlock(slideId, blockIndex, initialCode);
+      if (results.success && slideId !== undefined) {
+        saveCodeBlock(slideId, initialCode, initialCode);
       }
     } else if (onTestStatusChangeRef.current) {
       onTestStatusChangeRef.current(true);
@@ -67,8 +68,8 @@ export default function Codeblock({
   }, [testComment, savedCode, code, slideId, blockIndex]);
 
   useEffect(() => {
-    setUserCode(savedCode || code);
-  }, [savedCode, code]);
+    setUserCode(savedCode || initialCode);
+  }, [savedCode, initialCode]);
 
   return (
     <div style={{ marginTop: '2vh' }}>

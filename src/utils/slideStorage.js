@@ -4,6 +4,17 @@ function getSlideKey(slideId) {
   return `${STORAGE_PREFIX}${slideId}`;
 }
 
+function hashContent(content) {
+  let hash = 0;
+  if (content.length === 0) return hash;
+  for (let i = 0; i < content.length; i++) {
+    const char = content.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash).toString(36);
+}
+
 function loadSlideData(slideId) {
   if (!slideId) return null;
 
@@ -17,14 +28,15 @@ function loadSlideData(slideId) {
   }
 }
 
-function saveCodeBlock(slideId, blockIndex, code) {
-  if (!slideId) return;
+function saveCodeBlock(slideId, initialCode, userCode) {
+  if (!slideId || !initialCode) return;
 
   try {
     const key = getSlideKey(slideId);
     let slideData = loadSlideData(slideId) || { codeBlocks: {} };
 
-    slideData.codeBlocks[blockIndex] = code;
+    const contentHash = hashContent(initialCode);
+    slideData.codeBlocks[contentHash] = userCode;
 
     localStorage.setItem(key, JSON.stringify(slideData));
   } catch (error) {
@@ -32,9 +44,12 @@ function saveCodeBlock(slideId, blockIndex, code) {
   }
 }
 
-function loadCodeBlock(slideId, blockIndex) {
+function loadCodeBlock(slideId, initialCode) {
+  if (!slideId || !initialCode) return null;
+  
   const slideData = loadSlideData(slideId);
-  return slideData?.codeBlocks?.[blockIndex] || null;
+  const contentHash = hashContent(initialCode);
+  return slideData?.codeBlocks?.[contentHash] || null;
 }
 
 export {
