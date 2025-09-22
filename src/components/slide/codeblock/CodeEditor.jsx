@@ -19,6 +19,24 @@ export default function CodeEditor({ value, onChange, readOnly = false }) {
     });
     monaco.editor.setTheme('lyreTheme');
 
+    // Custom read-only message
+    if (readOnly) {
+      editor.onDidAttemptReadOnlyEdit(() => {
+        monaco.editor.setModelMarkers(editor.getModel(), 'readonly', [{
+          startLineNumber: 1,
+          startColumn: 1,
+          endLineNumber: 1,
+          endColumn: 1,
+          message: 'This code is not for editing',
+          severity: monaco.MarkerSeverity.Info
+        }]);
+        
+        setTimeout(() => {
+          monaco.editor.setModelMarkers(editor.getModel(), 'readonly', []);
+        }, 2000);
+      });
+    }
+
     const applyHeight = (h) => {
       const next = Math.max(120, Math.ceil(h || 0));
       setHeight(next);

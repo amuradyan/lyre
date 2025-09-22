@@ -75,7 +75,7 @@ export default function Codeblock({
       <CodeEditor
         value={userCode}
         onChange={handleCodeChange}
-        readOnly={readOnly}
+        readOnly={readOnly || !hasTests}
       />
       {hasTests && (
         <TestResults testResult={testResults} />
