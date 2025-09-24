@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { createAudioContext } from '../utils/audioPlayer.js';
-import { createNoteSequence } from '../../lyre/audio.js';
+import { createNoteSequence } from '../lyre/audio.js';
 
 export default function StreamingAudioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);

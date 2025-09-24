@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import CodeEditor from '../components/slide/codeblock/CodeEditor.jsx';
-import { run } from '../../lyre/evaluator.js';
+import { run } from '../lyre/evaluator.js';
 import { createAudioContext } from '../utils/audioPlayer.js';
 
 const TWINKLE_TWINKLE = `(sequence
