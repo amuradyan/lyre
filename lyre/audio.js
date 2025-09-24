@@ -1,4 +1,4 @@
-export const generateNoteSamples = (frequency, duration, sampleRate = 44100) => {
+export const generateNote = (frequency, duration, sampleRate = 44100) => {
   const samplesPerNote = Math.floor(sampleRate * (duration / 1000));
   const samples = [];
 
@@ -18,12 +18,11 @@ export function* createNoteSequence(noteSequence, duration = 500) {
     'F4': 349.23,
     'G4': 392.00,
     'A4': 440.00,
-    'B4': 493.88,
-    'PAUSE': 0.0
+    'B4': 493.88
   };
 
   for (const note of noteSequence) {
-    const frequency = frequencies[note] || 440;
-    yield generateNoteSamples(frequency, duration);
+    const frequency = frequencies[note] || 0;
+    yield generateNote(frequency, duration);
   }
 }
