@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import Codeblock from './codeblock/Codeblock.jsx';
+import LyreCodeblock from './codeblock/LyreCodeblock.jsx';
 import AudioPlayer from '../AudioPlayer.jsx';
 import StreamingAudioPlayer from '../StreamingAudioPlayer.jsx';
 import LyrePlayer from '../LyrePlayer.jsx';
@@ -207,20 +208,29 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                 if (item.type === 'paragraph') {
                   return <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: item.content }} />;
                 } else if (item.type === 'codeblock') {
-                  const testBlockIndex = item.testComment ? testBlockCounter++ : -1;
-                  const savedCode = parsed.slideId ? loadCodeBlock(parsed.slideId, item.code) : null;
+                  if (item.language === 'lyre') {
+                    return (
+                      <LyreCodeblock
+                        key={i}
+                        code={item.code}
+                      />
+                    );
+                  } else {
+                    const testBlockIndex = item.testComment ? testBlockCounter++ : -1;
+                    const savedCode = parsed.slideId ? loadCodeBlock(parsed.slideId, item.code) : null;
 
-                  return (
-                    <Codeblock
-                      key={i}
-                      code={item.code}
-                      savedCode={savedCode}
-                      slideId={parsed.slideId}
-                      blockIndex={i}
-                      testComment={item.testComment}
-                      onTestStatusChange={testBlockIndex >= 0 ? (isPassing) => handleTestStatusChange(testBlockIndex, isPassing) : undefined}
-                    />
-                  );
+                    return (
+                      <Codeblock
+                        key={i}
+                        code={item.code}
+                        savedCode={savedCode}
+                        slideId={parsed.slideId}
+                        blockIndex={i}
+                        testComment={item.testComment}
+                        onTestStatusChange={testBlockIndex >= 0 ? (isPassing) => handleTestStatusChange(testBlockIndex, isPassing) : undefined}
+                      />
+                    );
+                  }
                 }
                 return null;
               });

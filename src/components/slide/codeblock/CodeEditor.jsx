@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 
-export default function CodeEditor({ value, onChange, readOnly = false }) {
+export default function CodeEditor({ value, onChange, readOnly = false, language = "javascript" }) {
   const editorRef = useRef(null);
   const [height, setHeight] = useState(120);
 
@@ -17,7 +17,24 @@ export default function CodeEditor({ value, onChange, readOnly = false }) {
       ],
       colors: { 'editor.background': '#f6f8fa' }
     });
-    monaco.editor.setTheme('lyreTheme');
+    
+    monaco.editor.defineTheme('lyrePurpleTheme', {
+      base: 'vs',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '6a737d' },
+        { token: 'keyword', foreground: '8b5cf6' },
+        { token: 'string', foreground: '7c3aed' },
+        { token: 'number', foreground: 'a855f7' }
+      ],
+      colors: { 'editor.background': '#faf5ff' }
+    });
+    
+    if (language === 'scheme') {
+      monaco.editor.setTheme('lyrePurpleTheme');
+    } else {
+      monaco.editor.setTheme('lyreTheme');
+    }
 
     // Custom read-only message
     if (readOnly) {
@@ -62,7 +79,7 @@ export default function CodeEditor({ value, onChange, readOnly = false }) {
     <div className="material-shadow relative">
       <Editor
         height={`${height}px`}
-        defaultLanguage="javascript"
+        defaultLanguage={language}
         value={value}
         onChange={(v) => onChange?.(v || '')}
         onMount={handleEditorDidMount}

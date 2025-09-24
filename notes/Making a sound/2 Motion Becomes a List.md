@@ -17,6 +17,26 @@ Exercises:
 2. Add an intermediate value between 1 and 0 near the descent (e.g. 0.5). What does that attempt to improve?
 3. Comment: Why can’t we just always add infinite points?
 
+## Interactive Lyre Demo
+
+Try the Lyre musical programming language! Edit the code and click "Run Lyre" to hear your changes:
+
+```lyre
+(tone C4 500)
+```
+
+Play multiple notes at the same time:
+
+```lyre
+(parallel (tone C4 200) (tone B4 200) (tone A4 400))
+```
+
+Create sequences:
+
+```lyre
+(sequence (tone C4 200) (tone D4 200) (tone E4 200))
+```
+
 ## Back
 
 - [Describing Functions](notes/Making%20a%20sound/1%20Describing%20Functions.md)

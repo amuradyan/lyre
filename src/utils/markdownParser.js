@@ -65,6 +65,7 @@ const createInitialState = () => ({
     inCode: false,
     currentPara: [],
     codeBuffer: [],
+    codeLanguage: null,
     inNext: false,
     inBack: false
   }
@@ -135,22 +136,34 @@ const processLine = (lines) => (state, line, index) => {
     if (context.inCode) {
       const code = context.codeBuffer.join('\n');
       const { comment, endIndex } = findTestComment(lines, index);
+      const language = context.codeLanguage || 'javascript';
       
       return {
         ...state,
-        content: [...state.content, { type: 'codeblock', code, testComment: comment }],
+        content: [...state.content, { 
+          type: 'codeblock', 
+          code, 
+          testComment: comment,
+          language
+        }],
         context: {
           ...context,
           inCode: false,
-          codeBuffer: []
+          codeBuffer: [],
+          codeLanguage: null
         },
         skipToIndex: endIndex
       };
     } else {
       const flushed = flushParagraph(state);
+      const language = line.replace('```', '').trim() || 'javascript';
       return {
         ...flushed,
-        context: { ...flushed.context, inCode: true }
+        context: { 
+          ...flushed.context, 
+          inCode: true,
+          codeLanguage: language
+        }
       };
     }
   }
