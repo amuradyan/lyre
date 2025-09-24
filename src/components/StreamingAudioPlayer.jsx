@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { createAudioContext } from '../utils/audioPlayer.js';
+import { createNoteSequence } from '../../lyre/audio.js';
 
 export default function StreamingAudioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -43,28 +44,15 @@ export default function StreamingAudioPlayer() {
     try {
       const workletNode = await initializeWorklet();
 
-      const sampleRate = 44100;
-      const duration = 500;
-      const samplesPerNote = Math.floor(sampleRate * (duration / 1000));
+      const noteSequence = ['C4', 'PAUSE', 'A4'];
+      const noteGenerator = createNoteSequence(noteSequence, 500);
 
-      const c4Samples = [];
-      for (let i = 0; i < samplesPerNote; i++) {
-        const t = i / sampleRate;
-        c4Samples.push(Math.sin(2 * Math.PI * 261.63 * t) * 0.3);
+      for (const noteSamples of noteGenerator) {
+        workletNode.port.postMessage({
+          type: 'samples',
+          samples: noteSamples
+        });
       }
-
-      const a4Samples = [];
-      for (let i = 0; i < samplesPerNote; i++) {
-        const t = i / sampleRate;
-        a4Samples.push(Math.sin(2 * Math.PI * 440 * t) * 0.3);
-      }
-
-      const allSamples = [...c4Samples, ...a4Samples];
-      workletNode.port.postMessage({
-        type: 'samples',
-        samples: allSamples
-      });
-
 
       setIsPlaying(true);
     } catch (error) {
