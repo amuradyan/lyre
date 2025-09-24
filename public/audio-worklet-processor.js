@@ -1,17 +1,17 @@
-import { runStreaming } from '../lyre/evaluator.js';
+import { runStreaming } from '/lyre/evaluator.js';
 
 class LyreStreamingProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
-    
+
     // Audio state
     this.isPlaying = false;
     this.currentGenerator = null;
     this.ended = false;
-    
+
     this.port.onmessage = (event) => {
       const { type, code } = event.data;
-      
+
       if (type === 'code') {
         try {
           this.currentGenerator = runStreaming(code);
@@ -27,20 +27,20 @@ class LyreStreamingProcessor extends AudioWorkletProcessor {
       }
     };
   }
-  
+
   process(inputs, outputs, parameters) {
     const output = outputs[0];
     const outputChannel = output[0];
-    
+
     if (!this.isPlaying || !this.currentGenerator || this.ended) {
       outputChannel.fill(0);
       return true;
     }
-    
+
     try {
       for (let i = 0; i < outputChannel.length; i++) {
         const next = this.currentGenerator.next();
-        
+
         if (next.done) {
           outputChannel.fill(0, i);
           this.isPlaying = false;
@@ -56,7 +56,7 @@ class LyreStreamingProcessor extends AudioWorkletProcessor {
       outputChannel.fill(0);
       this.isPlaying = false;
     }
-    
+
     return true;
   }
 }

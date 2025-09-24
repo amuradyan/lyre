@@ -37,7 +37,7 @@ export default function Index() {
     }
 
     if (!workletNodeRef.current) {
-      await audioContext.audioWorklet.addModule('/src/audio/lyre-worklet.js');
+      await audioContext.audioWorklet.addModule('/audio-worklet-processor.js');
       const workletNode = new AudioWorkletNode(audioContext, 'lyre-processor');
 
       workletNode.port.onmessage = (event) => {
@@ -130,8 +130,8 @@ export default function Index() {
           </p>
           <ul className="space-y-2">
             <li><code className="font-mono text-gray-800">(tone C4 500)</code> - Play a single note (pitch + duration in milliseconds). Use notes like C4, D#5, F3</li>
-            <li><code className="font-mono text-gray-800">(sequence a b c)</code> - Play sounds one after another in order</li>
-            <li><code className="font-mono text-gray-800">(parallel a b c)</code> - Play multiple sounds at the same time (harmony/chords)</li>
+            <li><code className="font-mono text-gray-800">(sequence (tone ...) (tone ...))</code> - Play sounds one after another in order</li>
+            <li><code className="font-mono text-gray-800">(parallel (tone ...) (tone ...))</code> - Play multiple sounds at the same time (harmony/chords)</li>
             <li><code className="font-mono text-gray-800">(repeat 3 melody)</code> - Repeat any sound or phrase multiple times</li>
             <li><code className="font-mono text-gray-800">(silence 500)</code> - Add silence/rest for a duration in milliseconds</li>
           </ul>
