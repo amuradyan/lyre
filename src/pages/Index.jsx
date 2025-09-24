@@ -142,12 +142,16 @@ export default function Index() {
         {/* Functions */}
         <div className="text-sm text-left font-rounded">
           <h4 className="font-medium text-gray-900">Functions</h4>
-          <ul className="space-y-1">
-            <li><code className="font-mono text-gray-800">(tone C4 500)</code> - Play a single note for a duration</li>
-            <li><code className="font-mono text-gray-800">(sequence ...)</code> - Play sounds one after another</li>
-            <li><code className="font-mono text-gray-800">(parallel ...)</code> - Play sounds simultaneously</li>
-            <li><code className="font-mono text-gray-800">(repeat 3 ...)</code> - Repeat a phrase multiple times</li>
-            <li><code className="font-mono text-gray-800">(silence 500)</code> - Add silence for a duration</li>
+          <p className="text-gray-600 mb-3 text-xs">
+            • Time is in milliseconds (1000ms = 1 second)<br/>
+            • Notes range from C1 to B6 (use sharps like C#4 or flats like Bb4)
+          </p>
+          <ul className="space-y-2">
+            <li><code className="font-mono text-gray-800">(tone C4 500)</code> - Play a single note (pitch + duration in milliseconds). Use notes like C4, D#5, F3</li>
+            <li><code className="font-mono text-gray-800">(sequence a b c)</code> - Play sounds one after another in order</li>
+            <li><code className="font-mono text-gray-800">(parallel a b c)</code> - Play multiple sounds at the same time (harmony/chords)</li>
+            <li><code className="font-mono text-gray-800">(repeat 3 melody)</code> - Repeat any sound or phrase multiple times</li>
+            <li><code className="font-mono text-gray-800">(silence 500)</code> - Add silence/rest for a duration in milliseconds</li>
           </ul>
         </div>
       </div>

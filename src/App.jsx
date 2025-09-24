@@ -17,17 +17,17 @@ export default function App() {
     };
   }, []);
 
-  // Index page - show at #playground
-  if (currentHash === '#playground') {
-    return <Index />;
+  // Walkthrough page - show at #walkthrough or #walkthrough/*
+  if (currentHash === '#walkthrough' || currentHash.startsWith('#walkthrough/')) {
+    return (
+      <div className="font-sans bg-gray-100 text-gray-900 p-8">
+        <div className="max-w-3xl mx-auto">
+          <Slide initialMarkdownPath="./notes/Making a sound/0 Describing Sound.md" />
+        </div>
+      </div>
+    );
   }
 
-  // Default - show slide system
-  return (
-    <div className="font-sans bg-gray-100 text-gray-900 p-8">
-      <div className="max-w-3xl mx-auto">
-        <Slide initialMarkdownPath="./notes/Making a sound/0 Describing Sound.md" />
-      </div>
-    </div>
-  );
+  // Default - show Index page (interactive playground)
+  return <Index />;
 }
