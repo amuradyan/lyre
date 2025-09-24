@@ -34,22 +34,46 @@ export default function Index() {
   const initializeWorklet = async () => {
     const audioContext = getAudioContext();
 
+    // Force resume for mobile browsers
     if (audioContext.state === 'suspended') {
-      await audioContext.resume();
+      console.log('AudioContext suspended, attempting to resume...');
+      try {
+        await audioContext.resume();
+        console.log('AudioContext state after resume:', audioContext.state);
+      } catch (error) {
+        console.error('Failed to resume AudioContext:', error);
+        throw error;
+      }
+    }
+
+    // Check if AudioWorklet is supported (mainly for mobile compatibility)
+    if (!audioContext.audioWorklet) {
+      console.error('AudioWorklet not supported in this browser');
+      throw new Error('AudioWorklet not supported in this browser');
     }
 
     if (!workletNodeRef.current) {
-      await audioContext.audioWorklet.addModule('/audio-worklet-processor.js');
-      const workletNode = new AudioWorkletNode(audioContext, 'lyre-processor');
+      try {
+        console.log('Loading AudioWorklet module...');
+        await audioContext.audioWorklet.addModule('/audio-worklet-processor.js');
+        console.log('AudioWorklet module loaded successfully');
+        
+        const workletNode = new AudioWorkletNode(audioContext, 'lyre-processor');
+        console.log('AudioWorkletNode created successfully');
 
-      workletNode.port.onmessage = (event) => {
-        if (event.data.type === 'ended') {
-          setIsPlaying(false);
-        }
-      };
+        workletNode.port.onmessage = (event) => {
+          if (event.data.type === 'ended') {
+            setIsPlaying(false);
+          }
+        };
 
-      workletNode.connect(audioContext.destination);
-      workletNodeRef.current = workletNode;
+        workletNode.connect(audioContext.destination);
+        workletNodeRef.current = workletNode;
+        console.log('AudioWorklet connected and ready');
+      } catch (error) {
+        console.error('Failed to initialize AudioWorklet:', error);
+        throw error;
+      }
     }
 
     return workletNodeRef.current;
