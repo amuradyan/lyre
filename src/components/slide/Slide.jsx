@@ -150,7 +150,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     const repoRoot = idx >= 0 ? mdPath.slice(0, idx) : mdPath.substring(0, mdPath.lastIndexOf('/'));
     const mdDir = mdPath.substring(0, mdPath.lastIndexOf('/'));
     let target = nextHref;
-    try { target = decodeURIComponent(nextHref); } catch {}
+    try { target = decodeURIComponent(nextHref); } catch { }
 
     let nextAbs;
     if (target.startsWith('/')) {
@@ -173,7 +173,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     const repoRoot = idx >= 0 ? mdPath.slice(0, idx) : mdPath.substring(0, mdPath.lastIndexOf('/'));
     const mdDir = mdPath.substring(0, mdPath.lastIndexOf('/'));
     let target = backHref;
-    try { target = decodeURIComponent(backHref); } catch {}
+    try { target = decodeURIComponent(backHref); } catch { }
 
     let backAbs;
     if (target.startsWith('/')) {
@@ -195,9 +195,6 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       {error && <div className="text-red-600">Error: {error}</div>}
       {!loading && !error && (
         <div className="px-6 sm:px-10 md:px-16">
-          <AudioPlayer />
-          <StreamingAudioPlayer />
-          <LyrePlayer />
           {parsed.title && (
             <h1 className="text-3xl font-bold text-left">{parsed.title}</h1>
           )}

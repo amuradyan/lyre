@@ -99,7 +99,6 @@ export default function Index() {
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             A musical programming language that turns code into sound.
-            Write expressions, create melodies, and hear your algorithms sing.
           </p>
         </div>
 
