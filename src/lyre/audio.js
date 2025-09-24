@@ -1,13 +1,15 @@
-export const generateNote = (frequency, duration, sampleRate = 44100) => {
+export function* generateNote(frequency, duration, sampleRate = 44100) {
   const samplesPerNote = Math.floor(sampleRate * (duration / 1000));
-  const samples = [];
 
   for (let i = 0; i < samplesPerNote; i++) {
     const t = i / sampleRate;
-    samples.push(Math.sin(2 * Math.PI * frequency * t));
+    yield Math.sin(2 * Math.PI * frequency * t);
   }
+}
 
-  return samples;
+// Legacy array-based function for backward compatibility
+export const generateNoteArray = (frequency, duration, sampleRate = 44100) => {
+  return [...generateNote(frequency, duration, sampleRate)];
 };
 
 export function* createNoteSequence(noteSequence, duration = 500) {
@@ -23,6 +25,15 @@ export function* createNoteSequence(noteSequence, duration = 500) {
 
   for (const note of noteSequence) {
     const frequency = frequencies[note] || 0;
-    yield generateNote(frequency, duration);
+    yield* generateNote(frequency, duration);
+  }
+}
+
+// Silence generator
+export function* generateSilence(duration, sampleRate = 44100) {
+  const samplesPerSilence = Math.floor(sampleRate * (duration / 1000));
+  
+  for (let i = 0; i < samplesPerSilence; i++) {
+    yield 0;
   }
 }

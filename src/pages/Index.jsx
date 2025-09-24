@@ -1,6 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
 import CodeEditor from '../components/slide/codeblock/CodeEditor.jsx';
-import { run } from '../lyre/evaluator.js';
 import { createAudioContext } from '../utils/audioPlayer.js';
 
 const TWINKLE_TWINKLE = `(sequence
@@ -20,7 +19,6 @@ const TWINKLE_TWINKLE = `(sequence
 export default function Index() {
   const [code, setCode] = useState(TWINKLE_TWINKLE);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const audioContextRef = useRef(null);
   const workletNodeRef = useRef(null);
 
@@ -39,11 +37,14 @@ export default function Index() {
     }
 
     if (!workletNodeRef.current) {
-      await audioContext.audioWorklet.addModule('/audio-worklet-processor.js');
+      await audioContext.audioWorklet.addModule('/src/audio/lyre-worklet.js');
       const workletNode = new AudioWorkletNode(audioContext, 'lyre-processor');
 
       workletNode.port.onmessage = (event) => {
         if (event.data.type === 'ended') {
+          setIsPlaying(false);
+        } else if (event.data.type === 'error') {
+          console.error('AudioWorklet error:', event.data.error);
           setIsPlaying(false);
         }
       };
@@ -56,21 +57,17 @@ export default function Index() {
   };
 
   const playCode = async () => {
-    setIsLoading(true);
     try {
       const workletNode = await initializeWorklet();
-      const samples = run(code);
 
       workletNode.port.postMessage({
-        type: 'samples',
-        samples: samples
+        type: 'code',
+        code: code
       });
 
       setIsPlaying(true);
     } catch (error) {
       console.error('Failed to play Lyre expression:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -107,13 +104,10 @@ export default function Index() {
           <div className="bg-white/70 backdrop-blur rounded-2xl shadow-sm overflow-hidden relative">
             <button
               onClick={handlePlayPause}
-              disabled={isLoading}
-              className="absolute flex items-center justify-center w-10 h-10 bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400 transition-all duration-200 rounded-none"
+              className="absolute flex items-center justify-center w-10 h-10 bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200 rounded-none"
               style={{ top: '8px', right: '8px', zIndex: 9999, borderRadius: '0' }}
             >
-              {isLoading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : isPlaying ? (
+              {isPlaying ? (
                 <span className="text-lg">⏸</span>
               ) : (
                 <span className="text-lg">▶</span>

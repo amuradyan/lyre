@@ -18,6 +18,22 @@ export default defineConfig({
       }
     }
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        'audio-worklet-processor': resolve(__dirname, 'src/audio/lyre-worklet.js')
+      },
+      output: {
+        entryFileNames: (chunkInfo) => {
+          if (chunkInfo.name === 'audio-worklet-processor') {
+            return 'audio-worklet-processor.js';
+          }
+          return '[name]-[hash].js';
+        }
+      }
+    }
+  },
   server: {
     port: 8000,
     fs: {
