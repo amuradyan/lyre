@@ -43,26 +43,22 @@ export default function StreamingAudioPlayer() {
     try {
       const workletNode = await initializeWorklet();
 
-      // Generate sample data for demo (C4 then A4)
       const sampleRate = 44100;
-      const duration = 500; // 1.5 seconds each note
+      const duration = 500;
       const samplesPerNote = Math.floor(sampleRate * (duration / 1000));
 
-      // C4 samples
       const c4Samples = [];
       for (let i = 0; i < samplesPerNote; i++) {
         const t = i / sampleRate;
         c4Samples.push(Math.sin(2 * Math.PI * 261.63 * t) * 0.3);
       }
 
-      // A4 samples
       const a4Samples = [];
       for (let i = 0; i < samplesPerNote; i++) {
         const t = i / sampleRate;
         a4Samples.push(Math.sin(2 * Math.PI * 440 * t) * 0.3);
       }
 
-      // Send combined samples
       const allSamples = [...c4Samples, ...a4Samples];
       workletNode.port.postMessage({
         type: 'samples',

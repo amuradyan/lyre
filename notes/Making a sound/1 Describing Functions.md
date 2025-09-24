@@ -12,6 +12,14 @@ function ???() {
 ```
 <!-- {"expected": "beep"} -->
 
+```js
+function ???() {
+  return "beep"; // returning a value lets callers use it
+}
+
+???();
+```
+
 !!NOTE TO SELF!!: if the student messes with the code, respond with a message about importance of the name actually describing the function and not just being a random word. Note that in real life nothing would stop him from doing it wrong.
 
 ```js
