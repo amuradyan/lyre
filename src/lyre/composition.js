@@ -4,18 +4,6 @@ export function* sequence(...generators) {
   }
 }
 
-// Legacy array-based function for backward compatibility
-export const sequenceArray = (...audioArrays) => {
-  const combinedSamples = [];
-  
-  for (const audioArray of audioArrays) {
-    for (const sample of audioArray) {
-      combinedSamples.push(sample);
-    }
-  }
-  
-  return combinedSamples;
-};
 
 export function* parallel(...generators) {
   const activeGens = [...generators];
@@ -44,20 +32,6 @@ export function* parallel(...generators) {
   }
 }
 
-// Legacy array-based function for backward compatibility
-export const parallelArray = (...audioArrays) => {
-  const maxLength = Math.max(...audioArrays.map((audio) => audio.length));
-  const combinedSamples = [];
-  const numArrays = audioArrays.length;
-
-  for (let i = 0; i < maxLength; i++) {
-    const samplesAtI = audioArrays.map((audio) => audio[i] || 0);
-    const averageSample = samplesAtI.reduce((acc, sample) => acc + sample, 0) / numArrays;
-    combinedSamples.push(averageSample);
-  }
-  
-  return combinedSamples;
-};
 
 export function* repeat(times, generatorFunc) {
   for (let i = 0; i < times; i++) {
@@ -65,13 +39,3 @@ export function* repeat(times, generatorFunc) {
   }
 }
 
-// Legacy array-based function for backward compatibility
-export const repeatArray = (times, audioArray) => {
-  const samples = [];
-  for (let i = 0; i < times; i++) {
-    for (const sample of audioArray) {
-      samples.push(sample);
-    }
-  }
-  return samples;
-};

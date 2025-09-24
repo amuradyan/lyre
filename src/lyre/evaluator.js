@@ -1,7 +1,7 @@
 import { tokenize } from './tokenizer.js';
 import { noteFrequencies } from './notes.js';
-import { generateNote, generateNoteArray, generateSilence } from './audio.js';
-import { sequence, parallel, repeat, sequenceArray, parallelArray, repeatArray } from './composition.js';
+import { generateNote, generateSilence } from './audio.js';
+import { sequence, parallel, repeat } from './composition.js';
 
 const atom = (name) => Symbol.for(name);
 
@@ -18,29 +18,7 @@ let streamingEnvironment = [
   ...noteFrequencies
 ];
 
-// Legacy environment (arrays) - for backward compatibility
-let environment = [
-  // Core functions
-  [atom("silence"), (duration) => generateNoteArray(0, duration)],
-  [atom("tone"), generateNoteArray],
-  [atom("sequence"), sequenceArray],
-  [atom("parallel"), parallelArray],
-  [atom("repeat"), repeatArray],
-  
-  // Note frequencies
-  ...noteFrequencies
-];
 
-const lookupInEnvironment = (name) => {
-  const matchingDefinition = environment.find(([key]) => key === name);
-  if (matchingDefinition) {
-    return matchingDefinition[1];
-  } else {
-    const errorMessage = `🪈 Error: Unknown name ... ${atom(name)}`;
-    console.error(errorMessage);
-    return errorMessage;
-  }
-};
 
 const lookupInStreamingEnvironment = (name) => {
   const matchingDefinition = streamingEnvironment.find(([key]) => key === name);
@@ -51,38 +29,6 @@ const lookupInStreamingEnvironment = (name) => {
   }
 };
 
-export const evaluate = (expression) => {
-  if (typeof expression === "number") {
-    return expression;
-  }
-
-  if (typeof expression === "symbol") {
-    return lookupInEnvironment(expression);
-  }
-
-  if (Array.isArray(expression)) {
-    const [first, ...rest] = expression;
-
-    if (Array.isArray(first) && first[0] === atom("define")) {
-      const [_, name, value] = first;
-      const evaluatedValue = evaluate(value);
-      environment.unshift([name, evaluatedValue]);
-
-      if (rest.length === 1) {
-        return evaluate(rest[0]);
-      } else {
-        return evaluate(rest);
-      }
-    } else {
-      const [operator, ...operands] = expression;
-
-      const evaluatedOperator = evaluate(operator);
-      const evaluatedOperands = operands.map(evaluate);
-
-      return evaluatedOperator(...evaluatedOperands);
-    }
-  }
-};
 
 // Streaming evaluation that returns generators
 export const evaluateStreaming = (expression) => {
@@ -148,16 +94,3 @@ export const runStreaming = (input) => {
   }
 };
 
-// Legacy run function (arrays) - for backward compatibility
-export const run = (input) => {
-  const tokens = tokenize(input);
-
-  if (tokens.length === 0) {
-    console.error("🪈 Error: Nothing to evaluate");
-    return [];
-  } else if (tokens.length === 1) {
-    return evaluate(tokens[0]);
-  } else {
-    return evaluate(tokens);
-  }
-};
