@@ -50,6 +50,33 @@ export const tokenize = (input) => {
 
         return loop(newProgressiveScope, restOfGraphemes, "");
       }
+      case ";": {
+        const updatedCurrentScope = tokenSoFar.length > 0
+          ? [...currentScope, typeify(tokenSoFar)]
+          : currentScope;
+
+        const newProgressiveScope = [
+          updatedCurrentScope,
+          parentScope,
+          ...outerScopes,
+        ];
+
+        const skipToEndOfLine = (graphemes) => {
+          while (graphemes.length > 0 &&
+            graphemes[0] !== "\n" &&
+            graphemes[0] !== "\r") {
+            graphemes = graphemes.slice(1);
+          }
+          return graphemes;
+        };
+
+        const remainingGraphemes = skipToEndOfLine(restOfGraphemes);
+
+        return loop(
+          newProgressiveScope,
+          remainingGraphemes,
+        );
+      }
       case "\n":
       case "\r":
       case "\t":
