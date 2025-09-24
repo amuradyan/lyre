@@ -95,7 +95,7 @@ export default function Index() {
         {/* Lyre Title */}
         <div className="text-center mb-8">
           <h1 className="text-6xl font-bold text-gray-900 mb-4">
-            🪈 <span className="text-purple-600">Lyre</span>
+            🪉 <span className="text-purple-600">Lyre</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             A musical programming language that turns code into sound.
@@ -105,32 +105,21 @@ export default function Index() {
 
         {/* Code Block with Play Button */}
         <div className="mb-1">
-          <div className="grid justify-items-end mb-2">
+          <div className="bg-white/70 backdrop-blur rounded-2xl shadow-sm overflow-hidden relative">
             <button
               onClick={handlePlayPause}
               disabled={isLoading}
-              className="flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded hover:bg-gray-800 disabled:bg-gray-400 transition-all duration-200 text-sm font-medium shadow-sm"
+              className="absolute flex items-center justify-center w-10 h-10 bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400 transition-all duration-200 rounded-none"
+              style={{ top: '8px', right: '8px', zIndex: 9999, borderRadius: '0' }}
             >
               {isLoading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Loading</span>
-                </>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : isPlaying ? (
-                <>
-                  <span>⏸</span>
-                  <span>Stop</span>
-                </>
+                <span className="text-lg">⏸</span>
               ) : (
-                <>
-                  <span>▶</span>
-                  <span>Play</span>
-                </>
+                <span className="text-lg">▶</span>
               )}
             </button>
-          </div>
-
-          <div className="bg-white/70 backdrop-blur rounded-2xl shadow-sm overflow-hidden">
             <CodeEditor
               value={code}
               onChange={setCode}
@@ -143,8 +132,8 @@ export default function Index() {
         <div className="text-sm text-left font-rounded">
           <h4 className="font-medium text-gray-900">Functions</h4>
           <p className="text-gray-600 mb-3 text-xs">
-            • Time is in milliseconds (1000ms = 1 second)<br/>
-            • Notes range from C1 to B6 (use sharps like C#4 or flats like Bb4)
+            Time is in milliseconds (1000ms = 1 second)<br />
+            Notes range from C1 to B6 (use sharps like C#4 or flats like Bb4)
           </p>
           <ul className="space-y-2">
             <li><code className="font-mono text-gray-800">(tone C4 500)</code> - Play a single note (pitch + duration in milliseconds). Use notes like C4, D#5, F3</li>
@@ -153,6 +142,13 @@ export default function Index() {
             <li><code className="font-mono text-gray-800">(repeat 3 melody)</code> - Repeat any sound or phrase multiple times</li>
             <li><code className="font-mono text-gray-800">(silence 500)</code> - Add silence/rest for a duration in milliseconds</li>
           </ul>
+          <p className="text-gray-500 text-xs mt-4">
+            <strong>Note:</strong> For a deeper dive into language implementation, check out the{' '}
+            <a href="#walkthrough" className="text-purple-600 hover:text-purple-800 underline">
+              walkthrough
+            </a>{' '}
+            (currently a mess and under construction 🚧)
+          </p>
         </div>
       </div>
     </div>
