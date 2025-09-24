@@ -104,8 +104,8 @@ export default function Index() {
         </div>
 
         {/* Code Block with Play Button */}
-        <div className="mb-4">
-          <div className="flex justify-end mb-2">
+        <div className="mb-1">
+          <div className="grid justify-items-end mb-2">
             <button
               onClick={handlePlayPause}
               disabled={isLoading}
@@ -129,8 +129,8 @@ export default function Index() {
               )}
             </button>
           </div>
-          
-          <div style={{ height: '400px' }} className="bg-white/70 backdrop-blur rounded-2xl shadow-sm overflow-hidden">
+
+          <div className="bg-white/70 backdrop-blur rounded-2xl shadow-sm overflow-hidden">
             <CodeEditor
               value={code}
               onChange={setCode}
@@ -141,7 +141,7 @@ export default function Index() {
 
         {/* Functions */}
         <div className="text-sm text-left font-rounded">
-          <h4 className="font-medium text-gray-900 mb-2">Functions</h4>
+          <h4 className="font-medium text-gray-900">Functions</h4>
           <ul className="space-y-1">
             <li><code className="font-mono text-gray-800">(tone C4 500)</code> - Play a single note for a duration</li>
             <li><code className="font-mono text-gray-800">(sequence ...)</code> - Play sounds one after another</li>
