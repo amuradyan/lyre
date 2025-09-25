@@ -17,7 +17,6 @@ export default function App() {
     };
   }, []);
 
-  // Walkthrough page - show at #walkthrough or #walkthrough/*
   if (currentHash === '#walkthrough' || currentHash.startsWith('#walkthrough/')) {
     return (
       <div className="font-sans bg-gray-100 text-gray-900 p-8">
@@ -28,6 +27,5 @@ export default function App() {
     );
   }
 
-  // Default - show Index page (interactive playground)
   return <Index />;
 }

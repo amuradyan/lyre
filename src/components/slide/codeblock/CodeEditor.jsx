@@ -17,7 +17,7 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
       ],
       colors: { 'editor.background': '#f6f8fa' }
     });
-    
+
     monaco.editor.defineTheme('lyrePurpleTheme', {
       base: 'vs',
       inherit: true,
@@ -29,14 +29,13 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
       ],
       colors: { 'editor.background': '#faf5ff' }
     });
-    
+
     if (language === 'scheme') {
       monaco.editor.setTheme('lyrePurpleTheme');
     } else {
       monaco.editor.setTheme('lyreTheme');
     }
 
-    // Custom read-only message
     if (readOnly) {
       editor.onDidAttemptReadOnlyEdit(() => {
         monaco.editor.setModelMarkers(editor.getModel(), 'readonly', [{
@@ -47,7 +46,7 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
           message: 'This code is not for editing',
           severity: monaco.MarkerSeverity.Info
         }]);
-        
+
         setTimeout(() => {
           monaco.editor.setModelMarkers(editor.getModel(), 'readonly', []);
         }, 2000);

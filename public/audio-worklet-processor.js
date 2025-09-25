@@ -4,7 +4,6 @@ class LyreStreamingProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
 
-    // Audio state
     this.isPlaying = false;
     this.currentGenerator = null;
     this.ended = false;

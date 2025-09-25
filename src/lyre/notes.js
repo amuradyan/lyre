@@ -1,7 +1,7 @@
 const atom = (name) => Symbol.for(name);
 
 export const noteFrequencies = [
-  // Notes - Octave 1 (Very Low)
+  // Notes Octave 1 (Very Low)
   [atom("C1"), 32.70],
   [atom("C#1"), 34.65],
   [atom("D1"), 36.71],
@@ -15,7 +15,7 @@ export const noteFrequencies = [
   [atom("A#1"), 58.27],
   [atom("B1"), 61.74],
 
-  // Notes - Octave 2 (Low)
+  // Notes Octave 2 (Low)
   [atom("C2"), 65.41],
   [atom("C#2"), 69.30],
   [atom("D2"), 73.42],
@@ -29,7 +29,7 @@ export const noteFrequencies = [
   [atom("A#2"), 116.54],
   [atom("B2"), 123.47],
 
-  // Notes - Octave 3 (Mid-Low)
+  // Notes Octave 3 (Mid-Low)
   [atom("C3"), 130.81],
   [atom("C#3"), 138.59],
   [atom("D3"), 146.83],
@@ -43,7 +43,7 @@ export const noteFrequencies = [
   [atom("A#3"), 233.08],
   [atom("B3"), 246.94],
 
-  // Notes - Octave 4 (Middle)
+  // Notes Octave 4 (Middle)
   [atom("C4"), 261.63],
   [atom("C#4"), 277.18],
   [atom("D4"), 293.66],
@@ -57,7 +57,7 @@ export const noteFrequencies = [
   [atom("A#4"), 466.16],
   [atom("B4"), 493.88],
 
-  // Notes - Octave 5 (Mid-High)
+  // Notes Octave 5 (Mid-High)
   [atom("C5"), 523.25],
   [atom("C#5"), 554.37],
   [atom("D5"), 587.33],
@@ -71,7 +71,7 @@ export const noteFrequencies = [
   [atom("A#5"), 932.33],
   [atom("B5"), 987.77],
 
-  // Notes - Octave 6 (High)
+  // Notes Octave 6 (High)
   [atom("C6"), 1046.50],
   [atom("C#6"), 1108.73],
   [atom("D6"), 1174.66],

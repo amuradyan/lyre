@@ -5,16 +5,13 @@ import { sequence, parallel, repeat } from './composition.js';
 
 const atom = (name) => Symbol.for(name);
 
-// Streaming environment (generators)
 let streamingEnvironment = [
-  // Core streaming functions
   [atom("silence"), generateSilence],
   [atom("tone"), generateNote],
   [atom("sequence"), sequence],
   [atom("parallel"), parallel],
   [atom("repeat"), repeat],
-  
-  // Note frequencies
+
   ...noteFrequencies
 ];
 
@@ -30,10 +27,9 @@ const lookupInStreamingEnvironment = (name) => {
 };
 
 
-// Streaming evaluation that returns generators
 export const evaluateStreaming = (expression) => {
   if (typeof expression === "number") {
-    return function*() { yield expression; }();
+    return function* () { yield expression; }();
   }
 
   if (typeof expression === "symbol") {
@@ -41,7 +37,7 @@ export const evaluateStreaming = (expression) => {
     if (typeof value === 'function') {
       return value;
     }
-    return function*() { yield value; }();
+    return function* () { yield value; }();
   }
 
   if (Array.isArray(expression)) {
@@ -61,13 +57,13 @@ export const evaluateStreaming = (expression) => {
       const [operator, ...operands] = expression;
 
       const evaluatedOperator = lookupInStreamingEnvironment(operator);
-      
+
       if (operator === Symbol.for('repeat')) {
         const times = operands[0];
         const generatorFunc = () => evaluateStreaming(operands[1]);
         return evaluatedOperator(times, generatorFunc);
       }
-      
+
       const evaluatedOperands = operands.map(op => {
         if (typeof op === 'number') return op;
         if (typeof op === 'symbol') return lookupInStreamingEnvironment(op);
@@ -81,7 +77,6 @@ export const evaluateStreaming = (expression) => {
   throw new Error(`Cannot evaluate expression: ${JSON.stringify(expression)}`);
 };
 
-// Streaming run function that returns a generator
 export const runStreaming = (input) => {
   const tokens = tokenize(input);
 
@@ -93,4 +88,3 @@ export const runStreaming = (input) => {
     return evaluateStreaming(tokens);
   }
 };
-
