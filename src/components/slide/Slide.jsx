@@ -1,9 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import Codeblock from './codeblock/Codeblock.jsx';
 import LyreCodeblock from './codeblock/LyreCodeblock.jsx';
-import AudioPlayer from '../AudioPlayer.jsx';
-import StreamingAudioPlayer from '../StreamingAudioPlayer.jsx';
-import LyrePlayer from '../LyrePlayer.jsx';
 import { loadCodeBlock } from '../../utils/slideStorage.js';
 import { parseMarkdown } from '../../utils/markdownParser.js';
 

@@ -95,7 +95,7 @@ export default function Index() {
             🪉 <span className="text-purple-600">Lyre</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            A musical programming language that turns code into sound.
+            A musical programming language
           </p>
         </div>
 
