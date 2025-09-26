@@ -45,7 +45,7 @@ export const evaluateStreaming = (expression) => {
 
     if (Array.isArray(first) && first[0] === atom("define")) {
       const [_, name, value] = first;
-      const evaluatedValue = evaluateStreaming(value);
+      const evaluatedValue = () => evaluateStreaming(value);
       streamingEnvironment.unshift([name, evaluatedValue]);
 
       if (rest.length === 1) {
@@ -66,7 +66,10 @@ export const evaluateStreaming = (expression) => {
 
       const evaluatedOperands = operands.map(op => {
         if (typeof op === 'number') return op;
-        if (typeof op === 'symbol') return lookupInStreamingEnvironment(op);
+        if (typeof op === 'symbol') {
+          const value = lookupInStreamingEnvironment(op);
+          return typeof value === 'function' ? value() : value;
+        }
         return evaluateStreaming(op);
       });
 
