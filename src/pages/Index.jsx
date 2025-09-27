@@ -108,7 +108,7 @@ export default function Index() {
           </div>
 
           {/* Language Reference Section */}
-          <div className="mb-8">
+          <div className="mb-8 mt-28">
             <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
                 <div>
