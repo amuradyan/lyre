@@ -46,7 +46,7 @@ export default function LyreCodeblock({ code, readOnly = false }) {
     try {
       const workletNode = await initializeWorklet();
       const samples = run(userCode);
-      
+
       workletNode.port.postMessage({
         type: 'samples',
         samples: samples

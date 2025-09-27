@@ -89,58 +89,100 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
       <div className="container mx-auto px-6 py-12">
-        {/* Lyre Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-6xl font-bold text-gray-900 mb-4">
-            🪉 <span className="text-purple-600">Lyre</span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            A musical programming language
-          </p>
-        </div>
 
-        {/* Code Block with Play Button */}
-        <div className="mb-1">
-          <div className="bg-white/70 backdrop-blur rounded-2xl shadow-sm overflow-hidden relative">
-            <button
-              onClick={handlePlayPause}
-              className="absolute flex items-center justify-center w-10 h-10 bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200 rounded-none"
-              style={{ top: '8px', right: '8px', zIndex: 9999, borderRadius: '0' }}
-            >
-              {isPlaying ? (
-                <span className="text-lg">⏸</span>
-              ) : (
-                <span className="text-lg">▶</span>
-              )}
-            </button>
-            <CodeEditor
-              value={code}
-              onChange={setCode}
-              language="scheme"
-            />
+        {/* Title Section */}
+        <div className="text-center mb-8">
+          <div className="flex items-end justify-start gap-4">
+            <img src="/lyre.png" alt="Lyre" className="w-48 h-auto" />
+            <p className="text-l text-gray-600 pb-2">/ a musical language</p>
           </div>
         </div>
 
-        {/* Functions */}
-        <div className="text-sm text-left font-rounded">
-          <h4 className="font-medium text-gray-900">Functions</h4>
-          <p className="text-gray-600 mb-3 text-xs">
-            Time is in milliseconds (1000ms = 1 second)<br />
-            Notes range from C1 to B6 (use sharps like C#4 or flats like Bb4)
-          </p>
-          <ul className="space-y-2">
-            <li><code className="font-mono text-gray-800">(tone C4 500)</code> - Play a single note (pitch + duration in milliseconds). Use notes like C4, D#5, F3</li>
-            <li><code className="font-mono text-gray-800">(sequence (tone ...) (tone ...))</code> - Play sounds one after another in order</li>
-            <li><code className="font-mono text-gray-800">(parallel (tone ...) (tone ...))</code> - Play multiple sounds at the same time (harmony/chords)</li>
-            <li><code className="font-mono text-gray-800">(repeat 3 melody)</code> - Repeat any sound or phrase multiple times</li>
-            <li><code className="font-mono text-gray-800">(silence 500)</code> - Add silence/rest for a duration in milliseconds</li>
-          </ul>
-          <p className="text-gray-500 text-xs mt-4">
+        {/* Language Reference Section */}
+        <div className="mb-8">
+          <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">Notes</h4>
+                <p className="text-gray-600">Use standard note notation like C4, D#5, Fb3. Sharps (#) and flats (b) are supported.</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">Range</h4>
+                <p className="text-gray-600">Notes range from C1 (lowest) to C6 (highest).</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">Time</h4>
+                <p className="text-gray-600">All durations are in milliseconds. 1000ms = 1 second.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content - Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+          {/* Left Column - Code Editor */}
+          <div className="lg:col-span-3">
+            <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm overflow-hidden relative">
+              <button
+                onClick={handlePlayPause}
+                className="absolute flex items-center justify-center w-6 h-6 bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200 rounded-sm"
+                style={{ top: '8px', right: '8px', zIndex: 9999 }}
+              >
+                {isPlaying ? (
+                  <span className="text-sm">⏸</span>
+                ) : (
+                  <span className="text-sm">▶</span>
+                )}
+              </button>
+              <CodeEditor
+                value={code}
+                onChange={setCode}
+                language="scheme"
+              />
+            </div>
+          </div>
+
+          {/* Right Column - Functions Reference */}
+          <div className="lg:col-span-2">
+            <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Functions</h3>
+
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <code className="font-mono text-purple-600 text-xs">(tone C4 500)</code>
+                  <div className="text-gray-600 mt-1">Play a single note with pitch and duration</div>
+                </li>
+                <li>
+                  <code className="font-mono text-purple-600 text-xs">(sequence ...)</code>
+                  <div className="text-gray-600 mt-1">Play sounds one after another in order</div>
+                </li>
+                <li>
+                  <code className="font-mono text-purple-600 text-xs">(parallel ...)</code>
+                  <div className="text-gray-600 mt-1">Play multiple sounds simultaneously (chords)</div>
+                </li>
+                <li>
+                  <code className="font-mono text-purple-600 text-xs">(repeat 3 melody)</code>
+                  <div className="text-gray-600 mt-1">Repeat any sound or phrase multiple times</div>
+                </li>
+                <li>
+                  <code className="font-mono text-purple-600 text-xs">(silence 500)</code>
+                  <div className="text-gray-600 mt-1">Add silence/rest for specified duration</div>
+                </li>
+              </ul>
+
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Note */}
+        <div className="text-center mt-12">
+          <p className="text-gray-500 text-sm">
             <strong>Note:</strong> For a deeper dive into language implementation, check out the{' '}
             <a href="#walkthrough" className="text-purple-600 hover:text-purple-800 underline">
               walkthrough
             </a>{' '}
-            (currently a mess and under construction 🚧)
+            (currently under construction 🚧)
           </p>
         </div>
       </div>
