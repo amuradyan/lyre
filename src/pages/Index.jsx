@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import CodeEditor from '../components/slide/codeblock/CodeEditor.jsx';
 import { createAudioContext } from '../utils/audioPlayer.js';
 
-const TWINKLE_TWINKLE = `; We will define the baroQue pitches
+const TWINKLE_TWINKLE = `; We can define the baroQue pitches
 (define qA5 830)
 (define qF#5 697.94)
 (define qG5 739.45)
@@ -11,16 +11,24 @@ const TWINKLE_TWINKLE = `; We will define the baroQue pitches
 (define qC#5 522.87)
 (define qD5 553.96)
 (define qE5 621.80)
+(define qA2 103.75)
+(define qD3 184.86)
 
 ; And play Pachelbels' Canon in D
 (sequence
-  (tone qA5 500)
-  (tone qF#5 250) (tone qG5 250) (tone qA5 500)
-  (tone qF#5 250) (tone qG5 250) (tone qA5 250)
+  (parallel
+    (tone qD3 2000)
+    (sequence
+      (tone qA5 500)
+      (tone qF#5 250) (tone qG5 250) (tone qA5 500)
+      (tone qF#5 250) (tone qG5 250)))
 
-  (tone qA4 250) (tone qB4 250) (tone qC#5 250)
-  (tone qD5 250) (tone qE5 250)
-  (tone qF#5 250) (tone qG5 250))
+  (parallel
+    (tone qA2 2000)
+    (sequence
+      (tone qA5 250)  (tone qA4 250) (tone qB4 250)
+      (tone qC#5 250) (tone qD5 250) (tone qE5 250)
+      (tone qF#5 250) (tone qG5 250))))
 `;
 
 export default function Index() {
