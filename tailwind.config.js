@@ -8,7 +8,8 @@ export default {
     extend: {
       fontFamily: {
         'sans': ['Nunito', 'sans-serif'],
-        'mono': ['IBM Plex Mono', 'monospace']
+        'mono': ['IBM Plex Mono', 'monospace'],
+        'display': ['Fredoka One', 'cursive']
       }
     },
   },
