@@ -45,8 +45,12 @@ export const evaluateStreaming = (expression) => {
 
     if (Array.isArray(first) && first[0] === atom("define")) {
       const [_, name, value] = first;
-      const evaluatedValue = () => evaluateStreaming(value);
-      streamingEnvironment.unshift([name, evaluatedValue]);
+      if (typeof value === 'number') {
+        streamingEnvironment.unshift([name, value]);
+      } else {
+        const evaluatedValue = evaluateStreaming(value);
+        streamingEnvironment.unshift([name, evaluatedValue]);
+      }
 
       if (rest.length === 1) {
         return evaluateStreaming(rest[0]);
@@ -68,7 +72,13 @@ export const evaluateStreaming = (expression) => {
         if (typeof op === 'number') return op;
         if (typeof op === 'symbol') {
           const value = lookupInStreamingEnvironment(op);
-          return typeof value === 'function' ? value() : value;
+          if (typeof value === 'function' && value.constructor.name === 'GeneratorFunction') {
+            return value;
+          } else if (typeof value === 'function') {
+            return value();
+          } else {
+            return value;
+          }
         }
         return evaluateStreaming(op);
       });
