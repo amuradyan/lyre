@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import CodeEditor from '../components/slide/codeblock/CodeEditor.jsx';
+import MusicExamples from '../components/MusicExamples.jsx';
 import { createAudioContext } from '../utils/audioPlayer.js';
 
 const TWINKLE_TWINKLE = `; We can define the baroQue pitches
@@ -34,6 +35,7 @@ const TWINKLE_TWINKLE = `; We can define the baroQue pitches
 export default function Index() {
   const [code, setCode] = useState(TWINKLE_TWINKLE);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedExample, setSelectedExample] = useState(null);
   const audioContextRef = useRef(null);
   const workletNodeRef = useRef(null);
 
@@ -101,6 +103,14 @@ export default function Index() {
     }
   }, [isPlaying, code]);
 
+  const handleSelectExample = (exampleId, exampleCode) => {
+    setSelectedExample(exampleId);
+    setCode(exampleCode);
+    if (isPlaying) {
+      stop();
+    }
+  };
+
   return (
     <>
       <div className="fixed inset-0 bg-gradient-to-br from-purple-50 to-indigo-100 -z-10"></div>
@@ -138,28 +148,34 @@ export default function Index() {
           {/* Main Content - Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
-            {/* Left Column - Code Editor */}
+            {/* Left Column - Code Editor and Examples */}
             <div className="lg:col-span-3">
-              <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm overflow-hidden relative">
-                <button
-                  onClick={handlePlayPause}
-                  className="absolute flex items-center justify-center w-6 h-6 bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200 rounded-sm"
-                  style={{ top: '8px', right: '8px', zIndex: 9999 }}
-                >
-                  {isPlaying ? (
-                    <span className="text-sm">⏸</span>
-                  ) : (
-                    <span className="text-sm">▶</span>
-                  )}
-                </button>
-                <CodeEditor
-                  value={code}
-                  onChange={setCode}
-                  language="scheme"
+              <div className="space-y-1">
+                <MusicExamples
+                  onSelectExample={handleSelectExample}
+                  selectedExample={selectedExample}
                 />
+
+                <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm overflow-hidden relative">
+                  <button
+                    onClick={handlePlayPause}
+                    className="absolute flex items-center justify-center w-6 h-6 bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200 rounded-sm"
+                    style={{ top: '8px', right: '8px', zIndex: 9999 }}
+                  >
+                    {isPlaying ? (
+                      <span className="text-sm">⏸</span>
+                    ) : (
+                      <span className="text-sm">▶</span>
+                    )}
+                  </button>
+                  <CodeEditor
+                    value={code}
+                    onChange={setCode}
+                    language="scheme"
+                  />
+                </div>
               </div>
             </div>
-
             {/* Right Column - Functions Reference */}
             <div className="lg:col-span-2">
               <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm p-6">
@@ -220,6 +236,7 @@ export default function Index() {
               </div>
             </div>
           </div>
+
 
           {/* Bottom Note */}
           <div className="text-center mt-12">
