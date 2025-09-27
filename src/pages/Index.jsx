@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import CodeEditor from '../components/slide/codeblock/CodeEditor.jsx';
-import MusicExamples from '../components/MusicExamples.jsx';
+import Playlist from '../components/Playlist.jsx';
 import { createAudioContext } from '../utils/audioPlayer.js';
 
 const TWINKLE_TWINKLE = `; We can define the baroQue pitches
@@ -151,7 +151,7 @@ export default function Index() {
             {/* Left Column - Code Editor and Examples */}
             <div className="lg:col-span-3">
               <div className="space-y-1">
-                <MusicExamples
+                <Playlist
                   onSelectExample={handleSelectExample}
                   selectedExample={selectedExample}
                 />
