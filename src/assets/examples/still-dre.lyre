@@ -1,3 +1,5 @@
+; Still Dre by Dr. Dre feat. Snoop Dogg
+
 (define first-phrase
   (sequence
     (tone C4 80) (tone E4 130) (tone A4 360)))
