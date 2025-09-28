@@ -5,14 +5,14 @@ export function* sequence(...generators) {
 }
 
 
-export function* parallel(...generators) {
+export function* harmony(...generators) {
   const activeGens = [...generators];
   let activeCount = activeGens.length;
-  
+
   while (activeCount > 0) {
     let sum = 0;
     let validSamples = 0;
-    
+
     for (let i = 0; i < activeGens.length; i++) {
       if (activeGens[i]) {
         const next = activeGens[i].next();
@@ -25,7 +25,7 @@ export function* parallel(...generators) {
         }
       }
     }
-    
+
     if (validSamples > 0) {
       yield sum / validSamples;
     }
@@ -38,4 +38,3 @@ export function* repeat(times, generatorFunc) {
     yield* generatorFunc();
   }
 }
-

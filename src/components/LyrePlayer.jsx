@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import { createAudioContext } from '../utils/audioPlayer.js';
 import { runStreaming as run } from '../lyre/evaluator.js';
 
-export default function LyrePlayer({ expression = "(parallel (tone C4 200) (tone B4 200) (tone A4 400))" }) {
+export default function LyrePlayer({ expression = "(harmony (tone C4 200) (tone B4 200) (tone A4 400))" }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const audioContextRef = useRef(null);

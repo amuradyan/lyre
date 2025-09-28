@@ -93,7 +93,7 @@ export default function Index() {
           <div className="text-center mb-8">
             <div className="flex items-end justify-start gap-4">
               <img src="/lyre.png" alt="Lyre" className="w-48 h-auto" />
-              <p className="text-l text-gray-600 pb-2">\ a musical lisp</p>
+              <p className="text-l text-gray-600 pb-2">\ a music streaming lisp</p>
             </div>
           </div>
 
@@ -176,7 +176,7 @@ export default function Index() {
                         <div className="text-gray-600 mt-1 ml-4 text-left">Play sounds one after another in order</div>
                       </li>
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(parallel (tone ...) (tone ...) ...)</code>
+                        <code className="font-mono text-purple-600 text-xs">(harmony (tone ...) (tone ...) ...)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">Play multiple sounds simultaneously</div>
                       </li>
                       <li className="text-left">
@@ -196,7 +196,7 @@ export default function Index() {
                           <p>Give names to values to refer to them later.</p>
                           <p>You can also name note combinations to play later like so:
                             <pre className="font-mono text-purple-600 text-xs mt-2 whitespace-pre-wrap">{`(define c-major-chord
-  (parallel
+  (harmony
     (tone C4 500)
     (tone E4 500)
     (tone G4 500)))

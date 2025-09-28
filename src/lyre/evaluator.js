@@ -1,7 +1,7 @@
 import { tokenize } from './tokenizer.js';
 import { noteFrequencies } from './notes.js';
 import { generateNote, generateSilence } from './audio.js';
-import { sequence, parallel, repeat } from './composition.js';
+import { sequence, harmony, repeat } from './composition.js';
 
 const atom = (name) => Symbol.for(name);
 
@@ -9,7 +9,7 @@ let streamingEnvironment = [
   [atom("silence"), generateSilence],
   [atom("tone"), generateNote],
   [atom("sequence"), sequence],
-  [atom("parallel"), parallel],
+  [atom("harmony"), harmony],
   [atom("repeat"), repeat],
 
   ...noteFrequencies
@@ -22,7 +22,7 @@ const lookupInStreamingEnvironment = (name) => {
   if (matchingDefinition) {
     return matchingDefinition[1];
   } else {
-    throw new Error(`🪈 Error: Unknown name ... ${atom(name)}`);
+    throw new Error(`🪉 Error: Unknown name ... ${atom(name)}`);
   }
 };
 

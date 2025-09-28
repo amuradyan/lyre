@@ -1,4 +1,4 @@
-# Lyre
+# Lyre 🪉
 
 This repository accompanies a course on implementing a programming language from scratch. The idea is to explore how programming languages work by building a simple language to write music step by step.
 
