@@ -192,13 +192,16 @@ export default function Index() {
                     <ul className="space-y-2">
                       <li className="text-left">
                         <code className="font-mono text-purple-600 text-xs">(define baroqueA4 415.00)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Give names to values to refer to them later. You can also name note combinations to play later like so
-                          <pre className="font-mono text-purple-600 text-xs mt-2 whitespace-pre-wrap">{`(define c-major-chord
+                        <div className="text-gray-600 mt-1 ml-4 text-left">
+                          <p>Give names to values to refer to them later.</p>
+                          <p>You can also name note combinations to play later like so:
+                            <pre className="font-mono text-purple-600 text-xs mt-2 whitespace-pre-wrap">{`(define c-major-chord
   (parallel
     (tone C4 500)
     (tone E4 500)
     (tone G4 500)))
-(c-major-chord)`}</pre>
+
+(c-major-chord)`}</pre></p>
                         </div>
                       </li>
                     </ul>
@@ -217,7 +220,7 @@ export default function Index() {
               <a href="#walkthrough" className="text-purple-600 hover:text-purple-800 underline">
                 walkthrough
               </a>{' '}
-              (currently under construction 🚧)
+              /currently a mess and under construction 🚧/
             </p>
           </div>
         </div>
