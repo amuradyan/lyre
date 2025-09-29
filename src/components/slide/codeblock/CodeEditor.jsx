@@ -54,7 +54,8 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
     }
 
     const applyHeight = (h) => {
-      const next = Math.max(120, Math.ceil(h || 0));
+      const maxHeight = 30 * 20 + 8; // 30 lines * line height + padding
+      const next = Math.max(120, Math.min(maxHeight, Math.ceil(h || 0)));
       setHeight(next);
       setTimeout(() => editor.layout(), 0);
     };
@@ -95,7 +96,7 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
           fontSize: 14,
           renderLineHighlight: 'none',
           wordWrap: 'on',
-          scrollbar: { vertical: 'hidden', horizontal: 'hidden' },
+          scrollbar: { vertical: 'auto', horizontal: 'hidden' },
           readOnly
         }}
       />
