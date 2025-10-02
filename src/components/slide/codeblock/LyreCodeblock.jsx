@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import { createAudioContext } from '../../../utils/audioPlayer.js';
 
@@ -12,6 +12,10 @@ export default function LyreCodeblock({
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContextRef = useRef(null);
   const workletNodeRef = useRef(null);
+
+  useEffect(() => {
+    setUserCode(code);
+  }, [code]);
 
   const getAudioContext = () => {
     if (!audioContextRef.current) {
