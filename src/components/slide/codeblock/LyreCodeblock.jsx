@@ -6,8 +6,7 @@ export default function LyreCodeblock({
   code,
   onChange,
   readOnly = false,
-  showContainer = true,
-  buttonPosition = 'bottom' // 'bottom' or 'absolute'
+  showContainer = true
 }) {
   const [userCode, setUserCode] = useState(code);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -88,20 +87,10 @@ export default function LyreCodeblock({
   const playButton = (
     <button
       onClick={handlePlayPause}
-      className={buttonPosition === 'absolute' 
-        ? "absolute flex items-center justify-center w-6 h-6 bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200 rounded-sm"
-        : "flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-sm hover:bg-purple-700 disabled:bg-gray-400 transition-colors"
-      }
-      style={buttonPosition === 'absolute' ? { top: '8px', right: '8px', zIndex: 9999 } : {}}
+      className="absolute flex items-center justify-center w-6 h-6 bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200 rounded-sm"
+      style={{ top: '8px', right: '8px', zIndex: 9999 }}
     >
-      {buttonPosition === 'absolute' ? (
-        <span className="text-sm">{isPlaying ? '⏸' : '▶'}</span>
-      ) : (
-        <>
-          <span className="text-sm">{isPlaying ? '⏸' : '▶'}</span>
-          {isPlaying ? 'Stop' : 'Play'}
-        </>
-      )}
+      <span className="text-sm">{isPlaying ? '⏸' : '▶'}</span>
     </button>
   );
 
@@ -113,7 +102,7 @@ export default function LyreCodeblock({
         readOnly={readOnly}
         language="scheme"
       />
-      {buttonPosition === 'absolute' && playButton}
+      {playButton}
     </>
   );
 
@@ -121,11 +110,6 @@ export default function LyreCodeblock({
     return (
       <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm overflow-hidden relative">
         {editorContent}
-        {buttonPosition === 'bottom' && (
-          <div className="flex justify-end mt-2 p-4">
-            {playButton}
-          </div>
-        )}
       </div>
     );
   }
@@ -133,11 +117,6 @@ export default function LyreCodeblock({
   return (
     <div className="relative">
       {editorContent}
-      {buttonPosition === 'bottom' && (
-        <div className="flex justify-end mt-2">
-          {playButton}
-        </div>
-      )}
     </div>
   );
 }

@@ -61,7 +61,6 @@ export default function Index() {
                   code={code}
                   onChange={setCode}
                   showContainer={true}
-                  buttonPosition="absolute"
                 />
               </div>
             </div>
