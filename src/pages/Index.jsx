@@ -1,87 +1,16 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
-import CodeEditor from '../components/slide/codeblock/CodeEditor.jsx';
+import { useState, useCallback } from 'react';
+import LyreCodeblock from '../components/slide/codeblock/LyreCodeblock.jsx';
 import Playlist from '../components/Playlist.jsx';
-import { createAudioContext } from '../utils/audioPlayer.js';
 import pachelbelsCanonCode from '../assets/examples/pachelbels-canon-in-d.lyre?raw';
 
 export default function Index() {
   const [code, setCode] = useState(pachelbelsCanonCode);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [selectedExample, setSelectedExample] = useState('pachelbels-canon-in-d');
-  const audioContextRef = useRef(null);
-  const workletNodeRef = useRef(null);
 
-  const getAudioContext = () => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = createAudioContext();
-    }
-    return audioContextRef.current;
-  };
-
-  const initializeWorklet = async () => {
-    const audioContext = getAudioContext();
-
-    if (audioContext.state === 'suspended') {
-      await audioContext.resume();
-    }
-
-    if (!workletNodeRef.current) {
-      await audioContext.audioWorklet.addModule('/audio-worklet-processor.js');
-      const workletNode = new AudioWorkletNode(audioContext, 'lyre-processor');
-
-      workletNode.port.onmessage = (event) => {
-        if (event.data.type === 'ended') {
-          setIsPlaying(false);
-        } else if (event.data.type === 'error') {
-          console.error('AudioWorklet error:', event.data.error);
-          setIsPlaying(false);
-        }
-      };
-
-      workletNode.connect(audioContext.destination);
-      workletNodeRef.current = workletNode;
-    }
-
-    return workletNodeRef.current;
-  };
-
-  const playCode = async () => {
-    try {
-      const workletNode = await initializeWorklet();
-
-      workletNode.port.postMessage({
-        type: 'code',
-        code: code
-      });
-
-      setIsPlaying(true);
-    } catch (error) {
-      console.error('Failed to play Lyre expression:', error);
-    }
-  };
-
-  const stop = () => {
-    if (workletNodeRef.current) {
-      workletNodeRef.current.port.postMessage({ type: 'stop' });
-    }
-    setIsPlaying(false);
-  };
-
-  const handlePlayPause = useCallback(() => {
-    if (isPlaying) {
-      stop();
-    } else {
-      playCode();
-    }
-  }, [isPlaying, code]);
-
-  const handleSelectExample = (exampleId, exampleCode) => {
+  const handleSelectExample = useCallback((exampleId, exampleCode) => {
     setSelectedExample(exampleId);
     setCode(exampleCode);
-    if (isPlaying) {
-      stop();
-    }
-  };
+  }, []);
 
   return (
     <>
@@ -128,24 +57,12 @@ export default function Index() {
                   selectedExample={selectedExample}
                 />
 
-                <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm overflow-hidden relative">
-                  <button
-                    onClick={handlePlayPause}
-                    className="absolute flex items-center justify-center w-6 h-6 bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200 rounded-sm"
-                    style={{ top: '8px', right: '8px', zIndex: 9999 }}
-                  >
-                    {isPlaying ? (
-                      <span className="text-sm">⏸</span>
-                    ) : (
-                      <span className="text-sm">▶</span>
-                    )}
-                  </button>
-                  <CodeEditor
-                    value={code}
-                    onChange={setCode}
-                    language="scheme"
-                  />
-                </div>
+                <LyreCodeblock
+                  code={code}
+                  onChange={setCode}
+                  showContainer={true}
+                  buttonPosition="absolute"
+                />
               </div>
             </div>
             {/* Right Column - Functions Reference */}

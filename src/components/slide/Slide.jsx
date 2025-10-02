@@ -207,6 +207,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                       <LyreCodeblock
                         key={i}
                         code={item.code}
+                        showContainer={false}
+                        buttonPosition="bottom"
                       />
                     );
                   } else {
