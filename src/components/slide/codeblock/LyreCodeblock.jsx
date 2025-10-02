@@ -91,7 +91,7 @@ export default function LyreCodeblock({ code, readOnly = false }) {
         <button
           onClick={handlePlayPause}
           disabled={isLoading}
-          className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:bg-gray-400 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-sm hover:bg-purple-700 disabled:bg-gray-400 transition-colors"
         >
           {isLoading ? (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

@@ -187,13 +187,13 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   };
 
   return (
-    <div className="bg-white material-shadow" style={{ padding: '32px 32px 32px 32px' }}>
+    <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm" style={{ padding: '32px 32px 32px 32px' }}>
       {loading && <div className="text-gray-500">Loading…</div>}
       {error && <div className="text-red-600">Error: {error}</div>}
       {!loading && !error && (
         <div className="px-6 sm:px-10 md:px-16">
           {parsed.title && (
-            <h1 className="text-3xl font-bold text-left">{parsed.title}</h1>
+            <h1 className="text-3xl font-bold text-left mb-8">{parsed.title}</h1>
           )}
           <div className="space-y-6 text-left">
             {(() => {
@@ -235,7 +235,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
               {parsed.backHref ? (
                 <button
                   onClick={handleBack}
-                  className="inline-flex items-center font-semibold transition-all duration-200"
+                  className="inline-flex items-center font-semibold transition-all duration-200 rounded-sm"
                   style={{
                     gap: '8px', padding: '12px 24px',
                     background: '#2563eb', border: 'none',
@@ -255,7 +255,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                 <button
                   onClick={handleNext}
                   disabled={!allTestsPassing}
-                  className="inline-flex items-center font-semibold transition-all duration-200"
+                  className="inline-flex items-center font-semibold transition-all duration-200 rounded-sm"
                   style={{
                     gap: '8px', padding: '12px 24px',
                     background: allTestsPassing ? '#2563eb' : '#f3f4f6',

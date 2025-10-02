@@ -19,11 +19,14 @@ export default function App() {
 
   if (currentHash === '#walkthrough' || currentHash.startsWith('#walkthrough/')) {
     return (
-      <div className="font-sans bg-gray-100 text-gray-900 p-8">
-        <div className="max-w-3xl mx-auto">
-          <Slide initialMarkdownPath="./notes/Making a sound/0 Describing Sound.md" />
+      <>
+        <div className="fixed inset-0 bg-gradient-to-br from-purple-50 to-indigo-100 -z-10"></div>
+        <div className="font-sans text-gray-900 p-8">
+          <div className="max-w-65xl mx-auto">
+            <Slide initialMarkdownPath="./notes/Making a sound/0 Describing Sound.md" />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
