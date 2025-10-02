@@ -87,10 +87,18 @@ export default function LyreCodeblock({
   const playButton = (
     <button
       onClick={handlePlayPause}
-      className="absolute flex items-center justify-center w-6 h-6 bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200"
-      style={{ top: '8px', right: '8px', zIndex: 9999 }}
+      className="absolute flex items-center justify-center w-6 h-6 backdrop-blur text-white hover:opacity-80 transition-all duration-200"
+      style={{ top: '8px', right: '8px', zIndex: 9999, backgroundColor: '#876BA2' }}
     >
-      <span className="text-sm">{isPlaying ? '⏸' : '▶'}</span>
+      {isPlaying ? (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+          <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+          <path d="M8 5v14l11-7z" />
+        </svg>
+      )}
     </button>
   );
 
