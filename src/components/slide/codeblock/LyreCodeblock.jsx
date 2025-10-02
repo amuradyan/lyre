@@ -92,7 +92,7 @@ export default function LyreCodeblock({
     <button
       onClick={handlePlayPause}
       className="absolute flex items-center justify-center w-6 h-6 backdrop-blur text-white hover:opacity-80 transition-all duration-200"
-      style={{ top: '8px', right: '8px', zIndex: 9999, backgroundColor: '#876BA2' }}
+      style={{ top: '8px', right: '8px', zIndex: 9999, backgroundColor: '#B187D8' }}
     >
       {isPlaying ? (
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
