@@ -42,6 +42,15 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       .replace(/^-|-$/g, '');
   };
 
+  const slugToPath = (slug) => {
+    const slugMappings = {
+      'describing-sound': './notes/Making a sound/0 Describing Sound.md',
+      'describing-functions': './notes/Making a sound/1 Describing Functions.md',
+      'motion-becomes-a-list': './notes/Making a sound/2 Motion Becomes a List.md'
+    };
+    return slugMappings[slug];
+  };
+
   const updateUrl = (path) => {
     const slug = pathToSlug(path);
     setSlugToPathMap(prev => ({ ...prev, [slug]: path }));
@@ -55,7 +64,11 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (window.location.hash) {
       const slug = window.location.hash.slice(1);
-      if (slugToPathMap[slug]) {
+      const pathFromSlug = slugToPath(slug);
+      if (pathFromSlug) {
+        setMdPath(pathFromSlug);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (slugToPathMap[slug]) {
         setMdPath(slugToPathMap[slug]);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -72,7 +85,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   useEffect(() => {
     if (window.location.hash) {
       const slug = window.location.hash.slice(1);
-      if (slugToPathMap[slug]) {
+      const pathFromSlug = slugToPath(slug);
+      if (pathFromSlug) {
+        setMdPath(pathFromSlug);
+      } else if (slugToPathMap[slug]) {
         setMdPath(slugToPathMap[slug]);
       }
     } else if (mdPath) {

@@ -28,7 +28,7 @@ Try the Lyre musical programming language! Edit the code and click "Run Lyre" to
 Play multiple notes at the same time:
 
 ```lyre
-(parallel (tone C4 200) (tone B4 200) (tone A4 400))
+(harmony (tone C4 200) (tone B4 200) (tone A4 400))
 ```
 
 Create sequences:

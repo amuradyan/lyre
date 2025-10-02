@@ -17,7 +17,7 @@ export default function App() {
     };
   }, []);
 
-  if (currentHash === '#walkthrough' || currentHash.startsWith('#walkthrough/')) {
+  if (currentHash === '#walkthrough' || currentHash.startsWith('#walkthrough/') || (currentHash && currentHash !== '')) {
     return (
       <>
         <div className="fixed inset-0 bg-gradient-to-br from-purple-50 to-indigo-100 -z-10"></div>
