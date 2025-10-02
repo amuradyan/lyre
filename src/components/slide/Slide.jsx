@@ -203,7 +203,19 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   };
 
   return (
-    <div className="bg-white/70 backdrop-blur shadow-sm" style={{ padding: '32px 32px 32px 32px' }}>
+    <div className="bg-white/70 backdrop-blur shadow-sm relative" style={{ padding: '32px 32px 32px 32px' }}>
+      {/* Logo Tab */}
+      <div
+        className="absolute -top-2 right-8 bg-white/80 backdrop-blur px-3 py-2 shadow-sm cursor-pointer hover:opacity-80 transition-opacity"
+        onClick={() => window.location.hash = ''}
+      >
+        <img
+          src="/lyre-logo.png"
+          alt="Lyre"
+          className="w-4 h-auto"
+        />
+      </div>
+
       {loading && <div className="text-gray-500">Loading…</div>}
       {error && <div className="text-red-600">Error: {error}</div>}
       {!loading && !error && (
