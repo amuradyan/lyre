@@ -1,10 +1,11 @@
 const processInlineCode = (text) => {
   return text
-    .replace(/`([^`]+)`/g, (match, code) => `<code class="inline-code">${code}</code>`)
-    .replace(/\*\*([^*]+)\*\*/g, (match, bold) => `<strong>${bold}</strong>`)
-    .replace(/__([^_]+)__/g, (match, bold) => `<strong>${bold}</strong>`)
-    .replace(/\*([^*]+)\*/g, (match, italic) => `<em>${italic}</em>`)
-    .replace(/_([^_]+)_/g, (match, italic) => `<em>${italic}</em>`);
+    .replace(/`([^`]+)`/g, (_, code) => `<code class="inline-code">${code}</code>`)
+    .replace(/\*\*([^*]+)\*\*/g, (_, bold) => `<strong>${bold}</strong>`)
+    .replace(/__([^_]+)__/g, (_, bold) => `<strong>${bold}</strong>`)
+    .replace(/\*([^*]+)\*/g, (_, italic) => `<em>${italic}</em>`)
+    .replace(/_([^_]+)_/g, (_, italic) => `<em>${italic}</em>`)
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline filter drop-shadow-sm">${text}</a>`);
 };
 
 const extractTitle = (line) => {
