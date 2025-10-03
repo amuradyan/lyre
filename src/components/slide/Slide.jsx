@@ -44,9 +44,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   const slugToPath = (slug) => {
     const slugMappings = {
-      'describing-sound': './notes/Making a sound/0 Describing Sound.md',
-      'describing-functions': './notes/Making a sound/1 Describing Functions.md',
-      'motion-becomes-a-list': './notes/Making a sound/2 Motion Becomes a List.md'
+      'what-i-want-to-get': './notes/Lyre/0 What I want to get.md'
     };
     return slugMappings[slug];
   };
@@ -229,6 +227,28 @@ export default function SlideExperimental({ initialMarkdownPath }) {
               return parsed.content.map((item, i) => {
                 if (item.type === 'paragraph') {
                   return <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: item.content }} />;
+                } else if (item.type === 'list') {
+                  return (
+                    <ul key={i} className="text-gray-700 text-left list-disc list-inside space-y-1 ml-8">
+                      {item.items.map((listItem, j) => (
+                        <li key={j} dangerouslySetInnerHTML={{ __html: listItem }} />
+                      ))}
+                    </ul>
+                  );
+                } else if (item.type === 'blockquote') {
+                  return (
+                    <blockquote key={i} className="border-l-4 border-gray-300 pl-4 italic text-gray-600 text-left">
+                      <p dangerouslySetInnerHTML={{ __html: item.content }} />
+                    </blockquote>
+                  );
+                } else if (item.type === 'indented') {
+                  return (
+                    <div key={i} className="ml-8 text-gray-700 text-left whitespace-pre-line">
+                      <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                    </div>
+                  );
+                } else if (item.type === 'hr') {
+                  return <hr key={i} className="border-gray-300 my-6" />;
                 } else if (item.type === 'codeblock') {
                   if (item.language === 'lyre') {
                     return (

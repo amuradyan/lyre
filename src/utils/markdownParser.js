@@ -1,5 +1,11 @@
-const processInlineCode = (text) =>
-  text.replace(/`([^`]+)`/g, (match, code) => `<code class="inline-code">${code}</code>`);
+const processInlineCode = (text) => {
+  return text
+    .replace(/`([^`]+)`/g, (match, code) => `<code class="inline-code">${code}</code>`)
+    .replace(/\*\*([^*]+)\*\*/g, (match, bold) => `<strong>${bold}</strong>`)
+    .replace(/__([^_]+)__/g, (match, bold) => `<strong>${bold}</strong>`)
+    .replace(/\*([^*]+)\*/g, (match, italic) => `<em>${italic}</em>`)
+    .replace(/_([^_]+)_/g, (match, italic) => `<em>${italic}</em>`);
+};
 
 const extractTitle = (line) => {
   const match = line.match(/^#\s+(.+)$/);
@@ -21,12 +27,48 @@ const isBackSection = (line) => /^##\s+Back(\s+section)?\s*$/i.test(line.trim())
 const isCodeFence = (line) => line.startsWith('```');
 const isHeader = (line) => /^#/.test(line);
 const isEmpty = (line) => line.trim() === '';
+const isBulletPoint = (line) => /^[*+-]\s+/.test(line.trim()) && !/^\s{4,}/.test(line) && !/^\t{2,}/.test(line);
+const isBlockquote = (line) => /^\s*>\s+/.test(line);
+const isIndentedContent = (line) => /^\s{4,}/.test(line) || /^\t{2,}/.test(line);
+const isHorizontalRule = (line) => /^-{4,}\s*$/.test(line.trim());
 
 const createParagraph = (lines) => 
   lines.length ? {
     type: 'paragraph',
     content: processInlineCode(lines.join(' ').trim())
   } : null;
+
+const createList = (items) =>
+  items.length ? {
+    type: 'list',
+    items: items.map(item => processInlineCode(item.trim()))
+  } : null;
+
+const extractBulletContent = (line) => {
+  const match = line.match(/^\s*[*+-]\s+(.+)$/);
+  return match ? match[1].trim() : '';
+};
+
+const createBlockquote = (lines) =>
+  lines.length ? {
+    type: 'blockquote',
+    content: processInlineCode(lines.join(' ').trim())
+  } : null;
+
+const createIndentedContent = (lines) =>
+  lines.length ? {
+    type: 'indented',
+    content: processInlineCode(lines.join('\n'))
+  } : null;
+
+const extractBlockquoteContent = (line) => {
+  const match = line.match(/^\s*>\s+(.+)$/);
+  return match ? match[1].trim() : '';
+};
+
+const extractIndentedContent = (line) => {
+  return line.replace(/^\s{4}/, '').replace(/^\t{2}/, '\t').replace(/^\t/, '');
+};
 
 const findTestComment = (lines, startIndex) => {
   const findCommentEnd = (lines, index, accumulator = []) => {
@@ -64,6 +106,9 @@ const createInitialState = () => ({
   context: {
     inCode: false,
     currentPara: [],
+    currentList: [],
+    currentBlockquote: [],
+    currentIndented: [],
     codeBuffer: [],
     codeLanguage: null,
     inNext: false,
@@ -82,6 +127,56 @@ const flushParagraph = (state) => {
     : { ...state, context: { ...state.context, currentPara: [] } };
 };
 
+const flushList = (state) => {
+  const list = createList(state.context.currentList);
+  return list 
+    ? {
+        ...state,
+        content: [...state.content, list],
+        context: { ...state.context, currentList: [] }
+      }
+    : { ...state, context: { ...state.context, currentList: [] } };
+};
+
+const flushBlockquote = (state) => {
+  const blockquote = createBlockquote(state.context.currentBlockquote);
+  return blockquote 
+    ? {
+        ...state,
+        content: [...state.content, blockquote],
+        context: { ...state.context, currentBlockquote: [] }
+      }
+    : { ...state, context: { ...state.context, currentBlockquote: [] } };
+};
+
+const flushIndented = (state) => {
+  const indented = createIndentedContent(state.context.currentIndented);
+  return indented 
+    ? {
+        ...state,
+        content: [...state.content, indented],
+        context: { ...state.context, currentIndented: [] }
+      }
+    : { ...state, context: { ...state.context, currentIndented: [] } };
+};
+
+const flushAll = (state) => {
+  let newState = state;
+  if (newState.context.currentPara.length > 0) {
+    newState = flushParagraph(newState);
+  }
+  if (newState.context.currentList.length > 0) {
+    newState = flushList(newState);
+  }
+  if (newState.context.currentBlockquote.length > 0) {
+    newState = flushBlockquote(newState);
+  }
+  if (newState.context.currentIndented.length > 0) {
+    newState = flushIndented(newState);
+  }
+  return newState;
+};
+
 const processLine = (lines) => (state, line, index) => {
   const { context } = state;
   
@@ -95,7 +190,7 @@ const processLine = (lines) => (state, line, index) => {
   }
   
   if (!context.inCode && isNextSection(line)) {
-    const flushed = flushParagraph(state);
+    const flushed = flushAll(state);
     return {
       ...flushed,
       context: { ...flushed.context, inNext: true, inBack: false }
@@ -103,7 +198,7 @@ const processLine = (lines) => (state, line, index) => {
   }
   
   if (!context.inCode && isBackSection(line)) {
-    const flushed = flushParagraph(state);
+    const flushed = flushAll(state);
     return {
       ...flushed,
       context: { ...flushed.context, inBack: true, inNext: false }
@@ -155,7 +250,7 @@ const processLine = (lines) => (state, line, index) => {
         skipToIndex: endIndex
       };
     } else {
-      const flushed = flushParagraph(state);
+      const flushed = flushAll(state);
       const language = line.replace('```', '').trim() || 'javascript';
       return {
         ...flushed,
@@ -175,17 +270,61 @@ const processLine = (lines) => (state, line, index) => {
     };
   }
   
+  if (!context.inCode && isBlockquote(line)) {
+    const flushed = flushParagraph(state);
+    const flushedList = flushList(flushed);
+    const flushedIndented = flushIndented(flushedList);
+    const blockquoteContent = extractBlockquoteContent(line);
+    return {
+      ...flushedIndented,
+      context: { ...flushedIndented.context, currentBlockquote: [...flushedIndented.context.currentBlockquote, blockquoteContent] }
+    };
+  }
+  
+  if (!context.inCode && isIndentedContent(line)) {
+    const flushed = flushParagraph(state);
+    const flushedList = flushList(flushed);
+    const flushedBlockquote = flushBlockquote(flushedList);
+    const indentedContent = extractIndentedContent(line);
+    return {
+      ...flushedBlockquote,
+      context: { ...flushedBlockquote.context, currentIndented: [...flushedBlockquote.context.currentIndented, indentedContent] }
+    };
+  }
+  
+  if (!context.inCode && isBulletPoint(line)) {
+    const flushed = flushParagraph(state);
+    const flushedBlockquote = flushBlockquote(flushed);
+    const flushedIndented = flushIndented(flushedBlockquote);
+    const bulletContent = extractBulletContent(line);
+    return {
+      ...flushedIndented,
+      context: { ...flushedIndented.context, currentList: [...flushedIndented.context.currentList, bulletContent] }
+    };
+  }
+  
   if (isHeader(line)) {
-    return flushParagraph(state);
+    return flushAll(state);
+  }
+  
+  if (!context.inCode && isHorizontalRule(line)) {
+    const flushed = flushAll(state);
+    return {
+      ...flushed,
+      content: [...flushed.content, { type: 'hr' }]
+    };
   }
   
   if (isEmpty(line)) {
-    return flushParagraph(state);
+    return flushAll(state);
   }
   
+  const flushedList = flushList(state);
+  const flushedBlockquote = flushBlockquote(flushedList);
+  const flushedIndented = flushIndented(flushedBlockquote);
   return {
-    ...state,
-    context: { ...context, currentPara: [...context.currentPara, line.trim()] }
+    ...flushedIndented,
+    context: { ...flushedIndented.context, currentPara: [...flushedIndented.context.currentPara, line.trim()] }
   };
 };
 
@@ -210,7 +349,7 @@ function parseMarkdown(md) {
     { result: createInitialState(), skipNext: 0 }
   );
   
-  const finalState = flushParagraph(result);
+  const finalState = flushAll(result);
   
   return {
     title: finalState.title,
