@@ -55,7 +55,9 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
 
     const applyHeight = (h) => {
       const maxHeight = 30 * 20 + 8; // 30 lines * line height + padding
-      const next = Math.max(120, Math.min(maxHeight, Math.ceil(h || 0)));
+      const contentHeight = Math.ceil(h || 0);
+      const extraLineHeight = contentHeight + 20; // Add one extra line
+      const next = Math.min(maxHeight, extraLineHeight);
       setHeight(next);
       setTimeout(() => editor.layout(), 0);
     };
@@ -71,7 +73,8 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
   useEffect(() => {
     if (!editorRef.current) {
       const lines = value ? String(value).split('\n').length : 1;
-      setHeight(Math.max(120, lines * 20 + 8));
+      const heightWithExtra = (lines + 1) * 20 + 8; // Add one extra line
+      setHeight(heightWithExtra);
     }
   }, [value]);
 

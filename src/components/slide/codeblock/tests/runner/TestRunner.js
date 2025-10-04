@@ -142,7 +142,17 @@ const handleFailedEvaluation = (testSpec) => {
     testSpec.hasOwnProperty('expected');
 
   const expected = isObjectWithExpected ? testSpec.expected : testSpec;
-  const results = [createFailedResult(undefined, expected)];
+  
+  let input = undefined;
+  if (isObjectWithExpected) {
+    if (testSpec.hasOwnProperty('inputs')) {
+      input = testSpec.inputs;
+    } else if (testSpec.hasOwnProperty('input')) {
+      input = testSpec.input;
+    }
+  }
+  
+  const results = [createFailedResult(input, expected)];
 
   return createTestResult(false, 'value', results);
 };

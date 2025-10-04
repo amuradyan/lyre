@@ -59,7 +59,7 @@ export default function TestResults({ testCases, testResult }) {
       const { input, expected, actual, passed, error } = result;
 
       return {
-        input: type === 'function' ? input : undefined,
+        input: input,
         expected,
         actual,
         passed,
