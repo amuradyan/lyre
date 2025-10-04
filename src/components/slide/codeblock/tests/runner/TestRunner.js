@@ -157,23 +157,44 @@ const executeParameterlessFunction = (fn, testSpec) => {
 };
 
 const executeTestCase = (fn, testCase) => {
-  const hasRequiredProperties = testCase.hasOwnProperty('input') &&
-    testCase.hasOwnProperty('expected');
-
-  if (!hasRequiredProperties) {
+  if (!testCase.hasOwnProperty('expected')) {
     return createFailedResult(
-      testCase.input || 'undefined',
+      'undefined',
       testCase.expected || 'undefined',
-      'Test case must have "input" and "expected" properties'
+      'Test case must have "expected" property'
+    );
+  }
+
+  let inputs;
+  let inputDisplay;
+
+  if (testCase.hasOwnProperty('inputs')) {
+    if (!Array.isArray(testCase.inputs)) {
+      return createFailedResult(
+        testCase.inputs,
+        testCase.expected,
+        '"inputs" must be an array'
+      );
+    }
+    inputs = testCase.inputs;
+    inputDisplay = inputs;
+  } else if (testCase.hasOwnProperty('input')) {
+    inputs = [testCase.input];
+    inputDisplay = testCase.input;
+  } else {
+    return createFailedResult(
+      'undefined',
+      testCase.expected,
+      'Test case must have either "inputs" array or "input" property'
     );
   }
 
   try {
-    const actual = fn(testCase.input);
-    return createPassedResult(testCase.input, testCase.expected, actual);
+    const actual = fn(...inputs);
+    return createPassedResult(inputDisplay, testCase.expected, actual);
   } catch (error) {
     return {
-      input: testCase.input,
+      input: inputDisplay,
       expected: testCase.expected,
       actual: null,
       passed: false,

@@ -14,6 +14,7 @@ export default function TestCase({
     if (val === null) return 'null';
     if (val === undefined) return 'undefined';
     if (typeof val === 'string') return `"${val}"`;
+    if (Array.isArray(val)) return val.join(', ');
     return JSON.stringify(val);
   };
 
