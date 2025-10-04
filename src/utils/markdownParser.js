@@ -13,6 +13,11 @@ const extractTitle = (line) => {
   return match ? match[1].trim() : null;
 };
 
+const extractHeader = (line) => {
+  const match = line.match(/^(#+)\s+(.+)$/);
+  return match ? { level: match[1].length, text: match[2].trim() } : null;
+};
+
 const extractSlideId = (line) => {
   const match = line.match(/<!--\s*slide-id:\s*([a-f0-9-]+)\s*-->/i);
   return match ? match[1].trim() : null;
@@ -305,6 +310,20 @@ const processLine = (lines) => (state, line, index) => {
   }
   
   if (isHeader(line)) {
+    const header = extractHeader(line);
+    if (header && header.level === 1) {
+      return flushAll(state);
+    } else if (header && header.level > 1) {
+      const flushed = flushAll(state);
+      return {
+        ...flushed,
+        content: [...flushed.content, { 
+          type: 'header', 
+          level: header.level, 
+          text: processInlineCode(header.text) 
+        }]
+      };
+    }
     return flushAll(state);
   }
   

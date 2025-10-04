@@ -316,6 +316,12 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                       <div dangerouslySetInnerHTML={{ __html: item.content }} />
                     </div>
                   );
+                } else if (item.type === 'header') {
+                  const HeaderTag = `h${item.level}`;
+                  const headerClass = item.level === 2 ? "text-xl font-semibold text-gray-800 mt-6 mb-4" : 
+                                     item.level === 3 ? "text-lg font-medium text-gray-700 mt-4 mb-3" :
+                                     "text-base font-medium text-gray-600 mt-3 mb-2";
+                  return <HeaderTag key={i} className={headerClass} dangerouslySetInnerHTML={{ __html: item.text }} />;
                 } else if (item.type === 'hr') {
                   return <hr key={i} className="border-gray-300 my-6" />;
                 } else if (item.type === 'codeblock') {
