@@ -28,10 +28,10 @@ Lyre is the tool, that we'll be working on through the course. It is a lisp-like
 
 ```lisp
 (sequence
-    (parallel (tone G3 300) (tone Eb3 300))    ; da
-    (parallel (tone G3 300) (tone Eb3 300))    ; da
-    (parallel (tone G3 300) (tone Eb3 300))    ; da
-    (parallel (tone Eb3 1500) (tone G2 1500))) ; DUMMMM
+    (harmony (tone G3 300) (tone Eb3 300))    ; da
+    (harmony (tone G3 300) (tone Eb3 300))    ; da
+    (harmony (tone G3 300) (tone Eb3 300))    ; da
+    (harmony (tone Eb3 1500) (tone G2 1500))) ; DUMMMM
 ```
 
-To describe a sound, Lyre provides the `tone` function, which takes a pitch and a duration. Certain pitches have names and are known to Lyre, so we can use them directly, e.g. `C4`, `E4`, `A4`, etc. The `parallel` combines multiple sounds into one, and `sequence` puts them one after another. The `;` character is used to add comments.
+To describe a sound, Lyre provides the `tone` function, which takes a pitch and a duration. Certain pitches have names and are known to Lyre, so we can use them directly, e.g. `C4`, `E4`, `A4`, etc. The `harmony` combines multiple sounds into one, and `sequence` puts them one after another. The `;` character is used to add comments.
