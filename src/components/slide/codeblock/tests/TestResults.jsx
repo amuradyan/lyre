@@ -20,7 +20,8 @@ export default function TestResults({ testCases, testResult }) {
         <div style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
-          gap: '12px',
+          columnGap: '12px',
+          rowGap: '6px',
           marginTop: '12px'
         }}>
           {cases.map((testCase, i) => (
@@ -43,7 +44,8 @@ export default function TestResults({ testCases, testResult }) {
         <div style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
-          gap: '12px',
+          columnGap: '12px',
+          rowGap: '6px',
           marginTop: '12px'
         }}>
           {cases.map((testCase, i) => (
@@ -74,7 +76,8 @@ export default function TestResults({ testCases, testResult }) {
       <div style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
-        gap: '12px',
+        columnGap: '12px',
+        rowGap: '6px',
         marginTop: '12px'
       }}>
         {convertedTestCases.map((testCase, i) => (

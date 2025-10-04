@@ -41,7 +41,7 @@ export default function TestCase({
   return (
     <div style={{
       padding: '8px 0',
-      background: '#f6f8fa',
+      background: '#f1f3f4',
       display: 'flex',
       alignItems: 'center',
       fontFamily: 'IBM Plex Mono, monospace',
