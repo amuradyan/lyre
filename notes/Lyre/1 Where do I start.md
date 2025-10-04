@@ -36,7 +36,7 @@ function multiply(a, b) {
 }
 ???; // Call multiply with 5 and 3
 ```
-<!-- {"expected": 15} -->
+<!-- {"inputs": [5, 3], "expected": 15} -->
 
 ## Back
 

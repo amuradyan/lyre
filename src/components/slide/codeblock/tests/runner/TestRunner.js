@@ -123,9 +123,17 @@ const handleNoTestSpec = () =>
 
 const handleFailedEvaluation = (testSpec) => {
   if (Array.isArray(testSpec)) {
-    const results = testSpec.map(testCase =>
-      createFailedResult(testCase.input, testCase.expected)
-    );
+    const results = testSpec.map(testCase => {
+      let input;
+      if (testCase.hasOwnProperty('inputs')) {
+        input = testCase.inputs;
+      } else if (testCase.hasOwnProperty('input')) {
+        input = testCase.input;
+      } else {
+        input = undefined;
+      }
+      return createFailedResult(input, testCase.expected);
+    });
     return createTestResult(false, 'function', results);
   }
 
