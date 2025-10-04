@@ -35,7 +35,7 @@ export default function TestCase({
     }
   }
 
-  const inputDisplay = inputLabel || (input !== undefined ? `f(${formatValue(input)})` : '');
+  const inputDisplay = inputLabel || (input !== undefined ? `f(${formatValue(input)}):` : '');
   const inputWidth = inputDisplay ? Math.max(inputDisplay.length * 8 + 20, 60) : 0;
 
   return (
@@ -54,7 +54,7 @@ export default function TestCase({
           whiteSpace: 'nowrap',
           width: `${inputWidth}px`,
           display: 'inline-block',
-          color: displayColor
+          color: displayColor,
         }}>
           {inputDisplay}
         </span>
