@@ -29,6 +29,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   const [error, setError] = useState(null);
   const [testStatuses, setTestStatuses] = useState({});
   const [slugToPathMap, setSlugToPathMap] = useState({});
+  const [dynamicSlugMappings, setDynamicSlugMappings] = useState({});
 
   const pathToSlug = (path) => {
     const filename = path.split('/').pop();
@@ -42,11 +43,72 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       .replace(/^-|-$/g, '');
   };
 
-  const slugToPath = (slug) => {
-    const slugMappings = {
-      'what-i-want-to-get': './notes/Lyre/0 What I want to get.md'
+  const loadSlugMappings = async () => {
+    const isDev = import.meta.env.DEV;
+    const mappings = {};
+    
+    try {
+      if (isDev) {
+        const lyreNotesPath = `${__WORKSPACE_ROOT__}/notes/Lyre`;
+        const url = encodeURI(`/@fs${lyreNotesPath}`);
+        const response = await fetch(url);
+        if (response.ok) {
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const links = doc.querySelectorAll('a[href$=".md"]');
+          
+          links.forEach(link => {
+            const filename = link.getAttribute('href');
+            if (filename && /^\d+\s/.test(filename)) {
+              const fullPath = `./notes/Lyre/${filename}`;
+              const slug = pathToSlug(fullPath);
+              mappings[slug] = fullPath;
+            }
+          });
+        }
+      } else {
+        for (let i = 0; i < 50; i++) {
+          try {
+            const response = await fetch(`/notes/Lyre/${i}%20`);
+            if (!response.ok) break;
+            
+            const testUrl = `/notes/Lyre/`;
+            const dirResponse = await fetch(testUrl);
+            if (dirResponse.ok) {
+              const html = await dirResponse.text();
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(html, 'text/html');
+              const links = doc.querySelectorAll('a[href$=".md"]');
+              
+              links.forEach(link => {
+                const filename = link.getAttribute('href');
+                if (filename && filename.startsWith(`${i} `)) {
+                  const fullPath = `./notes/Lyre/${filename}`;
+                  const slug = pathToSlug(fullPath);
+                  mappings[slug] = fullPath;
+                }
+              });
+            }
+          } catch {
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load dynamic slug mappings:', e);
+    }
+    
+    const fallbackMappings = {
+      'what-i-want-to-get': './notes/Lyre/0 What I want to get.md',
+      'where-do-i-start': './notes/Lyre/1 Where do I start.md'
     };
-    return slugMappings[slug];
+    
+    return { ...fallbackMappings, ...mappings };
+  };
+
+  const slugToPath = (slug) => {
+    return dynamicSlugMappings[slug];
   };
 
   const updateUrl = (path) => {
@@ -81,17 +143,24 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   }, [handleBrowserNavigation]);
 
   useEffect(() => {
-    if (window.location.hash) {
-      const slug = window.location.hash.slice(1);
-      const pathFromSlug = slugToPath(slug);
-      if (pathFromSlug) {
-        setMdPath(pathFromSlug);
-      } else if (slugToPathMap[slug]) {
-        setMdPath(slugToPathMap[slug]);
+    const initializeSlugMappings = async () => {
+      const mappings = await loadSlugMappings();
+      setDynamicSlugMappings(mappings);
+      
+      if (window.location.hash) {
+        const slug = window.location.hash.slice(1);
+        const pathFromSlug = mappings[slug];
+        if (pathFromSlug) {
+          setMdPath(pathFromSlug);
+        } else if (slugToPathMap[slug]) {
+          setMdPath(slugToPathMap[slug]);
+        }
+      } else if (mdPath) {
+        updateUrl(mdPath);
       }
-    } else if (mdPath) {
-      updateUrl(mdPath);
-    }
+    };
+    
+    initializeSlugMappings();
   }, []);
 
   useEffect(() => {
