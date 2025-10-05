@@ -236,6 +236,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
         .skip-arrow:hover .skip-wiggle {
           animation: wiggle 0.3s ease-in-out infinite;
         }
+        .nav-button {
+          text-decoration: underline;
+          transition: all 0.2s;
+        }
         .skip-tooltip-container {
           position: relative;
           display: inline-flex;
@@ -347,11 +351,11 @@ export default function SlideExperimental({ initialMarkdownPath }) {
               {parsed.backHref ? (
                 <button
                   onClick={handleBack}
-                  className="inline-flex items-center font-semibold transition-all duration-200"
+                  className="inline-flex items-center font-semibold nav-button"
                   style={{
                     gap: '8px', padding: '12px 24px',
-                    background: '#6366f1', border: 'none',
-                    color: 'white', fontFamily: 'Nunito, sans-serif',
+                    background: 'transparent', border: '1px solid rgba(99, 102, 241, 0.3)',
+                    color: '#6366f1', fontFamily: 'Nunito, sans-serif',
                     fontWeight: 600, cursor: 'pointer'
                   }}
                 >
@@ -367,15 +371,16 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                 <button
                   onClick={handleNext}
                   disabled={!allTestsPassing}
-                  className={`inline-flex items-center font-semibold transition-all duration-200 ${parsed.skipHref ? 'skip-arrow' : ''}`}
+                  className={`inline-flex items-center font-semibold ${allTestsPassing ? 'nav-button' : ''} ${parsed.skipHref ? 'skip-arrow' : ''}`}
                   style={{
                     gap: '8px', padding: '12px 24px',
-                    background: allTestsPassing ? '#6366f1' : '#f3f4f6',
-                    border: 'none',
-                    color: allTestsPassing ? 'white' : '#9ca3af',
+                    background: 'transparent',
+                    border: allTestsPassing ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid rgba(156, 163, 175, 0.3)',
+                    color: allTestsPassing ? '#6366f1' : '#9ca3af',
                     fontFamily: 'Nunito, sans-serif',
                     fontWeight: 600,
-                    cursor: allTestsPassing ? 'pointer' : 'not-allowed'
+                    cursor: allTestsPassing ? 'pointer' : 'not-allowed',
+                    textDecoration: allTestsPassing ? 'underline' : 'none'
                   }}
                 >
                   {parsed.nextText || 'Next'}
@@ -391,7 +396,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
-                        style={{ width: '20px', height: '20px', cursor: 'pointer', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' }}
+                        style={{ width: '20px', height: '20px', cursor: 'pointer' }}
                       >
                         <path d="M5 5l7 7-7 7" />
                         <path d="M12 5l7 7-7 7" />
