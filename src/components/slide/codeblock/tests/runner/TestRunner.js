@@ -124,54 +124,14 @@ const handleNoTestSpec = () =>
 const handleFailedEvaluation = (testSpec) => {
   if (Array.isArray(testSpec)) {
     const results = testSpec.map(testCase => {
-      let input;
-      if (testCase.hasOwnProperty('inputs')) {
-        input = testCase.inputs;
-      } else if (testCase.hasOwnProperty('input')) {
-        input = testCase.input;
-      } else {
-        input = undefined;
-      }
+      const input = testCase.hasOwnProperty('inputs') ? testCase.inputs : undefined;
       return createFailedResult(input, testCase.expected);
     });
     return createTestResult(false, 'function', results);
   }
 
-  const isObjectWithExpected = typeof testSpec === 'object' &&
-    testSpec !== null &&
-    testSpec.hasOwnProperty('expected');
-
-  const expected = isObjectWithExpected ? testSpec.expected : testSpec;
-  
-  let input = undefined;
-  if (isObjectWithExpected) {
-    if (testSpec.hasOwnProperty('inputs')) {
-      input = testSpec.inputs;
-    } else if (testSpec.hasOwnProperty('input')) {
-      input = testSpec.input;
-    }
-  }
-  
-  const results = [createFailedResult(input, expected)];
-
+  const results = [createFailedResult(undefined, testSpec)];
   return createTestResult(false, 'value', results);
-};
-
-const executeParameterlessFunction = (fn, testSpec) => {
-  try {
-    const actual = fn();
-    const result = createPassedResult(undefined, testSpec.expected, actual);
-    return createTestResult(result.passed, 'function', [result]);
-  } catch (error) {
-    const result = {
-      input: undefined,
-      expected: testSpec.expected,
-      actual: null,
-      passed: false,
-      error: error.message
-    };
-    return createTestResult(false, 'function', [result]);
-  }
 };
 
 const executeTestCase = (fn, testCase) => {
@@ -183,36 +143,30 @@ const executeTestCase = (fn, testCase) => {
     );
   }
 
-  let inputs;
-  let inputDisplay;
-
-  if (testCase.hasOwnProperty('inputs')) {
-    if (!Array.isArray(testCase.inputs)) {
-      return createFailedResult(
-        testCase.inputs,
-        testCase.expected,
-        '"inputs" must be an array'
-      );
-    }
-    inputs = testCase.inputs;
-    inputDisplay = inputs;
-  } else if (testCase.hasOwnProperty('input')) {
-    inputs = [testCase.input];
-    inputDisplay = testCase.input;
-  } else {
+  if (!testCase.hasOwnProperty('inputs')) {
     return createFailedResult(
       'undefined',
       testCase.expected,
-      'Test case must have either "inputs" array or "input" property'
+      'Test case must have "inputs" array'
     );
   }
 
+  if (!Array.isArray(testCase.inputs)) {
+    return createFailedResult(
+      testCase.inputs,
+      testCase.expected,
+      '"inputs" must be an array'
+    );
+  }
+
+  const inputs = testCase.inputs;
+
   try {
     const actual = fn(...inputs);
-    return createPassedResult(inputDisplay, testCase.expected, actual);
+    return createPassedResult(inputs, testCase.expected, actual);
   } catch (error) {
     return {
-      input: inputDisplay,
+      input: inputs,
       expected: testCase.expected,
       actual: null,
       passed: false,
@@ -222,27 +176,18 @@ const executeTestCase = (fn, testCase) => {
 };
 
 const executeFunctionTests = (fn, testSpec) => {
-  const isParameterlessTest = typeof testSpec === 'object' &&
-    testSpec !== null &&
-    testSpec.hasOwnProperty('expected') &&
-    !Array.isArray(testSpec);
-
-  if (isParameterlessTest) {
-    return executeParameterlessFunction(fn, testSpec);
+  if (!Array.isArray(testSpec)) {
+    return createTestResult(
+      false,
+      'function',
+      [],
+      'Test spec must be an array of test cases with {inputs: [...], expected: ...} format'
+    );
   }
 
-  if (Array.isArray(testSpec)) {
-    const results = testSpec.map(testCase => executeTestCase(fn, testCase));
-    const allPassed = results.every(result => result.passed);
-    return createTestResult(allPassed, 'function', results);
-  }
-
-  return createTestResult(
-    false,
-    'function',
-    [],
-    'Function tests require either an array of test cases with {input, expected} format or a simple {expected} format for parameterless functions'
-  );
+  const results = testSpec.map(testCase => executeTestCase(fn, testCase));
+  const allPassed = results.every(result => result.passed);
+  return createTestResult(allPassed, 'function', results);
 };
 
 const executeValueTest = (result, testSpec) => {
