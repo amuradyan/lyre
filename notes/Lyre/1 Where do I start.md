@@ -8,7 +8,7 @@ function area(width, height) {
   return width * height; // returning a value lets callers use it
 }
 
-area(2, 3); // calling the function with 2 and 3 gives back 5
+area(2, 3); // calling the function with 2 and 3 returns 6
 ```
 
 Lines 1-3 define the function, and line 5 calls it. `area` is its' name and `width` and `height` are the names of the values it will be passed, known otherwise as _arguments_. The `*` operator multiplies two numbers and the `return` statement on line 2 returns the value to whoever called the function.
@@ -22,3 +22,7 @@ Let's do a few exercises to get familiar with functions.
 ## Next
 
 - [Exercises on functions](2%20Exercises%20on%20functions.md)
+
+## Skip
+
+- [How do I describe a sound to a machine?](4%20How%20do%20I%20describe%20a%20sound%20to%20a%20machine.md)
