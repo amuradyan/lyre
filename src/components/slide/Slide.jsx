@@ -202,8 +202,63 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSkip = () => {
+    const { skipHref } = parsed;
+    if (!skipHref) return;
+    const idx = mdPath.indexOf('/notes/');
+    const repoRoot = idx >= 0 ? mdPath.slice(0, idx) : mdPath.substring(0, mdPath.lastIndexOf('/'));
+    const mdDir = mdPath.substring(0, mdPath.lastIndexOf('/'));
+    let target = skipHref;
+    try { target = decodeURIComponent(skipHref); } catch { }
+
+    let skipAbs;
+    if (target.startsWith('/')) {
+      skipAbs = `${repoRoot}${target}`;
+    } else if (target.startsWith('notes/')) {
+      skipAbs = `${repoRoot}/${target}`;
+    } else {
+      skipAbs = `${mdDir}/${target}`;
+    }
+
+    setMdPath(skipAbs);
+    updateUrl(skipAbs);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="bg-white/70 backdrop-blur shadow-sm relative" style={{ padding: '32px 32px 32px 32px' }}>
+      <style>{`
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-5deg); }
+          75% { transform: rotate(5deg); }
+        }
+        .skip-arrow:hover .skip-wiggle {
+          animation: wiggle 0.3s ease-in-out infinite;
+        }
+        .skip-tooltip-container {
+          position: relative;
+          display: inline-flex;
+        }
+        .skip-tooltip {
+          position: absolute;
+          bottom: 100%;
+          right: 0;
+          margin-bottom: 8px;
+          padding: 6px 10px;
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          font-size: 12px;
+          border-radius: 4px;
+          white-space: nowrap;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.2s;
+        }
+        .skip-tooltip-container:hover .skip-tooltip {
+          opacity: 1;
+        }
+      `}</style>
       {/* Logo Tab */}
       <div
         className="absolute -top-2 right-8 bg-white/80 backdrop-blur px-3 py-2 shadow-sm cursor-pointer hover:opacity-80 transition-opacity"
@@ -251,9 +306,9 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                   );
                 } else if (item.type === 'header') {
                   const HeaderTag = `h${item.level}`;
-                  const headerClass = item.level === 2 ? "text-xl font-semibold text-gray-800 mt-6 mb-4" : 
-                                     item.level === 3 ? "text-lg font-medium text-gray-700 mt-4 mb-3" :
-                                     "text-base font-medium text-gray-600 mt-3 mb-2";
+                  const headerClass = item.level === 2 ? "text-xl font-semibold text-gray-800 mt-6 mb-4" :
+                    item.level === 3 ? "text-lg font-medium text-gray-700 mt-4 mb-3" :
+                      "text-base font-medium text-gray-600 mt-3 mb-2";
                   return <HeaderTag key={i} className={headerClass} dangerouslySetInnerHTML={{ __html: item.text }} />;
                 } else if (item.type === 'hr') {
                   return <hr key={i} className="border-gray-300 my-6" />;
@@ -287,7 +342,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
               });
             })()}
           </div>
-          {(parsed.backHref || parsed.nextHref) && (
+          {(parsed.backHref || parsed.nextHref || parsed.skipHref) && (
             <div className="flex justify-between" style={{ marginTop: '48px' }}>
               {parsed.backHref ? (
                 <button
@@ -295,7 +350,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                   className="inline-flex items-center font-semibold transition-all duration-200"
                   style={{
                     gap: '8px', padding: '12px 24px',
-                    background: '#2563eb', border: 'none',
+                    background: '#6366f1', border: 'none',
                     color: 'white', fontFamily: 'Nunito, sans-serif',
                     fontWeight: 600, cursor: 'pointer'
                   }}
@@ -312,10 +367,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                 <button
                   onClick={handleNext}
                   disabled={!allTestsPassing}
-                  className="inline-flex items-center font-semibold transition-all duration-200"
+                  className={`inline-flex items-center font-semibold transition-all duration-200 ${parsed.skipHref ? 'skip-arrow' : ''}`}
                   style={{
                     gap: '8px', padding: '12px 24px',
-                    background: allTestsPassing ? '#2563eb' : '#f3f4f6',
+                    background: allTestsPassing ? '#6366f1' : '#f3f4f6',
                     border: 'none',
                     color: allTestsPassing ? 'white' : '#9ca3af',
                     fontFamily: 'Nunito, sans-serif',
@@ -324,9 +379,30 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                   }}
                 >
                   {parsed.nextText || 'Next'}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '20px', height: '20px' }}>
-                    <path d="M9 5l7 7-7 7" />
-                  </svg>
+                  {parsed.skipHref ? (
+                    <div className="skip-tooltip-container">
+                      <svg
+                        className="skip-wiggle"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSkip();
+                        }}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        style={{ width: '20px', height: '20px', cursor: 'pointer', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' }}
+                      >
+                        <path d="M5 5l7 7-7 7" />
+                        <path d="M12 5l7 7-7 7" />
+                      </svg>
+                      <span className="skip-tooltip">Skip exercises</span>
+                    </div>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '20px', height: '20px' }}>
+                      <path d="M9 5l7 7-7 7" />
+                    </svg>
+                  )}
                 </button>
               )}
             </div>

@@ -30,6 +30,7 @@ const extractLink = (line) => {
 
 const isNextSection = (line) => /^##\s+Next(\s+section)?\s*$/i.test(line.trim());
 const isBackSection = (line) => /^##\s+Back(\s+section)?\s*$/i.test(line.trim());
+const isSkipSection = (line) => /^##\s+Skip(\s+section)?\s*$/i.test(line.trim());
 const isCodeFence = (line) => line.startsWith('```');
 const isHeader = (line) => /^#/.test(line);
 const isEmpty = (line) => line.trim() === '';
@@ -108,7 +109,7 @@ const createInitialState = () => ({
   title: null,
   slideId: null,
   content: [],
-  navigation: { next: null, back: null },
+  navigation: { next: null, back: null, skip: null },
   context: {
     inCode: false,
     currentPara: [],
@@ -118,7 +119,8 @@ const createInitialState = () => ({
     codeBuffer: [],
     codeLanguage: null,
     inNext: false,
-    inBack: false
+    inBack: false,
+    inSkip: false
   }
 });
 
@@ -199,7 +201,7 @@ const processLine = (lines) => (state, line, index) => {
     const flushed = flushAll(state);
     return {
       ...flushed,
-      context: { ...flushed.context, inNext: true, inBack: false }
+      context: { ...flushed.context, inNext: true, inBack: false, inSkip: false }
     };
   }
   
@@ -207,10 +209,18 @@ const processLine = (lines) => (state, line, index) => {
     const flushed = flushAll(state);
     return {
       ...flushed,
-      context: { ...flushed.context, inBack: true, inNext: false }
+      context: { ...flushed.context, inBack: true, inNext: false, inSkip: false }
     };
   }
-  
+
+  if (!context.inCode && isSkipSection(line)) {
+    const flushed = flushAll(state);
+    return {
+      ...flushed,
+      context: { ...flushed.context, inSkip: true, inNext: false, inBack: false }
+    };
+  }
+
   if (context.inNext) {
     const link = extractLink(line);
     return link 
@@ -224,7 +234,7 @@ const processLine = (lines) => (state, line, index) => {
   
   if (context.inBack) {
     const link = extractLink(line);
-    return link 
+    return link
       ? {
           ...state,
           navigation: { ...state.navigation, back: link },
@@ -232,7 +242,18 @@ const processLine = (lines) => (state, line, index) => {
         }
       : state;
   }
-  
+
+  if (context.inSkip) {
+    const link = extractLink(line);
+    return link
+      ? {
+          ...state,
+          navigation: { ...state.navigation, skip: link },
+          context: { ...state.context, inSkip: false }
+        }
+      : state;
+  }
+
   if (isCodeFence(line)) {
     if (context.inCode) {
       const code = context.codeBuffer.join('\n');
@@ -378,7 +399,9 @@ function parseMarkdown(md) {
     nextHref: finalState.navigation.next?.href || null,
     nextText: finalState.navigation.next?.text || null,
     backHref: finalState.navigation.back?.href || null,
-    backText: finalState.navigation.back?.text || null
+    backText: finalState.navigation.back?.text || null,
+    skipHref: finalState.navigation.skip?.href || null,
+    skipText: finalState.navigation.skip?.text || null
   };
 }
 
