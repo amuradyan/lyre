@@ -13,7 +13,7 @@ square(3); // calling the function with 3 returns 9
 
 ----
 
-Let's write a function that calculates the speed of an object given the distance it traveled and the time it took, by dividing distance by time.
+Let's write a function that calculates the _speed_ of an object given the distance it traveled and the time it took, by dividing distance by time.
 
 ```js
 ??? speed(distance, ???) {
@@ -28,19 +28,30 @@ Let's write a function that calculates the speed of an object given the distance
 
 ----
 
-Let's write a function that calculates _Return on Investment_ (ROI) - how much profit or loss you made on an investment as a percentage, by subtracting the initial investment from the final value, then dividing by the initial investment.
+Let's write a function that calculates _Return on Investment_ /ROI/ - how much profit or loss you made on an investment as a percentage, by subtracting the initial investment from the final value, then dividing by the initial investment.
 
 ```js
-function roi(initialValue, finalValue) {
-  return (??? - ???) / ???; // Fill in the ??? to complete the function
+??? roi(initialValue, finalValue) {
+  return (??? - initialValue) / ???; // Fill in the ??? to complete the function
 }
 ```
 <!-- [
-{"inputs": [100, 120], "expected": 0.2},
-{"inputs": [100, 80], "expected": -0.2},
-{"inputs": [100, 100], "expected": 0},
-{"inputs": [1000, 1500], "expected": 0.5}]
+{"inputs": [10, 12], "expected": 0.2},
+{"inputs": [10, 8], "expected": -0.2},
+{"inputs": [10, 10], "expected": 0},
+{"inputs": [100, 150], "expected": 0.5}]
 -->
+
+----
+
+Let's write a function that calculates the _redshift_ /z/ of a distant galaxy - how much its light has been stretched by the universe's expansion, by subtracting the observed wavelength from the emitted wavelength, then dividing by the emitted wavelength.
+
+```js
+??? // write the redshift function
+
+redshift(400, 500); // should return 0.25
+```
+<!-- 0.25 -->
 
 ## Back
 
