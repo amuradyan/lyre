@@ -38,6 +38,7 @@ const isBulletPoint = (line) => /^[*+-]\s+/.test(line.trim()) && !/^\s{4,}/.test
 const isBlockquote = (line) => /^\s*>\s+/.test(line);
 const isIndentedContent = (line) => /^\s{4,}/.test(line) || /^\t{2,}/.test(line);
 const isHorizontalRule = (line) => /^-{4,}\s*$/.test(line.trim());
+const isImage = (line) => /^!\[([^\]]*)\]\(([^)]+)\)\s*$/.test(line.trim());
 
 const createParagraph = (lines) => 
   lines.length ? {
@@ -75,6 +76,11 @@ const extractBlockquoteContent = (line) => {
 
 const extractIndentedContent = (line) => {
   return line.replace(/^\s{4}/, '').replace(/^\t{2}/, '\t').replace(/^\t/, '');
+};
+
+const extractImage = (line) => {
+  const match = line.trim().match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+  return match ? { alt: match[1], src: match[2] } : null;
 };
 
 const findTestComment = (lines, startIndex) => {
@@ -355,7 +361,18 @@ const processLine = (lines) => (state, line, index) => {
       content: [...flushed.content, { type: 'hr' }]
     };
   }
-  
+
+  if (!context.inCode && isImage(line)) {
+    const image = extractImage(line);
+    if (image) {
+      const flushed = flushAll(state);
+      return {
+        ...flushed,
+        content: [...flushed.content, { type: 'image', alt: image.alt, src: image.src }]
+      };
+    }
+  }
+
   if (isEmpty(line)) {
     return flushAll(state);
   }

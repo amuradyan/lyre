@@ -327,6 +327,21 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                   return <HeaderTag key={i} className={headerClass} dangerouslySetInnerHTML={{ __html: item.text }} />;
                 } else if (item.type === 'hr') {
                   return <hr key={i} className="border-gray-300 my-6" />;
+                } else if (item.type === 'image') {
+                  const resolveImagePath = (src) => {
+                    if (src.startsWith('http://') || src.startsWith('https://')) {
+                      return src;
+                    }
+                    return joinUrlFs(src);
+                  };
+                  return (
+                    <img
+                      key={i}
+                      src={resolveImagePath(item.src)}
+                      alt={item.alt}
+                      className="max-w-full h-auto my-6"
+                    />
+                  );
                 } else if (item.type === 'codeblock') {
                   if (item.language === 'lyre') {
                     return (
