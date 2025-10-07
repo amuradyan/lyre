@@ -29,11 +29,13 @@ export default function Codeblock({
       const results = executeMarkdownTest(codeToTest, testComment);
       setTestResults(results);
 
+      const hasPassingTests = results.results?.some(r => r.passed) ?? false;
+
       if (onTestStatusChangeRef.current) {
-        onTestStatusChangeRef.current(results.success);
+        onTestStatusChangeRef.current(hasPassingTests);
       }
 
-      if (results.success && slideId !== undefined) {
+      if (hasPassingTests && slideId !== undefined) {
         saveCodeBlock(slideId, initialCode, codeToTest);
       }
 
@@ -55,11 +57,13 @@ export default function Codeblock({
       const results = executeMarkdownTest(initialCode, testComment);
       setTestResults(results);
 
+      const hasPassingTests = results.results?.some(r => r.passed) ?? false;
+
       if (onTestStatusChangeRef.current) {
-        onTestStatusChangeRef.current(results.success);
+        onTestStatusChangeRef.current(hasPassingTests);
       }
 
-      if (results.success && slideId !== undefined) {
+      if (hasPassingTests && slideId !== undefined) {
         saveCodeBlock(slideId, initialCode, initialCode);
       }
     } else if (onTestStatusChangeRef.current) {
