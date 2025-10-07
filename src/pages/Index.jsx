@@ -133,7 +133,7 @@ export default function Index() {
           <div className="text-center mt-12">
             <p className="text-gray-500 text-sm">
               <strong>Note:</strong> For a deeper dive into language implementation, check out the{' '}
-              <a href="#walkthrough" className="text-purple-600 hover:text-purple-800 underline">
+              <a href="#walkthrough" className="text-purple-600 hover:text-purple-800 underline" style={{ fontSize: '1.1rem' }}>
                 walkthrough
               </a>{' '}
               /currently a mess and under construction 🚧/
