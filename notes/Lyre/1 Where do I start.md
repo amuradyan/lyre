@@ -25,4 +25,4 @@ Let's do a few exercises to get familiar with functions.
 
 ## Skip
 
-- [How do I describe a sound to a machine?](4%20How%20do%20I%20describe%20a%20sound%20to%20a%20machine.md)
+- [How do I describe a sound to a machine?](3%20How%20do%20I%20describe%20a%20sound%20to%20a%20machine.md)

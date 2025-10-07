@@ -12,11 +12,11 @@ export const SLIDES = [
     title: 'Exercises on functions'
   },
   {
-    path: './notes/Lyre/4 How do I describe a sound to a machine.md',
+    path: './notes/Lyre/3 How do I describe a sound to a machine.md',
     title: 'How do I describe a sound to a machine?'
   },
   {
-    path: './notes/Lyre/5 Sampling a wave.md',
+    path: './notes/Lyre/4 Sampling a wave.md',
     title: 'Sampling a wave'
   }
 ];

@@ -40,4 +40,4 @@ How do I calculate the samples, though?
 
 ## Next
 
-- [Sampling a wave](5%20Sampling%20a%20wave.md)
+- [Sampling a wave](4%20Sampling%20a%20wave.md)
