@@ -1,22 +1,25 @@
-export const SLIDES = [
-  {
-    path: './notes/Lyre/0 What I want to get.md',
-    title: 'What I want to get?'
-  },
-  {
-    path: './notes/Lyre/1 Where do I start.md',
-    title: 'Where do I start?'
-  },
-  {
-    path: './notes/Lyre/2 Exercises on functions.md',
-    title: 'Exercises on functions'
-  },
-  {
-    path: './notes/Lyre/3 How do I describe a sound to a machine.md',
-    title: 'How do I describe a sound to a machine?'
-  },
-  {
-    path: './notes/Lyre/4 Sampling a wave.md',
-    title: 'Sampling a wave'
-  }
-];
+const slideModules = import.meta.glob('../../notes/Lyre/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true
+});
+
+const extractTitle = (content) => {
+  const match = content.match(/^#\s+(.+)$/m);
+  return match ? match[1].trim() : 'Untitled';
+};
+
+const extractLeadingNumber = (path) => {
+  const filename = path.split('/').pop();
+  const match = filename.match(/^(\d+)\s+/);
+  return match ? parseInt(match[1]) : Infinity;
+};
+
+export const SLIDES = Object.entries(slideModules)
+  .map(([path, content]) => ({
+    path: path.replace('../../notes/Lyre/', './notes/Lyre/'),
+    title: extractTitle(content),
+    _sortOrder: extractLeadingNumber(path)
+  }))
+  .sort((a, b) => a._sortOrder - b._sortOrder)
+  .map(({ path, title }) => ({ path, title }));
