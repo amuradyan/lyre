@@ -49,9 +49,9 @@ Let's write a function that calculates the _redshift_ /z/ of a distant galaxy - 
 ```js
 ??? // write the redshift function
 
-redshift(400, 500); // should return 0.25
+redshift(400, 500);
 ```
-<!-- 0.25 -->
+<!-- 0.2 -->
 
 ## Back
 
