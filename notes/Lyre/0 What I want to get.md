@@ -26,4 +26,4 @@ As its' [predecessor](https://github.com/amuradyan/shvi), it will be written in 
 
 ## Next
 
-- [Where do I start?](1%20Where%20do%20I%20start.md)
+[Where do I start?](1%20Where%20do%20I%20start.md)

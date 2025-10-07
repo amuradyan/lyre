@@ -4,12 +4,14 @@
 Heres a function for reference:
 
 ```js
-function square(number) {
-  return number * number; // returning a value lets callers use it
+function circumference(radius) {
+  return 2 * Math.PI * radius; // returns the circumference of a circle given its radius
 }
 
-square(3); // calling the function with 3 returns 9
+circumference(1); // calling the function with 1 returns 2 * Math.PI, or approximately 6.28318
 ```
+
+`Math` is a built-in object in JavaScript that provides properties and methods for mathematical constants and functions and `Math.PI` is a built-in constant that represents the value of π (pi), approximately 3.14159.
 
 ----
 
@@ -55,8 +57,8 @@ redshift(400, 500);
 
 ## Back
 
-- [Where do I start?](notes/Lyre/1%20Where%20do%20I%20start.md)
+[Where do I start?](notes/Lyre/1%20Where%20do%20I%20start.md)
 
 ## Next
 
-- [How do I describe a sound to a machine?](3%20How%20do%20I%20describe%20a%20sound%20to%20a%20machine.md)
+[Sounds and computers](3%20Sounds%20and%20computers.md)

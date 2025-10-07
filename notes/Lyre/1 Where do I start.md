@@ -13,16 +13,16 @@ area(2, 3); // calling the function with 2 and 3 returns 6
 
 Lines 1-3 define the function, and line 5 calls it. `area` is its' name and `width` and `height` are the names of the values it will be passed, known otherwise as _arguments_. The `*` operator multiplies two numbers and the `return` statement on line 2 returns the value to whoever called the function.
 
-Let's do a few exercises to get familiar with functions.
+Let's do a few exercises to get familiar with functions, and then we can move on to representing a sound with the computer.
 
 ## Back
 
-- [What I want to get?](0%20What%20I%20want%20to%20get.md)
+[What I want to get?](0%20What%20I%20want%20to%20get.md)
 
 ## Next
 
-- [Exercises on functions](2%20Exercises%20on%20functions.md)
+[Exercises on functions](2%20Exercises%20on%20functions.md)
 
 ## Skip
 
-- [How do I describe a sound to a machine?](3%20How%20do%20I%20describe%20a%20sound%20to%20a%20machine.md)
+[Sounds and computers](3%20Sounds%20and%20computers.md)
