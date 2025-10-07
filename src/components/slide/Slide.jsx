@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Codeblock from './codeblock/Codeblock.jsx';
 import LyreCodeblock from './codeblock/LyreCodeblock.jsx';
 import { loadCodeBlock } from '../../utils/slideStorage.js';
@@ -489,7 +490,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
           )}
         </div>
       )}
-      {navigatorOpen && (
+      {navigatorOpen && createPortal(
         <SlideNavigator
           currentIndex={slideIndex?.current}
           onNavigate={(path) => {
@@ -498,7 +499,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           onClose={() => setNavigatorOpen(false)}
-        />
+        />,
+        document.body
       )}
     </div>
   );
