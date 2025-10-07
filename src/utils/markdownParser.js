@@ -35,16 +35,20 @@ const isCodeFence = (line) => line.startsWith('```');
 const isHeader = (line) => /^#/.test(line);
 const isEmpty = (line) => line.trim() === '';
 const isBulletPoint = (line) => /^[*+-]\s+/.test(line.trim()) && !/^\s{4,}/.test(line) && !/^\t{2,}/.test(line);
-const isBlockquote = (line) => /^\s*>\s+/.test(line);
+const isCollapsible = (line) => /^>\+\s+/.test(line.trim());
+const isBlockquote = (line) => /^\s*>\s+/.test(line) && !isCollapsible(line);
 const isIndentedContent = (line) => /^\s{4,}/.test(line) || /^\t{2,}/.test(line);
 const isHorizontalRule = (line) => /^-{4,}\s*$/.test(line.trim());
 const isImage = (line) => /^!\[([^\]]*)\]\(([^)]+)\)\s*$/.test(line.trim());
 
-const createParagraph = (lines) => 
-  lines.length ? {
+const createParagraph = (lines) => {
+  if (!lines.length) return null;
+
+  return {
     type: 'paragraph',
     content: processInlineCode(lines.join(' ').trim())
-  } : null;
+  };
+};
 
 const createList = (items) =>
   items.length ? {
@@ -68,6 +72,17 @@ const createIndentedContent = (lines) =>
     type: 'indented',
     content: processInlineCode(lines.join('\n'))
   } : null;
+
+const createCollapsible = (lines) => {
+  if (!lines.length) return null;
+  const firstLine = lines[0].trim();
+  const strippedFirstLine = firstLine.replace(/^>\+\s+/, '');
+  const allLines = [strippedFirstLine, ...lines.slice(1)];
+  return {
+    type: 'collapsible',
+    content: processInlineCode(allLines.join(' ').trim())
+  };
+};
 
 const extractBlockquoteContent = (line) => {
   const match = line.match(/^\s*>\s+(.+)$/);
@@ -122,6 +137,7 @@ const createInitialState = () => ({
     currentList: [],
     currentBlockquote: [],
     currentIndented: [],
+    currentCollapsible: [],
     codeBuffer: [],
     codeLanguage: null,
     inNext: false,
@@ -165,13 +181,24 @@ const flushBlockquote = (state) => {
 
 const flushIndented = (state) => {
   const indented = createIndentedContent(state.context.currentIndented);
-  return indented 
+  return indented
     ? {
         ...state,
         content: [...state.content, indented],
         context: { ...state.context, currentIndented: [] }
       }
     : { ...state, context: { ...state.context, currentIndented: [] } };
+};
+
+const flushCollapsible = (state) => {
+  const collapsible = createCollapsible(state.context.currentCollapsible);
+  return collapsible
+    ? {
+        ...state,
+        content: [...state.content, collapsible],
+        context: { ...state.context, currentCollapsible: [] }
+      }
+    : { ...state, context: { ...state.context, currentCollapsible: [] } };
 };
 
 const flushAll = (state) => {
@@ -187,6 +214,9 @@ const flushAll = (state) => {
   }
   if (newState.context.currentIndented.length > 0) {
     newState = flushIndented(newState);
+  }
+  if (newState.context.currentCollapsible.length > 0) {
+    newState = flushCollapsible(newState);
   }
   return newState;
 };
@@ -303,14 +333,26 @@ const processLine = (lines) => (state, line, index) => {
     };
   }
   
+  if (!context.inCode && isCollapsible(line)) {
+    const flushed = flushParagraph(state);
+    const flushedList = flushList(flushed);
+    const flushedBlockquote = flushBlockquote(flushedList);
+    const flushedIndented = flushIndented(flushedBlockquote);
+    return {
+      ...flushedIndented,
+      context: { ...flushedIndented.context, currentCollapsible: [...flushedIndented.context.currentCollapsible, line] }
+    };
+  }
+
   if (!context.inCode && isBlockquote(line)) {
     const flushed = flushParagraph(state);
     const flushedList = flushList(flushed);
     const flushedIndented = flushIndented(flushedList);
+    const flushedCollapsible = flushCollapsible(flushedIndented);
     const blockquoteContent = extractBlockquoteContent(line);
     return {
-      ...flushedIndented,
-      context: { ...flushedIndented.context, currentBlockquote: [...flushedIndented.context.currentBlockquote, blockquoteContent] }
+      ...flushedCollapsible,
+      context: { ...flushedCollapsible.context, currentBlockquote: [...flushedCollapsible.context.currentBlockquote, blockquoteContent] }
     };
   }
   

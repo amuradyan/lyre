@@ -6,6 +6,30 @@ import { parseMarkdown } from '../../utils/markdownParser.js';
 import SlideNavigator from './SlideNavigator.jsx';
 import { SLIDES } from '../../config/slides.js';
 
+function CollapsibleParagraph({ content }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div
+      className="text-gray-700 text-left cursor-pointer select-none"
+      onClick={() => setIsExpanded(!isExpanded)}
+    >
+      <span className="inline-block w-4 mr-2 text-gray-400">
+        {isExpanded ? '−' : '+'}
+      </span>
+      {isExpanded ? (
+        <span dangerouslySetInnerHTML={{ __html: content }} />
+      ) : (
+        <span className="text-gray-500">
+          <span dangerouslySetInnerHTML={{ __html: content.split(' ').slice(0, 10).join(' ') }} />
+          {content.split(' ').length > 10 && '... '}
+          <span className="text-indigo-400 text-sm">(click to expand)</span>
+        </span>
+      )}
+    </div>
+  );
+}
+
 function joinUrlFs(path) {
   const isDev = import.meta.env.DEV;
 
@@ -299,6 +323,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
               return parsed.content.map((item, i) => {
                 if (item.type === 'paragraph') {
                   return <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: item.content }} />;
+                } else if (item.type === 'collapsible') {
+                  return <CollapsibleParagraph key={i} content={item.content} />;
                 } else if (item.type === 'list') {
                   return (
                     <ul key={i} className="text-gray-700 text-left list-disc list-inside space-y-1 ml-8">
