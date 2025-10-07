@@ -9,9 +9,7 @@ We can represent a simple tone as a _sine wave_ with a specific _frequency_ /how
 
 Computers can't work with continuous waves. Instead, they take _samples_ - snapshots of the wave at regular intervals.
 
-The formula for generating each sample is:
-
-> sample[n] = A ⋅ sin(2π ⋅ f ⋅ (n / R))
+The formula for generating each sample is: `sample[n] = A ⋅ sin(2π ⋅ f ⋅ (n / R))`
 
 Where:
 

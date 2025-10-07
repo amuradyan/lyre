@@ -52,12 +52,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   };
 
   const slugToPath = (slug) => {
-    const slugMappings = {
-      'what-i-want-to-get': './notes/Lyre/0 What I want to get.md',
-      'where-do-i-start': './notes/Lyre/1 Where do I start.md',
-      'exercises-on-functions': './notes/Lyre/2 Exercises on functions.md'
-    };
-    return slugMappings[slug];
+    return SLIDES.find(slide => pathToSlug(slide.path) === slug)?.path;
   };
 
   const updateUrl = (path) => {
