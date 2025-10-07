@@ -30,6 +30,12 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   const [testStatuses, setTestStatuses] = useState({});
   const [slugToPathMap, setSlugToPathMap] = useState({});
 
+  const extractSlideIndex = (path) => {
+    const filename = path.split('/').pop();
+    const match = filename.match(/^(\d+)\s+/);
+    return match ? parseInt(match[1]) + 1 : null;
+  };
+
   const pathToSlug = (path) => {
     const filename = path.split('/').pop();
     const nameWithoutExt = filename.replace(/\.md$/, '');
@@ -104,6 +110,13 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   }, [mdPath]);
 
   const parsed = useMemo(() => parseMarkdown(content || ''), [content]);
+
+  const slideIndex = useMemo(() => {
+    if (!mdPath) return null;
+    const currentIndex = extractSlideIndex(mdPath);
+    if (currentIndex === null) return null;
+    return { current: currentIndex, total: 5 };
+  }, [mdPath]);
 
   const allTestsPassing = useMemo(() => {
     const codeBlocksWithTests = parsed.content?.filter(block => block.type === 'codeblock' && block.testComment) || [];
@@ -339,7 +352,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
             })()}
           </div>
           {(parsed.backHref || parsed.nextHref || parsed.skipHref) && (
-            <div className="flex justify-between" style={{ marginTop: '48px' }}>
+            <div className="flex justify-between items-center" style={{ marginTop: '48px' }}>
               {parsed.backHref ? (
                 <button
                   onClick={handleBack}
@@ -358,6 +371,21 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                 </button>
               ) : (
                 <div />
+              )}
+              {slideIndex && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    color: '#9ca3af',
+                    fontFamily: 'Nunito, sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 600
+                  }}
+                >
+                  {slideIndex.current}/{slideIndex.total}
+                </div>
               )}
               {parsed.nextHref && (
                 <div className="inline-flex">
