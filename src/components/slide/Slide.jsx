@@ -3,6 +3,8 @@ import Codeblock from './codeblock/Codeblock.jsx';
 import LyreCodeblock from './codeblock/LyreCodeblock.jsx';
 import { loadCodeBlock } from '../../utils/slideStorage.js';
 import { parseMarkdown } from '../../utils/markdownParser.js';
+import SlideNavigator from './SlideNavigator.jsx';
+import { SLIDES } from '../../config/slides.js';
 
 function joinUrlFs(path) {
   const isDev = import.meta.env.DEV;
@@ -29,6 +31,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   const [error, setError] = useState(null);
   const [testStatuses, setTestStatuses] = useState({});
   const [slugToPathMap, setSlugToPathMap] = useState({});
+  const [navigatorOpen, setNavigatorOpen] = useState(false);
 
   const extractSlideIndex = (path) => {
     const filename = path.split('/').pop();
@@ -115,7 +118,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     if (!mdPath) return null;
     const currentIndex = extractSlideIndex(mdPath);
     if (currentIndex === null) return null;
-    return { current: currentIndex, total: 5 };
+    return { current: currentIndex, total: SLIDES.length };
   }, [mdPath]);
 
   const allTestsPassing = useMemo(() => {
@@ -267,6 +270,14 @@ export default function SlideExperimental({ initialMarkdownPath }) {
         .skip-tooltip-container:hover .skip-tooltip {
           opacity: 1;
         }
+        .slide-index {
+          cursor: pointer;
+          transition: color 0.2s;
+          color: #9ca3af;
+        }
+        .slide-index:hover {
+          color: #6366f1;
+        }
       `}</style>
       {/* Logo Tab */}
       <div
@@ -374,11 +385,12 @@ export default function SlideExperimental({ initialMarkdownPath }) {
               )}
               {slideIndex && (
                 <div
+                  className="slide-index"
+                  onClick={() => setNavigatorOpen(true)}
                   style={{
                     position: 'absolute',
                     left: '50%',
                     transform: 'translateX(-50%)',
-                    color: '#9ca3af',
                     fontFamily: 'Nunito, sans-serif',
                     fontSize: '14px',
                     fontWeight: 600
@@ -440,6 +452,17 @@ export default function SlideExperimental({ initialMarkdownPath }) {
             </div>
           )}
         </div>
+      )}
+      {navigatorOpen && (
+        <SlideNavigator
+          currentIndex={slideIndex?.current}
+          onNavigate={(path) => {
+            setMdPath(path);
+            updateUrl(path);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onClose={() => setNavigatorOpen(false)}
+        />
       )}
     </div>
   );
