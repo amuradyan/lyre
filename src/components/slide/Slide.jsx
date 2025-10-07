@@ -228,14 +228,6 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   return (
     <div className="bg-white/70 backdrop-blur shadow-sm relative" style={{ padding: '32px 32px 32px 32px' }}>
       <style>{`
-        @keyframes wiggle {
-          0%, 100% { transform: rotate(0deg); }
-          25% { transform: rotate(-5deg); }
-          75% { transform: rotate(5deg); }
-        }
-        .skip-arrow:hover .skip-wiggle {
-          animation: wiggle 0.3s ease-in-out infinite;
-        }
         .nav-button {
           text-decoration: underline;
           transition: all 0.2s;
@@ -368,47 +360,54 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                 <div />
               )}
               {parsed.nextHref && (
-                <button
-                  onClick={handleNext}
-                  disabled={!allTestsPassing}
-                  className={`inline-flex items-center font-semibold ${allTestsPassing ? 'nav-button' : ''} ${parsed.skipHref ? 'skip-arrow' : ''}`}
-                  style={{
-                    gap: '8px', padding: '12px 24px',
-                    background: 'transparent',
-                    border: allTestsPassing ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid rgba(156, 163, 175, 0.3)',
-                    color: allTestsPassing ? '#6366f1' : '#9ca3af',
-                    fontFamily: 'Nunito, sans-serif',
-                    fontWeight: 600,
-                    cursor: allTestsPassing ? 'pointer' : 'not-allowed',
-                    textDecoration: allTestsPassing ? 'underline' : 'none'
-                  }}
-                >
-                  {parsed.nextText || 'Next'}
-                  {parsed.skipHref ? (
+                <div className="inline-flex">
+                  <button
+                    onClick={handleNext}
+                    disabled={!allTestsPassing}
+                    className={`inline-flex items-center font-semibold ${allTestsPassing ? 'nav-button' : ''}`}
+                    style={{
+                      gap: '8px',
+                      padding: '12px 24px',
+                      background: 'transparent',
+                      border: allTestsPassing ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid rgba(156, 163, 175, 0.3)',
+                      color: allTestsPassing ? '#6366f1' : '#9ca3af',
+                      fontFamily: 'Nunito, sans-serif',
+                      fontWeight: 600,
+                      cursor: allTestsPassing ? 'pointer' : 'not-allowed',
+                      textDecoration: allTestsPassing ? 'underline' : 'none'
+                    }}
+                  >
+                    {parsed.nextText || 'Next'}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '20px', height: '20px' }}>
+                      <path d="M10 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                  {parsed.skipHref && (
                     <div className="skip-tooltip-container">
-                      <svg
-                        className="skip-wiggle"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSkip();
+                      <button
+                        onClick={handleSkip}
+                        className={`inline-flex items-center font-semibold ${allTestsPassing ? 'nav-button' : ''}`}
+                        style={{
+                          padding: '12px',
+                          background: 'transparent',
+                          border: allTestsPassing ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid rgba(156, 163, 175, 0.3)',
+                          borderLeft: 'none',
+                          color: allTestsPassing ? '#6366f1' : '#9ca3af',
+                          fontFamily: 'Nunito, sans-serif',
+                          fontWeight: 600,
+                          cursor: allTestsPassing ? 'pointer' : 'not-allowed',
+                          textDecoration: allTestsPassing ? 'underline' : 'none'
                         }}
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        style={{ width: '20px', height: '20px', cursor: 'pointer' }}
                       >
-                        <path d="M5 5l7 7-7 7" />
-                        <path d="M12 5l7 7-7 7" />
-                      </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '20px', height: '20px' }}>
+                          <path d="M3 5l7 7-7 7" />
+                          <path d="M10 5l7 7-7 7" />
+                        </svg>
+                      </button>
                       <span className="skip-tooltip">Skip exercises</span>
                     </div>
-                  ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '20px', height: '20px' }}>
-                      <path d="M9 5l7 7-7 7" />
-                    </svg>
                   )}
-                </button>
+                </div>
               )}
             </div>
           )}
