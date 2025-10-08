@@ -7,7 +7,7 @@
 
 To calculate `n` of something, it's usually helpful to start with calculating _one_ of something. We can repeat that n times after.
 
->+ One might argue that sometimes creating one of something is harder and different than creating many, and they will be right, but a) on average that is not the case and b) we won't be thinking about optimizations for early experimental structures.
+>+ One might argue that sometimes creating one of something is harder and different than creating many, and they will be right, but __a)__ on average that is not the case and __b)__ we won't be thinking about optimizations for early experimental structures.
 
 For simplicity, we shall assume the sampling rate `R` to be 8 samples per second. To encode such constants int JS, we can use `const` keyword like so `const samplingRate = 8;`. We will also assume `A` to be 1 and `f` to be 1 Hz, so the wave the wave oscillates between -1 and 1, like in the image below.
 
@@ -21,7 +21,7 @@ function computeSample(index) {
   ???; // define the amplitude constant to be 1
   ???; // define the frequency constant to be 1 Hz
 
-  return ??? * Math.round(Math.sin(???));
+  return ??? * Math.sin(???);
 }
 ```
 <!--[
