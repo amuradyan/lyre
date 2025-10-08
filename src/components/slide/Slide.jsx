@@ -38,14 +38,17 @@ function joinUrlFs(path) {
     if (path.startsWith('/')) {
       return encodeURI(`/@fs${path}`);
     }
-    const absolutePath = `${__WORKSPACE_ROOT__}/${path.replace(/^\.\.\//, '')}`;
+    const absolutePath = `${__WORKSPACE_ROOT__}/${path.replace(/^(\.\.\/)+/, '')}`;
     return encodeURI(`/@fs${absolutePath}`);
   } else {
     if (path.includes('/notes/')) {
       const notesIndex = path.indexOf('/notes/');
       return encodeURI(path.substring(notesIndex));
     }
-    return encodeURI(`/notes/${path.replace(/^\.\.\//, '')}`);
+    if (path.startsWith('/src/assets/')) {
+      return encodeURI(path.replace('/src/assets/', '/assets/'));
+    }
+    return encodeURI(`/notes/${path.replace(/^(\.\.\/)+/, '')}`);
   }
 }
 

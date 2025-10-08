@@ -34,6 +34,7 @@ export default defineConfig({
       closeBundle() {
         cpSync('notes', 'dist/notes', { recursive: true });
         cpSync('src/lyre', 'dist/lyre', { recursive: true });
+        cpSync('src/assets', 'dist/assets', { recursive: true });
       }
     }
   ],
