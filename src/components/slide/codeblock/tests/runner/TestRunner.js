@@ -1,3 +1,5 @@
+const FLOAT_TOLERANCE = 1e-10;
+
 const createResult = (success, result = null, error = null) => ({ success, result, error });
 
 const extractFunctionName = (code) => {
@@ -68,6 +70,9 @@ export const parseTestComment = (comment) => {
   return content ? safeJsonParse(content) : null;
 };
 
+const areNumbersApproximatelyEqual = (a, b) =>
+  Math.abs(a - b) < FLOAT_TOLERANCE;
+
 const areArraysEqual = (a, b) =>
   a.length === b.length && a.every((item, index) => deepEqual(item, b[index]));
 
@@ -83,6 +88,10 @@ const deepEqual = (a, b) => {
   if (a === b) return true;
   if (a == null || b == null) return a === b;
   if (typeof a !== typeof b) return false;
+
+  if (typeof a === 'number' && typeof b === 'number') {
+    return areNumbersApproximatelyEqual(a, b);
+  }
 
   if (Array.isArray(a) && Array.isArray(b)) {
     return areArraysEqual(a, b);
