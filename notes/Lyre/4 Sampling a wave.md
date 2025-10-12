@@ -9,7 +9,7 @@ To calculate `n` of something, it's usually helpful to start with calculating _o
 
 >+ One might argue that sometimes creating one of something is harder and different than creating many, and they will be right, but __a)__ on average that is not the case and __b)__ we won't be thinking about optimizations for early experimental structures.
 
-For simplicity, we shall assume the sampling rate `R` to be 8 samples per second. To encode such constants int JS, we can use `const` keyword like so `const samplingRate = 8;`. We will also assume `A` to be 1 and `f` to be 1 Hz, so the wave the wave oscillates between -1 and 1, like in the image below.
+For simplicity, we shall assume the sampling rate `R` to be 4 samples per second. To encode such constants int JS, we can use `const` keyword like so `const samplingRate = 4;`. We will also assume `A` to be 1 and `f` to be 1 Hz, so the wave oscillates between -1 and 1, like in the image below.
 
 ![A sine wave oscillating between -1 and 1](/src/assets/sine-wave.gif)
 
@@ -27,12 +27,11 @@ function computeSample(index) {
 <!--[
   {"inputs": [0], "expected": 0},
   {"inputs": [1], "expected": 1},
-  {"inputs": [3], "expected": -1},
-  {"inputs": [5], "expected": 1},
-  {"inputs": [7], "expected": -1}
+  {"inputs": [2], "expected": 0},
+  {"inputs": [3], "expected": -1}
 ]-->
 
-Once all the tests are green, we are done. Now let's write a function that computes _all_ samples for a given duration in seconds.
+Once this is done, we can _calculate the indices by multiplying the sampling rate with duration_ /in seconds/, then repetitively  apply the `computeSample` to every index, thus computing all the samples for a given duration.
 
 ## Back
 
@@ -40,4 +39,4 @@ Once all the tests are green, we are done. Now let's write a function that compu
 
 ## Next
 
-[Generating all the samples](5%20Generating%20all%20the%20samples.md)
+[Repetitions](5%20Repetitions.md)
