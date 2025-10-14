@@ -4,7 +4,7 @@
 One of the ways to repeat doing something in JS is the _iteration_ - more specifically, the `for` loop. Here's how to sum numbers from 1 to  a given number with a  loop.
 
 ```js
-function sumTo(number) {
+function sumUpTo(number) {
   let sum = 0; // we will accumulate the sum here
 
   for (let i = 1; i <= number; i = i + 1) {
@@ -44,4 +44,4 @@ Let's do a few exercises to get familiar with loops.
 
 ## Skip
 
-[A sample at a time](7%20A%20sample%20at%20a%20time.md)
+[One step at a time](7%20One%20step%20at%20a%20time.md)

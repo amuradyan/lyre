@@ -21,7 +21,7 @@ Let's write a function that calculates _compound interest_ - how much money you'
 function savings(principal, rate, years) {
   let amount = principal;
 
-  ??? (let i = 0; i < ???; i = i + 1) {
+  ??? (let i = ???; i < ???; i = ???) {
     amount = amount * (1 + ???);
   }
 
@@ -77,4 +77,4 @@ Let's write a function that calculates _bacterial population_ - how many bacteri
 
 ## Next
 
-[A sample at a time](7%20A%20sample%20at%20a%20time.md)
+[One step at a time](7%20One%20step%20at%20a%20time.md)
