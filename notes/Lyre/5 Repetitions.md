@@ -44,4 +44,4 @@ Let's do a few exercises to get familiar with loops.
 
 ## Skip
 
-[One step at a time](7%20One%20step%20at%20a%20time.md)
+[One step at a time](9%20One%20step%20at%20a%20time.md)

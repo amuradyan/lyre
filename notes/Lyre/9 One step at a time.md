@@ -34,4 +34,4 @@ sumUpToThreeGenerator.next().value;
 
 ## Back
 
-[Exercises on loops](6%20Exercises%20on%20loops.md)
+[Exercises on lists](8%20Exercises%20on%20lists.md)
