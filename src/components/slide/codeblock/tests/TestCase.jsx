@@ -15,7 +15,7 @@ export default function TestCase({
     if (val === undefined) return 'undefined';
     if (typeof val === 'string') return `"${val}"`;
     if (typeof val === 'number' && Math.abs(val) < 1e-10) return '0';
-    if (Array.isArray(val)) return val.join(', ');
+    if (Array.isArray(val)) return `[${val.map(formatValue).join(', ')}]`;
     return JSON.stringify(val);
   };
 
@@ -36,7 +36,14 @@ export default function TestCase({
     }
   }
 
-  const inputDisplay = inputLabel || (input !== undefined ? `f(${formatValue(input)}):` : '');
+  const formatInputs = (input) => {
+    if (Array.isArray(input)) {
+      return input.map(formatValue).join(', ');
+    }
+    return formatValue(input);
+  };
+
+  const inputDisplay = inputLabel || (input !== undefined ? `f(${formatInputs(input)}):` : '');
   const inputWidth = inputDisplay ? Math.max(inputDisplay.length * 8 + 20, 60) : 0;
 
   return (

@@ -169,13 +169,14 @@ const executeTestCase = (fn, testCase) => {
   }
 
   const inputs = testCase.inputs;
+  const inputsCopy = JSON.parse(JSON.stringify(inputs));
 
   try {
     const actual = fn(...inputs);
-    return createPassedResult(inputs, testCase.expected, actual);
+    return createPassedResult(inputsCopy, testCase.expected, actual);
   } catch (error) {
     return {
-      input: inputs,
+      input: inputsCopy,
       expected: testCase.expected,
       actual: null,
       passed: false,
