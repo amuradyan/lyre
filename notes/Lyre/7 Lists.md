@@ -1,45 +1,37 @@
 # Lists
 <!-- slide-id: ff7f6da0-f607-4cb5-81eb-43d897e3b847 -->
 
-Now, that we know how to do something repeatedly, let us get back to our sampling problem. In the previous loop exercises we were able to store the result in a single variable. Sound samples, however, are not a single number, but rather a list of numbers. How do we  do that?
+Now that we know how to do something repeatedly, let us get back to our sampling problem. In the previous loop exercises we stored results in single variables. Sound samples, however, are not a single number, but rather a list of numbers.
 
-Turns out JS has a built-in data structure for storing lists of things and it looks like this:
-
-```js
-const emptyList = [];
-const numbers1to5 = [1, 2, 3, 4, 5];
-```
-
-One way of appending an item to a list is with the spread operator `...`:
+Here's a useful function that works with lists - `zip` takes two lists and pairs their elements together:
 
 ```js
-function appendToList(list, element) {
-  return [...list, element];
+function zip(left, right) {
+  let pairs = [];  // Start with an empty list
+
+  for (let i = 0; i < left.length; i = i + 1) { // Loop over indices
+    pairs = [...pairs, [left[i], right[i]]];    // Append a new pair to the accumulator
+  }
+
+  return pairs;
 }
 ```
 <!-- [
-{"inputs": [[], 1], "expected": [1]},
-{"inputs": [[1, 2], 3], "expected": [1, 2, 3]}]
+{"inputs": [[1, 2], [3, 4]], "expected": [[1, 3], [2, 4]]},
+{"inputs": [["a", "b"], [1, 2]], "expected": [["a", 1], ["b", 2]]}]
 -->
 
-The code above essentially explodes the original list into its elements and then creates a new list with those elements plus the new one at the end. Prepending an element to a list can be done in a similar way - by spreading the original list after the new element.
+Let's break down what's happening in `zip`:
 
-> Note that `appendToList` does not modify the original list, but rather creates a new one with the added element.
+We start with an empty list using square brackets: `pairs = []`. Lists can hold any values - numbers like `[1, 2, 3]`, strings like `["a", "b"]`, or even other lists.
 
-Тo access an element in a list, we use its index position in the list, starting from `0`.
+The loop condition uses `left.length` to know when to stop. Every list has a `length` property that tells us how many elements it contains. Inside the loop, we grab individual elements with bracket notation: `left[i]` and `right[i]`. The index `i` starts from `0` for the first element, `1` for the second, and so on.
 
-```js
-function getElementAt(list, index) {
-  return list[index];
-}
-```
-<!-- [
-{"inputs": [[1, 2, 3], 0], "expected": 1},
-{"inputs": [[1, 2, 3], 2], "expected": 3},
-{"inputs": [[42], 0], "expected": 42}]
--->
+The key operation happens on _line 5_. The spread operator `...` explodes the existing `pairs` list into its individual elements, then we create a new list with all those elements plus our new pair `[left[i], right[i]]` at the end.
 
-Let's do some exercises with lists, shall we?
+>+ Notice how `[left[i], right[i]]` creates a nested list - a list containing two elements that becomes a single item in our result.
+
+Let's practice these operations!
 
 ## Back
 
