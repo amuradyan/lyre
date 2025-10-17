@@ -16,16 +16,19 @@ function zip(left, right) {
   return pairs;
 }
 ```
-<!-- [
+<!-- {
+"layout": "row",
+"tests": [
 {"inputs": [[1, 2], [3, 4]], "expected": [[1, 3], [2, 4]]},
-{"inputs": [["a", "b"], [1, 2]], "expected": [["a", 1], ["b", 2]]}]
--->
+{"inputs": [["a", "b"], [1, 2]], "expected": [["a", 1], ["b", 2]]}
+]
+} -->
 
 Let's break down what's happening in `zip`:
 
 We start with an empty list using square brackets: `pairs = []`. Lists can hold any values - numbers like `[1, 2, 3]`, strings like `["a", "b"]`, or even other lists.
 
-The loop condition uses `left.length` to know when to stop. Every list has a `length` property that tells us how many elements it contains. Inside the loop, we grab individual elements with bracket notation: `left[i]` and `right[i]`. The index `i` starts from `0` for the first element, `1` for the second, and so on.
+The loop condition uses `left.length` to know when to stop. Every list has a `length` property that tells us how many elements it contains. Inside the loop, we grab individual elements with bracket notation: `left[i]` and `right[i]`.
 
 The key operation happens on _line 5_. The spread operator `...` explodes the existing `pairs` list into its individual elements, then we create a new list with all those elements plus our new pair `[left[i], right[i]]` at the end.
 

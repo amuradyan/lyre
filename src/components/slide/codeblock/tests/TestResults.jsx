@@ -6,6 +6,9 @@ export default function TestResults({ testCases, testResult }) {
       return null;
     }
 
+    const layout = testResult.layout || 'grid';
+    const getColumnCount = (caseCount) => layout === 'row' ? 1 : Math.min(caseCount, 3);
+
     if (!testResult.success && testResult.error) {
       const errorTestCase = {
         message: `Test Error: ${testResult.error}`,
@@ -14,7 +17,7 @@ export default function TestResults({ testCases, testResult }) {
         color: '#f85149'
       };
       const cases = [errorTestCase];
-      const columnCount = Math.min(cases.length, 3);
+      const columnCount = getColumnCount(cases.length);
 
       return (
         <div style={{
@@ -38,7 +41,7 @@ export default function TestResults({ testCases, testResult }) {
         color: '#6e7681'
       };
       const cases = [noTestCase];
-      const columnCount = Math.min(cases.length, 3);
+      const columnCount = getColumnCount(cases.length);
 
       return (
         <div style={{
@@ -70,7 +73,7 @@ export default function TestResults({ testCases, testResult }) {
       };
     });
 
-    const columnCount = Math.min(convertedTestCases.length, 3);
+    const columnCount = getColumnCount(convertedTestCases.length);
 
     return (
       <div style={{

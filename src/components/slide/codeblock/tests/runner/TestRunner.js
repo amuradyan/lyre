@@ -67,7 +67,21 @@ export const parseTestComment = (comment) => {
   if (!comment) return null;
 
   const content = cleanCommentContent(comment);
-  return content ? safeJsonParse(content) : null;
+  const parsed = content ? safeJsonParse(content) : null;
+
+  if (!parsed) return null;
+
+  if (parsed.tests && Array.isArray(parsed.tests)) {
+    return {
+      testSpec: parsed.tests,
+      layout: parsed.layout || 'grid'
+    };
+  }
+
+  return {
+    testSpec: parsed,
+    layout: 'grid'
+  };
 };
 
 const areNumbersApproximatelyEqual = (a, b) =>
@@ -104,10 +118,11 @@ const deepEqual = (a, b) => {
   return false;
 };
 
-const createTestResult = (success, type = 'value', results = [], error = null, message = null) => ({
+const createTestResult = (success, type = 'value', results = [], error = null, message = null, layout = 'grid') => ({
   success,
   type,
   results,
+  layout,
   ...(error && { error }),
   ...(message && { message })
 });
@@ -217,24 +232,32 @@ const executeValueTest = (result, testSpec) => {
   return createTestResult(passed, 'value', [testResult]);
 };
 
-export const runMarkdownTest = (evaluationResult, testSpec) => {
+export const runMarkdownTest = (evaluationResult, testSpec, layout = 'grid') => {
   if (testSpec === null || testSpec === undefined) {
     return handleNoTestSpec();
   }
 
   if (!evaluationResult.success) {
-    return handleFailedEvaluation(testSpec);
+    const result = handleFailedEvaluation(testSpec);
+    return { ...result, layout };
   }
 
   const { result } = evaluationResult;
 
-  return typeof result === 'function'
+  const testResult = typeof result === 'function'
     ? executeFunctionTests(result, testSpec)
     : executeValueTest(result, testSpec);
+
+  return { ...testResult, layout };
 };
 
 export const executeMarkdownTest = (code, testComment) => {
   const evaluationResult = evaluateCode(code);
-  const testSpec = parseTestComment(testComment);
-  return runMarkdownTest(evaluationResult, testSpec);
+  const parsed = parseTestComment(testComment);
+
+  if (!parsed) {
+    return runMarkdownTest(evaluationResult, null);
+  }
+
+  return runMarkdownTest(evaluationResult, parsed.testSpec, parsed.layout);
 };
