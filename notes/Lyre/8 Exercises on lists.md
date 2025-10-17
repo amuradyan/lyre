@@ -18,7 +18,7 @@ function zip(left, right) {
 Let's write a function that finds who is sitting in a specific seat at the movie theater.
 
 ```js
-function whoSitsAt?(seatNumber) {
+function whoSitsAt(seatNumber) {
   const seats = ["Alice", "Bob", "Carol", "Dave", "Eve"];
 
   return ??? // return the person sitting in the given seat number

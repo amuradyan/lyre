@@ -16,13 +16,10 @@ function zip(left, right) {
   return pairs;
 }
 ```
-<!-- {
-"layout": "row",
-"tests": [
+<!-- { "layout": "row", "tests": [
 {"inputs": [[1, 2], [3, 4]], "expected": [[1, 3], [2, 4]]},
-{"inputs": [["a", "b"], [1, 2]], "expected": [["a", 1], ["b", 2]]}
-]
-} -->
+{"inputs": [["a", "b"], [1, 2]], "expected": [["a", 1], ["b", 2]]}]}
+-->
 
 Let's break down what's happening in `zip`:
 
@@ -43,3 +40,7 @@ Let's practice these operations!
 ## Next
 
 [Exercises on lists](8%20Exercises%20on%20lists.md)
+
+## Skip
+
+[One step at a time](9%20One%20step%20at%20a%20time.md)
