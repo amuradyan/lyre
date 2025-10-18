@@ -369,7 +369,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                       key={i}
                       src={resolveImagePath(item.src)}
                       alt={item.alt}
-                      className="max-w-full h-auto my-6"
+                      className="max-w-full h-auto my-6 mx-auto"
                     />
                   );
                 } else if (item.type === 'codeblock') {
