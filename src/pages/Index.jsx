@@ -110,14 +110,14 @@ export default function Index() {
                         <code className="font-mono text-purple-600 text-xs">(define baroqueA4 415.00)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">
                           <p>Give names to values to refer to them later.</p>
-                          <p>You can also name note combinations to play later like so:
-                            <pre className="font-mono text-purple-600 text-xs mt-2 whitespace-pre-wrap">{`(define c-major-chord
+                          <p>You can also name note combinations to play later like so:</p>
+                          <pre className="font-mono text-purple-600 text-xs mt-2 whitespace-pre-wrap">{`(define c-major-chord
   (harmony
     (tone C4 500)
     (tone E4 500)
     (tone G4 500)))
 
-(c-major-chord)`}</pre></p>
+(c-major-chord)`}</pre>
                         </div>
                       </li>
                     </ul>
