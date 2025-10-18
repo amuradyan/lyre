@@ -35,7 +35,11 @@ export const evaluateStreaming = (expression) => {
   if (typeof expression === "symbol") {
     const value = lookupInStreamingEnvironment(expression);
     if (typeof value === 'function') {
-      return value;
+      if (value.constructor.name === 'GeneratorFunction') {
+        return value;
+      } else {
+        return value();
+      }
     }
     return function* () { yield value; }();
   }
@@ -48,8 +52,8 @@ export const evaluateStreaming = (expression) => {
       if (typeof value === 'number') {
         streamingEnvironment.unshift([name, value]);
       } else {
-        const evaluatedValue = evaluateStreaming(value);
-        streamingEnvironment.unshift([name, evaluatedValue]);
+        const generatorFunc = () => evaluateStreaming(value);
+        streamingEnvironment.unshift([name, generatorFunc]);
       }
 
       if (rest.length === 1) {
@@ -63,7 +67,11 @@ export const evaluateStreaming = (expression) => {
       const evaluatedOperator = lookupInStreamingEnvironment(operator);
 
       if (operator === Symbol.for('repeat')) {
-        const times = operands[0];
+        const times = typeof operands[0] === 'number'
+          ? operands[0]
+          : (typeof operands[0] === 'symbol'
+              ? lookupInStreamingEnvironment(operands[0])
+              : evaluateStreaming(operands[0]));
         const generatorFunc = () => evaluateStreaming(operands[1]);
         return evaluatedOperator(times, generatorFunc);
       }
@@ -72,10 +80,12 @@ export const evaluateStreaming = (expression) => {
         if (typeof op === 'number') return op;
         if (typeof op === 'symbol') {
           const value = lookupInStreamingEnvironment(op);
-          if (typeof value === 'function' && value.constructor.name === 'GeneratorFunction') {
-            return value;
-          } else if (typeof value === 'function') {
-            return value();
+          if (typeof value === 'function') {
+            if (value.constructor.name === 'GeneratorFunction') {
+              return value;
+            } else {
+              return value();
+            }
           } else {
             return value;
           }
