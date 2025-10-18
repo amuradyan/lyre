@@ -24,12 +24,12 @@ function computeSample(index) {
   return ??? * Math.sin(???);
 }
 ```
-<!--[
+<!-- { "layout": "oneline", "tests": [
   {"inputs": [0], "expected": 0},
   {"inputs": [1], "expected": 1},
   {"inputs": [2], "expected": 0},
-  {"inputs": [3], "expected": -1}
-]-->
+  {"inputs": [3], "expected": -1}]}
+-->
 
 Once this is done, we can _calculate the indices by multiplying the sampling rate with duration_ /in seconds/, then repetitively  apply the `computeSample` to every index, thus computing all the samples for a given duration.
 

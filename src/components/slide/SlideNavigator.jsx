@@ -70,11 +70,11 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
         style={{
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(10px)',
-          borderRadius: '8px',
+          borderRadius: '0',
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
           maxWidth: '500px',
           width: '90%',
-          maxHeight: '70vh',
+          maxHeight: SLIDES.length >= 8 ? '500px' : '70vh',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column'
@@ -115,7 +115,7 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
                   display: 'flex',
                   gap: '12px',
                   alignItems: 'center',
-                  borderRadius: '4px',
+                  borderRadius: '0px',
                   margin: '4px 0'
                 }}
               >

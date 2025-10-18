@@ -7,7 +7,11 @@ export default function TestResults({ testCases, testResult }) {
     }
 
     const layout = testResult.layout || 'grid';
-    const getColumnCount = (caseCount) => layout === 'row' ? 1 : Math.min(caseCount, 3);
+    const getColumnCount = (caseCount) => {
+      if (layout === 'row') return 1;
+      if (layout === 'oneline') return caseCount;
+      return Math.min(caseCount, 3);
+    };
 
     if (!testResult.success && testResult.error) {
       const errorTestCase = {
