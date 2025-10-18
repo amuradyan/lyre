@@ -12,7 +12,7 @@ Again we will assume a _sampling rate_ of 4 samples and with _amplitude_ and _fr
 ```js
 function tone(frequency, duration) {
   function computeSample(amplitude, frequency, time) {
-    ??? amplitude * Math.sin(2 * Math.PI * frequency * time);
+    return ??? * Math.sin(2 * Math.PI * ??? * time);
   }
 
   let samples = ???;
