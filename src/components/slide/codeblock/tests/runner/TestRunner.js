@@ -3,7 +3,7 @@ const FLOAT_TOLERANCE = 1e-10;
 const createResult = (success, result = null, error = null) => ({ success, result, error });
 
 const extractFunctionName = (code) => {
-  const match = code.match(/function\s+(\w+)\s*\(/);
+  const match = code.match(/function\s*\*?\s*(\w+)\s*\(/);
   return match ? match[1] : null;
 };
 
@@ -232,6 +232,74 @@ const executeValueTest = (result, testSpec) => {
   return createTestResult(passed, 'value', [testResult]);
 };
 
+const isGeneratorFunction = (fn) =>
+  fn && fn.constructor && fn.constructor.name === 'GeneratorFunction';
+
+const exhaustGenerator = (gen) => {
+  const results = [];
+  for (const value of gen) {
+    results.push(value);
+  }
+  return results;
+};
+
+const executeGeneratorTests = (generatorFn, testSpec) => {
+  if (!Array.isArray(testSpec)) {
+    return createTestResult(
+      false,
+      'generator',
+      [],
+      'Test spec must be an array of test cases with {inputs: [...], expected: ...} format'
+    );
+  }
+
+  const results = testSpec.map(testCase => {
+    if (!testCase.hasOwnProperty('expected')) {
+      return createFailedResult(
+        'undefined',
+        testCase.expected || 'undefined',
+        'Test case must have "expected" property'
+      );
+    }
+
+    if (!testCase.hasOwnProperty('inputs')) {
+      return createFailedResult(
+        'undefined',
+        testCase.expected,
+        'Test case must have "inputs" array'
+      );
+    }
+
+    if (!Array.isArray(testCase.inputs)) {
+      return createFailedResult(
+        testCase.inputs,
+        testCase.expected,
+        '"inputs" must be an array'
+      );
+    }
+
+    const inputs = testCase.inputs;
+    const inputsCopy = JSON.parse(JSON.stringify(inputs));
+
+    try {
+      const generator = generatorFn(...inputs);
+      const actual = exhaustGenerator(generator);
+      return createPassedResult(inputsCopy, testCase.expected, actual);
+    } catch (error) {
+      return {
+        input: inputsCopy,
+        expected: testCase.expected,
+        actual: null,
+        passed: false,
+        error: error.message
+      };
+    }
+  });
+
+  const allPassed = results.every(result => result.passed);
+  return createTestResult(allPassed, 'generator', results);
+};
+
 export const runMarkdownTest = (evaluationResult, testSpec, layout = 'grid') => {
   if (testSpec === null || testSpec === undefined) {
     return handleNoTestSpec();
@@ -244,9 +312,14 @@ export const runMarkdownTest = (evaluationResult, testSpec, layout = 'grid') => 
 
   const { result } = evaluationResult;
 
-  const testResult = typeof result === 'function'
-    ? executeFunctionTests(result, testSpec)
-    : executeValueTest(result, testSpec);
+  let testResult;
+  if (isGeneratorFunction(result)) {
+    testResult = executeGeneratorTests(result, testSpec);
+  } else if (typeof result === 'function') {
+    testResult = executeFunctionTests(result, testSpec);
+  } else {
+    testResult = executeValueTest(result, testSpec);
+  }
 
   return { ...testResult, layout };
 };
