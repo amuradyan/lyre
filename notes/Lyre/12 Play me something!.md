@@ -26,6 +26,8 @@ function* tone(frequency, duration) {
 tone(???, ???) // C4 is approximately 261.63 Hz
 ```
 
+Nice! How do we play several notes though?
+
 ## Back
 
 [Sampling once more](11%20Sampling%20once%20more.md)
