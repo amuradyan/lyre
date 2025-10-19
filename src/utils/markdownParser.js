@@ -142,7 +142,8 @@ const createInitialState = () => ({
     codeLanguage: null,
     inNext: false,
     inBack: false,
-    inSkip: false
+    inSkip: false,
+    playableNext: false
   }
 });
 
@@ -232,6 +233,13 @@ const processLine = (lines) => (state, line, index) => {
   if (slideId) {
     return { ...state, slideId };
   }
+
+  if (!context.inCode && line.trim() === '<!-- playable -->') {
+    return {
+      ...state,
+      context: { ...context, playableNext: true }
+    };
+  }
   
   if (!context.inCode && isNextSection(line)) {
     const flushed = flushAll(state);
@@ -295,20 +303,22 @@ const processLine = (lines) => (state, line, index) => {
       const code = context.codeBuffer.join('\n');
       const { comment, endIndex } = findTestComment(lines, index);
       const language = context.codeLanguage || 'javascript';
-      
+
       return {
         ...state,
-        content: [...state.content, { 
-          type: 'codeblock', 
-          code, 
+        content: [...state.content, {
+          type: 'codeblock',
+          code,
           testComment: comment,
-          language
+          language,
+          playable: context.playableNext
         }],
         context: {
           ...context,
           inCode: false,
           codeBuffer: [],
-          codeLanguage: null
+          codeLanguage: null,
+          playableNext: false
         },
         skipToIndex: endIndex
       };
@@ -317,8 +327,8 @@ const processLine = (lines) => (state, line, index) => {
       const language = line.replace('```', '').trim() || 'javascript';
       return {
         ...flushed,
-        context: { 
-          ...flushed.context, 
+        context: {
+          ...flushed.context,
           inCode: true,
           codeLanguage: language
         }

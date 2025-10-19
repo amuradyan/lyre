@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Codeblock from './codeblock/Codeblock.jsx';
 import LyreCodeblock from './codeblock/LyreCodeblock.jsx';
+import PlayableJsCodeblock from './codeblock/PlayableJsCodeblock.jsx';
 import { loadCodeBlock } from '../../utils/slideStorage.js';
 import { parseMarkdown } from '../../utils/markdownParser.js';
 import SlideNavigator from './SlideNavigator.jsx';
@@ -373,7 +374,15 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                     />
                   );
                 } else if (item.type === 'codeblock') {
-                  if (item.language === 'lyre') {
+                  if (item.playable) {
+                    return (
+                      <PlayableJsCodeblock
+                        key={i}
+                        code={item.code}
+                        readOnly={false}
+                      />
+                    );
+                  } else if (item.language === 'lyre') {
                     return (
                       <LyreCodeblock
                         key={i}
