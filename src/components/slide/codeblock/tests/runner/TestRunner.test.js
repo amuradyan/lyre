@@ -45,7 +45,7 @@ function double(x) {
 });
 
 test('evaluateCode - arrow function', () => {
-  const result = evaluateCode('const triple = x => x * 3');
+  const result = evaluateCode('x => x * 3');
   assertTrue(result.success, 'Should succeed');
   assertEquals(typeof result.result, 'function', 'Should return function');
   assertEquals(result.result(4), 12, 'Arrow function should work');
@@ -60,17 +60,20 @@ test('evaluateCode - syntax error', () => {
 
 test('parseTestComment - string value', () => {
   const result = parseTestComment('<!-- "hello" -->');
-  assertEquals(result, "hello", 'Should parse string');
+  assertEquals(result.testSpec, "hello", 'Should parse string');
+  assertEquals(result.layout, 'grid', 'Should have default layout');
 });
 
 test('parseTestComment - number value', () => {
   const result = parseTestComment('<!-- 42 -->');
-  assertEquals(result, 42, 'Should parse number');
+  assertEquals(result.testSpec, 42, 'Should parse number');
+  assertEquals(result.layout, 'grid', 'Should have default layout');
 });
 
 test('parseTestComment - object value', () => {
   const result = parseTestComment('<!-- {"2": "a", "3": "b"} -->');
-  assertEquals(result, { "2": "a", "3": "b" }, 'Should parse object');
+  assertEquals(result.testSpec, { "2": "a", "3": "b" }, 'Should parse object');
+  assertEquals(result.layout, 'grid', 'Should have default layout');
 });
 
 test('parseTestComment - invalid comment', () => {
@@ -111,7 +114,10 @@ test('runMarkdownTest - value comparison failure', () => {
 test('runMarkdownTest - function test success', () => {
   const double = x => x * 2;
   const evalResult = { success: true, result: double, error: null };
-  const testSpec = { "2": 4, "3": 6 };
+  const testSpec = [
+    { inputs: [2], expected: 4 },
+    { inputs: [3], expected: 6 }
+  ];
   const result = runMarkdownTest(evalResult, testSpec);
 
   assertTrue(result.success, 'Test should pass');
@@ -123,7 +129,10 @@ test('runMarkdownTest - function test success', () => {
 test('runMarkdownTest - function test failure', () => {
   const double = x => x * 2;
   const evalResult = { success: true, result: double, error: null };
-  const testSpec = { "2": 5, "3": 6 };
+  const testSpec = [
+    { inputs: [2], expected: 5 },
+    { inputs: [3], expected: 6 }
+  ];
   const result = runMarkdownTest(evalResult, testSpec);
 
   assertTrue(!result.success, 'Test should fail');
@@ -138,7 +147,8 @@ test('runMarkdownTest - evaluation error', () => {
   const result = runMarkdownTest(evalResult, testSpec);
 
   assertTrue(!result.success, 'Should fail');
-  assertTrue(result.error.includes('Code evaluation failed'), 'Should have evaluation error');
+  assertEquals(result.results.length, 1, 'Should have one result');
+  assertEquals(result.results[0].passed, false, 'Result should fail');
 });
 
 test('runMarkdownTest - function runtime crash', () => {
@@ -153,7 +163,11 @@ test('runMarkdownTest - function runtime crash', () => {
   };
 
   const evalResult = { success: true, result: crashingFunction, error: null };
-  const testSpec = { "3": 6, "5": 10, "10": 20 };
+  const testSpec = [
+    { inputs: [3], expected: 6 },
+    { inputs: [5], expected: 10 },
+    { inputs: [10], expected: 20 }
+  ];
   const result = runMarkdownTest(evalResult, testSpec);
 
   assertTrue(!result.success, 'Test should fail due to crashes');
@@ -183,12 +197,81 @@ test('executeMarkdownTest - complete pipeline value', () => {
 
 test('executeMarkdownTest - complete pipeline function', () => {
   const code = 'function add(x) { return x + 1; }';
-  const comment = '<!-- {"5": 6, "10": 11} -->';
+  const comment = '<!--[{"inputs": [5], "expected": 6}, {"inputs": [10], "expected": 11}]-->';
   const result = executeMarkdownTest(code, comment);
 
   assertTrue(result.success, 'Integration test should pass');
   assertEquals(result.type, 'function', 'Should be function type');
   assertEquals(result.results.length, 2, 'Should have 2 test results');
+});
+
+test('runMarkdownTest - generator function success', () => {
+  function* countTo(n) {
+    for (let i = 1; i <= n; i++) {
+      yield i;
+    }
+  }
+  const evalResult = { success: true, result: countTo, error: null };
+  const testSpec = [
+    { inputs: [3], expected: [1, 2, 3] },
+    { inputs: [1], expected: [1] },
+    { inputs: [5], expected: [1, 2, 3, 4, 5] }
+  ];
+  const result = runMarkdownTest(evalResult, testSpec);
+
+  assertTrue(result.success, 'Generator test should pass');
+  assertEquals(result.type, 'generator', 'Should be generator type');
+  assertEquals(result.results.length, 3, 'Should have 3 test results');
+  assertTrue(result.results.every(r => r.passed), 'All generator tests should pass');
+});
+
+test('runMarkdownTest - generator function failure', () => {
+  function* countTo(n) {
+    for (let i = 1; i <= n; i++) {
+      yield i;
+    }
+  }
+  const evalResult = { success: true, result: countTo, error: null };
+  const testSpec = [
+    { inputs: [3], expected: [1, 2, 3] },
+    { inputs: [2], expected: [1, 2, 3] }
+  ];
+  const result = runMarkdownTest(evalResult, testSpec);
+
+  assertTrue(!result.success, 'Generator test should fail');
+  assertEquals(result.type, 'generator', 'Should be generator type');
+  assertEquals(result.results[0].passed, true, 'First test should pass');
+  assertEquals(result.results[1].passed, false, 'Second test should fail');
+  assertEquals(result.results[1].actual, [1, 2], 'Should show actual generator output');
+});
+
+test('runMarkdownTest - generator with empty output', () => {
+  function* emptyGenerator() {
+    return;
+  }
+  const evalResult = { success: true, result: emptyGenerator, error: null };
+  const testSpec = [
+    { inputs: [], expected: [] }
+  ];
+  const result = runMarkdownTest(evalResult, testSpec);
+
+  assertTrue(result.success, 'Empty generator test should pass');
+  assertEquals(result.results[0].passed, true, 'Empty generator should match empty array');
+});
+
+test('executeMarkdownTest - complete pipeline generator', () => {
+  const code = `function* range(start, end) {
+    for (let i = start; i <= end; i++) {
+      yield i;
+    }
+  }`;
+  const comment = '<!--[{"inputs": [1, 3], "expected": [1, 2, 3]}, {"inputs": [5, 7], "expected": [5, 6, 7]}]-->';
+  const result = executeMarkdownTest(code, comment);
+
+  assertTrue(result.success, 'Generator integration test should pass');
+  assertEquals(result.type, 'generator', 'Should be generator type');
+  assertEquals(result.results.length, 2, 'Should have 2 test results');
+  assertTrue(result.results.every(r => r.passed), 'All results should pass');
 });
 
 console.log('Running MarkdownTestRunner tests...\n');
