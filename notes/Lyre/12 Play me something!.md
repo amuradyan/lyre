@@ -9,11 +9,11 @@ Let's start with the simplest possible example - playing middle C (C4 at 261.63 
 
 <!-- playable -->
 ```js
-function* tone(frequency, duration) {
-  function computeSample(amplitude, frequency, time) {
-    return amplitude * Math.sin(2 * Math.PI * frequency * time);
-  }
+function computeSample(amplitude, frequency, time) {
+  return amplitude * Math.sin(2 * Math.PI * frequency * time);
+}
 
+function* tone(frequency, duration) {
   const samplingRate = ???; // set to 44100
   const totalSamples = duration * samplingRate;
 
@@ -31,3 +31,7 @@ Nice! How do we play several notes though?
 ## Back
 
 [Sampling once more](11%20Sampling%20once%20more.md)
+
+## Next
+
+[Do, Re, Mi...](13%20Do%2C%20Re%2C%20Mi....md)
