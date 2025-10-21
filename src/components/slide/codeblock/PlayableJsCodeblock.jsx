@@ -1,10 +1,20 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import { createAudioContext } from '../../../utils/audioPlayer.js';
 
-export default function PlayableJsCodeblock({ code, readOnly = false }) {
-  const [userCode, setUserCode] = useState(code);
+export default function PlayableJsCodeblock({ code, readOnly = false, slideId, blockIndex }) {
+  const getStorageKey = () => slideId && blockIndex !== undefined ? `playable-${slideId}-${blockIndex}` : null;
+
+  const [userCode, setUserCode] = useState(() => {
+    const storageKey = slideId && blockIndex !== undefined ? `playable-${slideId}-${blockIndex}` : null;
+    if (storageKey) {
+      const saved = localStorage.getItem(storageKey);
+      return saved || code;
+    }
+    return code;
+  });
   const [isPlaying, setIsPlaying] = useState(false);
+  const [canPlay, setCanPlay] = useState(true);
   const audioContextRef = useRef(null);
   const workletNodeRef = useRef(null);
 
@@ -76,6 +86,24 @@ export default function PlayableJsCodeblock({ code, readOnly = false }) {
     setUserCode(newCode);
   };
 
+  useEffect(() => {
+    const checkCompilation = () => {
+      try {
+        new Function(userCode);
+        setCanPlay(true);
+
+        const storageKey = getStorageKey();
+        if (storageKey) {
+          localStorage.setItem(storageKey, userCode);
+        }
+      } catch (error) {
+        setCanPlay(false);
+      }
+    };
+
+    checkCompilation();
+  }, [userCode]);
+
   return (
     <div className="bg-white/70 backdrop-blur shadow-sm overflow-hidden relative">
       <CodeEditor
@@ -85,8 +113,16 @@ export default function PlayableJsCodeblock({ code, readOnly = false }) {
       />
       <button
         onClick={handlePlayPause}
-        className="absolute flex items-center justify-center w-6 h-6 backdrop-blur text-white hover:opacity-80 transition-all duration-200"
-        style={{ top: '8px', right: '8px', zIndex: 9999, backgroundColor: '#B187D8' }}
+        disabled={!canPlay}
+        className="absolute flex items-center justify-center w-6 h-6 backdrop-blur text-white transition-all duration-200"
+        style={{
+          top: '8px',
+          right: '8px',
+          zIndex: 9999,
+          backgroundColor: canPlay ? '#B187D8' : '#9ca3af',
+          cursor: canPlay ? 'pointer' : 'not-allowed',
+          opacity: canPlay ? 1 : 0.5
+        }}
       >
         {isPlaying ? (
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">

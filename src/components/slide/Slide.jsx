@@ -380,6 +380,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                         key={i}
                         code={item.code}
                         readOnly={false}
+                        slideId={parsed.slideId}
+                        blockIndex={i}
                       />
                     );
                   } else if (item.language === 'lyre') {

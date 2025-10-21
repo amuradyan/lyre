@@ -1,11 +1,24 @@
 const processInlineCode = (text) => {
-  return text
-    .replace(/`([^`]+)`/g, (_, code) => `<code class="inline-code">${code}</code>`)
+  const CODE_PLACEHOLDER = '\u0000CODE\u0000';
+  const codeBlocks = [];
+
+  let result = text.replace(/`([^`]+)`/g, (match, code) => {
+    codeBlocks.push(`<code class="inline-code">${code}</code>`);
+    return CODE_PLACEHOLDER + (codeBlocks.length - 1) + CODE_PLACEHOLDER;
+  });
+
+  result = result
     .replace(/\*\*([^*]+)\*\*/g, (_, bold) => `<strong>${bold}</strong>`)
     .replace(/__([^_]+)__/g, (_, bold) => `<strong>${bold}</strong>`)
     .replace(/\*([^*]+)\*/g, (_, italic) => `<em>${italic}</em>`)
     .replace(/_([^_]+)_/g, (_, italic) => `<em>${italic}</em>`)
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline filter drop-shadow-sm">${text}</a>`);
+
+  result = result.replace(new RegExp(CODE_PLACEHOLDER + '(\\d+)' + CODE_PLACEHOLDER, 'g'), (_, index) => {
+    return codeBlocks[parseInt(index)];
+  });
+
+  return result;
 };
 
 const extractTitle = (line) => {
