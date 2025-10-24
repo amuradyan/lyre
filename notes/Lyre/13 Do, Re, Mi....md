@@ -1,4 +1,4 @@
-# Do, Re, Mi
+# Do, Re, Mi...
 <!-- slide-id: 582ef0f9-1e12-4357-9017-2af4ae86a84d -->
 
 One way to play multiple notes is to write them down in a list along with their durations, then loop through that list, generating samples for each note in turn.

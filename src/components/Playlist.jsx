@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 
-const exampleModules = import.meta.glob('../assets/examples/*.lyre', { as: 'raw' });
+const exampleModules = import.meta.glob('../assets/examples/*.lyre', { query: '?raw', import: 'default' });
 
 const formatTitle = (filename) => {
   return filename
