@@ -7,7 +7,7 @@ We can represent a simple tone as a _sine wave_ with a specific _frequency_ - th
 
 ----
 
-Not all computers can work with continuous waves and it would be fair to assume that average computer won't work, mine can't. A _common_ computer will treat the wave as a list of  _samples_ and compute the snapshots of that wave at regular intervals. This is known as _sampling_.
+Not all computers can work with continuous waves and it would be fair to assume that average computer won't work, mine can't. A _common_ computer will treat the wave as a list of  _samples_ and compute the snapshots of that wave at regular intervals. This is known as _sampling_ and the method is called [Pulse-code Modulation /PCM/](https://en.wikipedia.org/wiki/Pulse-code_modulation).
 
 The formula for generating each sample is: `nth sample = A ⋅ sin(2π ⋅ f ⋅ (n / R))`
 
