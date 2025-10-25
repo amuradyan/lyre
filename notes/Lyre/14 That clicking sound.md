@@ -38,3 +38,7 @@ Turns out that's not complicated at all. Here, let me show you...
 ## Next
 
 [If this, than that](15%20If%20this%2C%20than%20that.md)
+
+## Skip
+
+[Smoooth Operator](16%20Smoooth%20operator.md)
