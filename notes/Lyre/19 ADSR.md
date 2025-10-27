@@ -1,7 +1,7 @@
 # ADSR
 <!-- slide-id: bc58e1c8-50b4-4955-9d8b-8286edb281a0 -->
 
-Each characteristic of ADSR is expressed as a decimal number. __A__, __D__, and __R__ are time durations in seconds, while __S__ is an amplitude coefficient between 0 and 1. For plucked string instruments like the lyre, reasonable parameters are:
+Each characteristic of ADSR is expressed as a decimal number. __A__, __D__, and __R__ are time durations in seconds, while __S__ is an amplitude coefficient between 0 and 1. In code though, we will represent them as index intervals. For plucked string instruments like the lyre, reasonable parameters are:
 
 * __Attack__: 0.01 seconds (10ms) - the pluck reaches peak amplitude almost instantly
 * __Decay__: 0.4 seconds (400ms) - brightness fades as energy redistributes across the string
@@ -63,3 +63,7 @@ sequence(DoReMi);
 ## Back
 
 [Long time, no acronyms](18%20Long%20time,%20no%20acronyms.md)
+
+## Next
+
+[Waveform shape](20%20Waveform%20shape.md)
