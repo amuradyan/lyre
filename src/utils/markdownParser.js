@@ -111,6 +111,16 @@ const extractImage = (line) => {
   return match ? { alt: match[1], src: match[2] } : null;
 };
 
+const parseFenceLanguage = (languageString) => {
+  if (!languageString) return ['javascript', null];
+  const parts = languageString.split(':');
+  const language = parts[0] || 'javascript';
+  const normalizedLanguage = language === 'js' ? 'javascript' : language;
+  return parts.length > 1
+    ? [normalizedLanguage, parts[1]]
+    : [normalizedLanguage, null];
+};
+
 const findTestComment = (lines, startIndex) => {
   const findCommentEnd = (lines, index, accumulator = []) => {
     if (index >= lines.length) return { comment: null, endIndex: startIndex };
@@ -315,7 +325,7 @@ const processLine = (lines) => (state, line, index) => {
     if (context.inCode) {
       const code = context.codeBuffer.join('\n');
       const { comment, endIndex } = findTestComment(lines, index);
-      const language = context.codeLanguage || 'javascript';
+      const [language, filename] = parseFenceLanguage(context.codeLanguage);
 
       return {
         ...state,
@@ -324,6 +334,7 @@ const processLine = (lines) => (state, line, index) => {
           code,
           testComment: comment,
           language,
+          filename,
           playable: context.playableNext
         }],
         context: {
@@ -451,19 +462,53 @@ const processLine = (lines) => (state, line, index) => {
   };
 };
 
+const groupConsecutiveCodeblocks = (content) => {
+  const grouped = [];
+  let currentGroup = [];
+
+  content.forEach((item) => {
+    if (item.type === 'codeblock') {
+      currentGroup.push(item);
+    } else {
+      if (currentGroup.length > 1) {
+        grouped.push({
+          type: 'codeblock-group',
+          blocks: currentGroup
+        });
+        currentGroup = [];
+      } else if (currentGroup.length === 1) {
+        grouped.push(currentGroup[0]);
+        currentGroup = [];
+      }
+      grouped.push(item);
+    }
+  });
+
+  if (currentGroup.length > 1) {
+    grouped.push({
+      type: 'codeblock-group',
+      blocks: currentGroup
+    });
+  } else if (currentGroup.length === 1) {
+    grouped.push(currentGroup[0]);
+  }
+
+  return grouped;
+};
+
 function parseMarkdown(md) {
   const lines = md.replace(/\r\n?/g, '\n').split('\n');
   const processor = processLine(lines);
-  
+
   const { result } = lines.reduce(
     ({ result, skipNext }, line, index) => {
       if (skipNext > 0) {
         return { result, skipNext: skipNext - 1 };
       }
-      
+
       const newResult = processor(result, line, index);
       const skipCount = newResult.skipToIndex ? newResult.skipToIndex - index : 0;
-      
+
       return {
         result: { ...newResult, skipToIndex: undefined },
         skipNext: skipCount
@@ -471,13 +516,14 @@ function parseMarkdown(md) {
     },
     { result: createInitialState(), skipNext: 0 }
   );
-  
+
   const finalState = flushAll(result);
-  
+  const groupedContent = groupConsecutiveCodeblocks(finalState.content);
+
   return {
     title: finalState.title,
     slideId: finalState.slideId,
-    content: finalState.content,
+    content: groupedContent,
     nextHref: finalState.navigation.next?.href || null,
     nextText: finalState.navigation.next?.text || null,
     backHref: finalState.navigation.back?.href || null,

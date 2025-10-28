@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import Codeblock from './codeblock/Codeblock.jsx';
 import LyreCodeblock from './codeblock/LyreCodeblock.jsx';
 import PlayableJsCodeblock from './codeblock/PlayableJsCodeblock.jsx';
+import TabbedCodeblock from './codeblock/TabbedCodeblock.jsx';
 import { loadCodeBlock } from '../../utils/slideStorage.js';
 import { parseMarkdown } from '../../utils/markdownParser.js';
 import SlideNavigator from './SlideNavigator.jsx';
@@ -371,6 +372,13 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                       src={resolveImagePath(item.src)}
                       alt={item.alt}
                       className="max-w-full h-auto my-6 mx-auto"
+                    />
+                  );
+                } else if (item.type === 'codeblock-group') {
+                  return (
+                    <TabbedCodeblock
+                      key={i}
+                      blocks={item.blocks}
                     />
                   );
                 } else if (item.type === 'codeblock') {
