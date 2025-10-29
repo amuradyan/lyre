@@ -2,11 +2,18 @@ import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import { bundleTabs } from '../../../utils/moduleBundler.js';
 import { createAudioContext } from '../../../utils/audioPlayer.js';
+import { saveCodeBlock, loadCodeBlock } from '../../../utils/slideStorage.js';
 
-export default function TabbedCodeblock({ blocks, groupPlayable }) {
+export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockIndex }) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const [tabCode, setTabCode] = useState(
-    blocks.map(block => block.code)
+  const [tabCode, setTabCode] = useState(() =>
+    blocks.map((block) => {
+      if (slideId) {
+        const saved = loadCodeBlock(slideId, block.code);
+        return saved || block.code;
+      }
+      return block.code;
+    })
   );
   const [isPlaying, setIsPlaying] = useState(false);
   const [canPlay, setCanPlay] = useState(true);
@@ -35,6 +42,11 @@ export default function TabbedCodeblock({ blocks, groupPlayable }) {
       updated[activeTabIndex] = newCode;
       return updated;
     });
+
+    if (slideId) {
+      const originalCode = blocks[activeTabIndex].code;
+      saveCodeBlock(slideId, originalCode, newCode);
+    }
   };
 
   const getAudioContext = () => {

@@ -380,6 +380,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                       key={i}
                       blocks={item.blocks}
                       groupPlayable={item.playable}
+                      slideId={parsed.slideId}
+                      blockIndex={i}
                     />
                   );
                 } else if (item.type === 'codeblock') {
