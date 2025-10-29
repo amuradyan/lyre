@@ -17,34 +17,29 @@ const {computeSample} = synth;
 function* tone(frequency, duration) {
   const samplingRate = 44100;
   const totalSamples = duration * samplingRate;
-
   const attackTime = 0.01;
   const decayTime = ???
   const sustainLevel = 0.8;
   const releaseTime = ???
-
   const attackSamples = attackTime * samplingRate;
   const releaseSamples = ???
   const decaySamples = ???
 
   for (let n = 0; n < totalSamples; n = n + 1) {
-    const time = n / samplingRate;
-    let sample = computeSample(1, frequency, time);
-    let amplitude = 1;
+    let sample = computeSample(1, frequency, n / samplingRate);
+    let amplitude = ???; // By default the amplitude is at sustain level
 
     if (n < attackSamples) {
       amplitude = (n + 1) / attackSamples;
     } else if (n < ???) {
-      const decayProgress = (n - attackSamples) / decaySamples;
-      amplitude = ???
+      const decayProgress = ??? / decaySamples;
+      amplitude = ??? * ???;
     } else if (n >= totalSamples - releaseSamples) {
-      const releaseProgress = (totalSamples - n - 1) / releaseSamples;
+      const releaseProgress = ??? / releaseSamples;
       amplitude = ??? * releaseProgress;
-    } else {
-      amplitude = ???
     }
 
-    yield sample * amplitude;
+    yield sample * ???;
   }
 }
 ```
