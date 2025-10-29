@@ -2,7 +2,7 @@
 <!-- slide-id: 1716a5bd-881e-461a-8b2b-ae4d2ac82354 -->
 
 <!-- playable -->
-```javascript:toneModule
+```javascript:sound
 const {computeSample} = synth;
 
 function* tone(frequency, duration) {
@@ -28,7 +28,7 @@ function* tone(frequency, duration) {
 ```
 
 ```javascript:synth
-const {tone} = toneModule;
+const {tone} = sound;
 
 function computeSample(amplitude, frequency, time) {
   return amplitude * Math.sin(2 * Math.PI * frequency * time);
