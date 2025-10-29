@@ -29,21 +29,9 @@ const extractDestructuringStatements = (code) => {
 const extractTopLevelIdentifiers = (code) => {
   const identifiers = [];
   const functionRegex = /^\s*function\*?\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/gm;
-  const constRegex = /^\s*const\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=/gm;
-  const letRegex = /^\s*let\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=/gm;
-  const varRegex = /^\s*var\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=/gm;
 
   let match;
   while ((match = functionRegex.exec(code)) !== null) {
-    identifiers.push(match[1]);
-  }
-  while ((match = constRegex.exec(code)) !== null) {
-    identifiers.push(match[1]);
-  }
-  while ((match = letRegex.exec(code)) !== null) {
-    identifiers.push(match[1]);
-  }
-  while ((match = varRegex.exec(code)) !== null) {
     identifiers.push(match[1]);
   }
 
@@ -75,9 +63,13 @@ export const bundleTabs = (tabs) => {
 
   const orderedModules = [];
   const processed = new Set();
+  const visiting = new Set();
 
   const processModule = (moduleName) => {
     if (processed.has(moduleName)) return;
+    if (visiting.has(moduleName)) return; // Circular dependency detected
+
+    visiting.add(moduleName);
 
     const deps = moduleDeps[moduleName] || [];
     deps.forEach(depName => {
@@ -86,6 +78,7 @@ export const bundleTabs = (tabs) => {
       }
     });
 
+    visiting.delete(moduleName);
     orderedModules.push(moduleName);
     processed.add(moduleName);
   };
@@ -94,20 +87,30 @@ export const bundleTabs = (tabs) => {
     processModule(moduleName);
   });
 
-  const bundledCode = orderedModules
-    .map(moduleName => {
-      const { code, destructuringStatements } = moduleMap[moduleName];
-      const hasDestructuring = destructuringStatements.length > 0;
+  const moduleDefinitions = [];
+  const allImports = [];
 
-      if (!hasDestructuring) {
-        const identifiers = extractTopLevelIdentifiers(code);
-        const wrappedCode = wrapInModule(code, identifiers);
-        return `const ${moduleName} = ${wrappedCode};`;
-      } else {
-        return code;
-      }
-    })
-    .join('\n\n');
+  orderedModules.forEach(moduleName => {
+    const { code, destructuringStatements } = moduleMap[moduleName];
+    const identifiers = extractTopLevelIdentifiers(code);
+    const hasExports = identifiers.length > 0;
 
+    if (hasExports) {
+      const codeWithoutImports = code.split('\n')
+        .filter(line => !parseDestructuringStatement(line))
+        .join('\n');
+
+      const wrappedCode = wrapInModule(codeWithoutImports, identifiers);
+      moduleDefinitions.push(`const ${moduleName} = ${wrappedCode};`);
+
+      destructuringStatements.forEach(d => {
+        allImports.push(`const {${d.imports.join(', ')}} = ${d.moduleName};`);
+      });
+    } else {
+      moduleDefinitions.push(code);
+    }
+  });
+
+  const bundledCode = [...moduleDefinitions, ...allImports].join('\n\n');
   return bundledCode;
 };

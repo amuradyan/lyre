@@ -379,6 +379,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                     <TabbedCodeblock
                       key={i}
                       blocks={item.blocks}
+                      groupPlayable={item.playable}
                     />
                   );
                 } else if (item.type === 'codeblock') {

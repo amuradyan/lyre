@@ -3,7 +3,7 @@ import CodeEditor from './CodeEditor.jsx';
 import { bundleTabs } from '../../../utils/moduleBundler.js';
 import { createAudioContext } from '../../../utils/audioPlayer.js';
 
-export default function TabbedCodeblock({ blocks }) {
+export default function TabbedCodeblock({ blocks, groupPlayable }) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [tabCode, setTabCode] = useState(
     blocks.map(block => block.code)
@@ -14,7 +14,7 @@ export default function TabbedCodeblock({ blocks }) {
   const workletNodeRef = useRef(null);
 
   const playableTabIndex = blocks.findIndex(block => block.playable);
-  const hasPlayableTab = playableTabIndex !== -1;
+  const hasPlayableTab = playableTabIndex !== -1 || groupPlayable;
 
   const bundledCode = useMemo(() => {
     if (!hasPlayableTab) return null;
@@ -157,7 +157,7 @@ export default function TabbedCodeblock({ blocks }) {
           readOnly={false}
           language={activeBlock.language || 'javascript'}
         />
-        {hasPlayableTab && activeTabIndex === playableTabIndex && (
+        {hasPlayableTab && (
           <button
             onClick={handlePlayPause}
             disabled={!canPlay}

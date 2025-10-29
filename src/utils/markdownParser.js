@@ -471,9 +471,11 @@ const groupConsecutiveCodeblocks = (content) => {
       currentGroup.push(item);
     } else {
       if (currentGroup.length > 1) {
+        const hasPlayable = currentGroup.some(block => block.playable);
         grouped.push({
           type: 'codeblock-group',
-          blocks: currentGroup
+          blocks: currentGroup,
+          playable: hasPlayable
         });
         currentGroup = [];
       } else if (currentGroup.length === 1) {
@@ -485,9 +487,11 @@ const groupConsecutiveCodeblocks = (content) => {
   });
 
   if (currentGroup.length > 1) {
+    const hasPlayable = currentGroup.some(block => block.playable);
     grouped.push({
       type: 'codeblock-group',
-      blocks: currentGroup
+      blocks: currentGroup,
+      playable: hasPlayable
     });
   } else if (currentGroup.length === 1) {
     grouped.push(currentGroup[0]);
