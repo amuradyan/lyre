@@ -4,10 +4,14 @@
 The mathematical formula for a sawtooth wave is `2 * ((frequency * time) % 1) - 1`. Let's replace our sine wave with a sawtooth and hear the difference.
 
 <!-- playable -->
-```js
+```js:waveform
 function computeSample(amplitude, frequency, time) {
   return amplitude * ???;
 }
+```
+
+```js:synth
+const {computeSample} = waveform;
 
 function* tone(frequency, duration) {
   const samplingRate = 44100;
@@ -48,6 +52,10 @@ function* sequence(notes) {
     yield* tone(notes[n][0], notes[n][1])
   }
 }
+```
+
+```js:DoReMi
+const {sequence} = synth;
 
 const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
 sequence(DoReMi);

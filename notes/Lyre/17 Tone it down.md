@@ -2,30 +2,36 @@
 <!-- slide-id: 1716a5bd-881e-461a-8b2b-ae4d2ac82354 -->
 
 <!-- playable -->
-```js
-function computeSample(amplitude, frequency, time) {
-  return amplitude * Math.sin(2 * Math.PI * frequency * time);
-}
+```javascript:toneModule
+const {computeSample} = synth;
 
 function* tone(frequency, duration) {
   const fadeFraction = 0.01
   const samplingRate = 44100;
   const totalSamples = duration * samplingRate;
-  const fadeSamples = ???;
+  const fadeSamples = fadeFraction * totalSamples;
 
   for (let n = 0; n < totalSamples; n = n + 1) {
     const time = n / samplingRate;
     let sample = computeSample(1, frequency, time);
     let amplitude = 1;
 
-    if (???) {
-      amplitude = ???;
-    } ??? if (???) {
-      amplitude = ???;
+    if (n < fadeSamples) {
+      amplitude = (n + 1) / fadeSamples;
+    } else if (n >= totalSamples - fadeSamples) {
+      amplitude = (totalSamples - n - 1) / fadeSamples;
     }
 
     yield sample * amplitude;
   }
+}
+```
+
+```javascript:synth
+const {tone} = toneModule;
+
+function computeSample(amplitude, frequency, time) {
+  return amplitude * Math.sin(2 * Math.PI * frequency * time);
 }
 
 function* sequence(notes) {
@@ -33,6 +39,10 @@ function* sequence(notes) {
     yield* tone(notes[n][0], notes[n][1])
   }
 }
+```
+
+```js:DoReMi
+const {sequence} = synth;
 
 const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
 sequence(DoReMi);

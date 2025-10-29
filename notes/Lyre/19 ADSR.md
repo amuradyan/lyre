@@ -11,23 +11,21 @@ Each characteristic of ADSR is expressed as a decimal number. __A__, __D__, and 
 Let's update the `tone` to produce sound with such parameters.
 
 <!-- playable -->
-```js
-function computeSample(amplitude, frequency, time) {
-  return amplitude * Math.sin(2 * Math.PI * frequency * time);
-}
+```js:sound
+const {computeSample} = synth;
 
 function* tone(frequency, duration) {
   const samplingRate = 44100;
   const totalSamples = duration * samplingRate;
 
   const attackTime = 0.01;
-  const decayTime = ???
+  const decayTime = 0.4;
   const sustainLevel = 0.8;
-  const releaseTime = ???
+  const releaseTime = 0.6;
 
   const attackSamples = attackTime * samplingRate;
-  const releaseSamples = ???
-  const decaySamples = ???
+  const releaseSamples = releaseTime * samplingRate;
+  const decaySamples = decayTime * samplingRate;
 
   for (let n = 0; n < totalSamples; n = n + 1) {
     const time = n / samplingRate;
@@ -36,18 +34,33 @@ function* tone(frequency, duration) {
 
     if (n < attackSamples) {
       amplitude = (n + 1) / attackSamples;
-    } else if (n < ???) {
+    } else if (n < attackSamples + decaySamples) {
       const decayProgress = (n - attackSamples) / decaySamples;
-      amplitude = ???
+      amplitude = 1 - (1 - sustainLevel) * decayProgress;
     } else if (n >= totalSamples - releaseSamples) {
       const releaseProgress = (totalSamples - n - 1) / releaseSamples;
-      amplitude = ??? * releaseProgress;
+      amplitude = sustainLevel * releaseProgress;
     } else {
-      amplitude = ???
+      amplitude = sustainLevel;
     }
 
     yield sample * amplitude;
   }
+}
+```
+
+```js:DoReMi
+const {sequence} = synth;
+
+const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
+sequence(DoReMi);
+```
+
+```js:synth
+const {tone} = sound
+
+function computeSample(amplitude, frequency, time) {
+  return amplitude * Math.sin(2 * Math.PI * frequency * time);
 }
 
 function* sequence(notes) {
@@ -55,9 +68,6 @@ function* sequence(notes) {
     yield* tone(notes[n][0], notes[n][1])
   }
 }
-
-const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
-sequence(DoReMi);
 ```
 
 ## Back
