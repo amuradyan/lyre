@@ -72,7 +72,7 @@ function* sequence(notes) {
 
 ## Back
 
-[Long time, no acronyms](18%20Long%20time,%20no%20acronyms.md)
+[Long time, no acronyms](18%20Long%20time%2C%20no%20acronyms.md)
 
 ## Next
 

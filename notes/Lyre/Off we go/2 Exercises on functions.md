@@ -57,7 +57,7 @@ redshift(400, 500);
 
 ## Back
 
-[Where do I start?](notes/Lyre/1%20Where%20do%20I%20start.md)
+[Where do I start?](1%20Where%20do%20I%20start.md)
 
 ## Next
 

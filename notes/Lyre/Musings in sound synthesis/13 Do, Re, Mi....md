@@ -35,7 +35,7 @@ sequence(???);
 
 ## Back
 
-[Play me something!](12%20Play%20me%20something!.md)
+[Play me something!](../Off%20we%20go/12%20Play%20me%20something!.md)
 
 ## Next
 

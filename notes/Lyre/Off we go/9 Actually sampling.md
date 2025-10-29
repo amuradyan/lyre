@@ -39,4 +39,4 @@ function tone(frequency, duration) {
 
 ## Next
 
-[One sample at a time](10%20One%20step%20at%20a%20time.md)
+[One step at a time](10%20One%20step%20at%20a%20time.md)

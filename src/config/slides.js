@@ -1,4 +1,4 @@
-const slideModules = import.meta.glob('../../notes/Lyre/*.md', {
+const slideModules = import.meta.glob('../../notes/Lyre/**/*.md', {
   query: '?raw',
   import: 'default',
   eager: true

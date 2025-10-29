@@ -43,4 +43,4 @@ Let's practice these operations!
 
 ## Skip
 
-[One step at a time](9%20One%20step%20at%20a%20time.md)
+[Actually sampling](9%20Actually%20sampling.md)

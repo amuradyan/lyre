@@ -36,7 +36,7 @@ How do I calculate the samples, though?
 
 ## Back
 
-[Exercises on functions](notes/Lyre/2%20Exercises%20on%20functions.md)
+[Exercises on functions](2%20Exercises%20on%20functions.md)
 
 ## Next
 

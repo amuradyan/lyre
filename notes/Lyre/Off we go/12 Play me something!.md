@@ -34,4 +34,4 @@ Nice! How do we play several notes though?
 
 ## Next
 
-[Do, Re, Mi...](13%20Do%2C%20Re%2C%20Mi....md)
+[Do, Re, Mi...](../Musings%20in%20sound%20synthesis/13%20Do%2C%20Re%2C%20Mi....md)
