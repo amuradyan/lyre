@@ -16,10 +16,10 @@ function* tone(frequency, duration) {
     let sample = computeSample(1, frequency, time);
     let amplitude = 1;
 
-    if (n < fadeSamples) {
-      amplitude = (n + 1) / fadeSamples;
-    } else if (n >= totalSamples - fadeSamples) {
-      amplitude = (totalSamples - n - 1) / fadeSamples;
+    if (???) {
+      amplitude = ???;
+    } ??? if (???) {
+      amplitude = ??? / fadeSamples;
     }
 
     yield sample * amplitude;

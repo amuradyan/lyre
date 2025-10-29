@@ -19,13 +19,13 @@ function* tone(frequency, duration) {
   const totalSamples = duration * samplingRate;
 
   const attackTime = 0.01;
-  const decayTime = 0.4;
+  const decayTime = ???
   const sustainLevel = 0.8;
-  const releaseTime = 0.6;
+  const releaseTime = ???
 
   const attackSamples = attackTime * samplingRate;
-  const releaseSamples = releaseTime * samplingRate;
-  const decaySamples = decayTime * samplingRate;
+  const releaseSamples = ???
+  const decaySamples = ???
 
   for (let n = 0; n < totalSamples; n = n + 1) {
     const time = n / samplingRate;
@@ -34,14 +34,14 @@ function* tone(frequency, duration) {
 
     if (n < attackSamples) {
       amplitude = (n + 1) / attackSamples;
-    } else if (n < attackSamples + decaySamples) {
+    } else if (n < ???) {
       const decayProgress = (n - attackSamples) / decaySamples;
-      amplitude = 1 - (1 - sustainLevel) * decayProgress;
+      amplitude = ???
     } else if (n >= totalSamples - releaseSamples) {
       const releaseProgress = (totalSamples - n - 1) / releaseSamples;
-      amplitude = sustainLevel * releaseProgress;
+      amplitude = ??? * releaseProgress;
     } else {
-      amplitude = sustainLevel;
+      amplitude = ???
     }
 
     yield sample * amplitude;
