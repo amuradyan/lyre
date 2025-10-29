@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { SLIDES } from '../../config/slides.js';
 
 export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
   const [expandedFolders, setExpandedFolders] = useState({});
+  const currentSlideRef = useRef(null);
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
@@ -49,6 +50,15 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
       initialExpanded[folder] = hasCurrentSlide;
     });
     setExpandedFolders(initialExpanded);
+
+    setTimeout(() => {
+      if (currentSlideRef.current) {
+        currentSlideRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }, 100);
   }, [currentIndex]);
 
   const toggleFolder = (folder) => {
@@ -160,6 +170,7 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
                 return (
                   <div
                     key={slide.path}
+                    ref={isCurrent ? currentSlideRef : null}
                     className={`slide-item ${isCurrent ? 'slide-item-current' : ''}`}
                     onClick={() => handleSlideClick(slide.path)}
                     style={{
