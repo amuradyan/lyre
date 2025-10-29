@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SLIDES } from '../../config/slides.js';
 
 export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
+  const [expandedFolders, setExpandedFolders] = useState({});
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
@@ -27,6 +28,34 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
   const handleSlideClick = (path) => {
     onNavigate(path);
     onClose();
+  };
+
+  const groupedSlides = SLIDES.reduce((groups, slide, idx) => {
+    const pathParts = slide.path.split('/');
+    const folder = pathParts.length > 3 ? pathParts[pathParts.length - 2] : 'Other';
+
+    if (!groups[folder]) {
+      groups[folder] = [];
+    }
+
+    groups[folder].push({ ...slide, index: idx + 1 });
+    return groups;
+  }, {});
+
+  useEffect(() => {
+    const initialExpanded = {};
+    Object.entries(groupedSlides).forEach(([folder, slides]) => {
+      const hasCurrentSlide = slides.some(slide => slide.index === currentIndex);
+      initialExpanded[folder] = hasCurrentSlide;
+    });
+    setExpandedFolders(initialExpanded);
+  }, [currentIndex]);
+
+  const toggleFolder = (folder) => {
+    setExpandedFolders(prev => ({
+      ...prev,
+      [folder]: !prev[folder]
+    }));
   };
 
   return (
@@ -99,48 +128,76 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
             padding: '8px'
           }}
         >
-          {SLIDES.map((slide, idx) => {
-            const slideNumber = idx + 1;
-            const isCurrent = slideNumber === currentIndex;
-
-            return (
+          {Object.entries(groupedSlides).map(([folder, slides]) => (
+            <div key={folder}>
               <div
-                key={slide.path}
-                className={`slide-item ${isCurrent ? 'slide-item-current' : ''}`}
-                onClick={() => handleSlideClick(slide.path)}
+                onClick={() => toggleFolder(folder)}
                 style={{
-                  padding: '12px 16px',
-                  cursor: 'pointer',
+                  padding: '8px 16px',
                   fontFamily: 'Nunito, sans-serif',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  color: '#6366f1',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  marginTop: '8px',
+                  marginBottom: '4px',
+                  cursor: 'pointer',
                   display: 'flex',
-                  gap: '12px',
                   alignItems: 'center',
-                  borderRadius: '0px',
-                  margin: '4px 0'
+                  gap: '8px',
+                  transition: 'background-color 0.2s'
                 }}
               >
-                <span
-                  style={{
-                    fontWeight: 700,
-                    color: '#6366f1',
-                    fontSize: '14px',
-                    minWidth: '24px'
-                  }}
-                >
-                  {slideNumber}
+                <span style={{ fontSize: '10px', transition: 'transform 0.2s', display: 'inline-block', transform: expandedFolders[folder] ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                  ▶
                 </span>
-                <span
-                  style={{
-                    color: '#374151',
-                    fontSize: '15px',
-                    fontWeight: isCurrent ? 600 : 400
-                  }}
-                >
-                  {slide.title}
-                </span>
+                {folder}
               </div>
-            );
-          })}
+              {expandedFolders[folder] && slides.map((slide) => {
+                const isCurrent = slide.index === currentIndex;
+
+                return (
+                  <div
+                    key={slide.path}
+                    className={`slide-item ${isCurrent ? 'slide-item-current' : ''}`}
+                    onClick={() => handleSlideClick(slide.path)}
+                    style={{
+                      padding: '12px 16px',
+                      paddingLeft: '40px',
+                      cursor: 'pointer',
+                      fontFamily: 'Nunito, sans-serif',
+                      display: 'flex',
+                      gap: '12px',
+                      alignItems: 'center',
+                      borderRadius: '0px',
+                      margin: '4px 0'
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        color: '#6366f1',
+                        fontSize: '14px',
+                        minWidth: '24px'
+                      }}
+                    >
+                      {slide.index}
+                    </span>
+                    <span
+                      style={{
+                        color: '#374151',
+                        fontSize: '15px',
+                        fontWeight: isCurrent ? 600 : 400
+                      }}
+                    >
+                      {slide.title}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </div>
     </div>
