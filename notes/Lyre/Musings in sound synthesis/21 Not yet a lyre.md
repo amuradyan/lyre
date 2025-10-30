@@ -16,20 +16,18 @@ const {computeSample} = waveform;
 function* tone(frequency, duration) {
   const samplingRate = 44100;
   const totalSamples = duration * samplingRate;
-
   const attackTime = 0.01;
   const decayTime = 0.4;
   const sustainLevel = 0.8;
   const releaseTime = 0.6;
-
   const attackSamples = attackTime * samplingRate;
   const releaseSamples = releaseTime * samplingRate;
   const decaySamples = decayTime * samplingRate;
+  let amplitude = sustainLevel;
 
   for (let n = 0; n < totalSamples; n = n + 1) {
     const time = n / samplingRate;
     let sample = computeSample(1, frequency, time);
-    let amplitude = 1;
 
     if (n < attackSamples) {
       amplitude = (n + 1) / attackSamples;
@@ -39,8 +37,6 @@ function* tone(frequency, duration) {
     } else if (n >= totalSamples - releaseSamples) {
       const releaseProgress = (totalSamples - n - 1) / releaseSamples;
       amplitude = sustainLevel * releaseProgress;
-    } else {
-      amplitude = sustainLevel;
     }
 
     yield sample * amplitude;
@@ -65,10 +61,14 @@ The sawtooth waveform gives our sound that stringy, plucked quality - it's defin
 
 In reality, when you pluck a string, the high-frequency harmonics decay much faster than the low ones. This creates a characteristic timbral evolution: the sound starts bright and cutting, then becomes mellower and warmer as it sustains.
 
-To capture this properly, we need to control each harmonic independently - giving the high frequencies a short, bright decay and the low frequencies a longer, sustained presence. This means generating each harmonic as its own `tone` and combining them.
+To capture this properly, we need to control each harmonic independently - giving the high frequencies a short, bright decay and the low frequencies a longer, sustained presence. This means generating each harmonic as its own `tone` and combining them and that would require a new composition mechanics.
 
-But to combine multiple tones happening at the same time, we need a new language feature: `parallel`.
+Before we get there, let's take another look at our `tone`, it's becoming uncomfortably bulky'.
 
 ## Back
 
 [Waveform shape](20%20Waveform%20shape.md)
+
+## Next
+
+[Refactone](22%20Refactone.md)
