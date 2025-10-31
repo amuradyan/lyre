@@ -7,16 +7,14 @@ Let's implement a stateful oscillator as a generator function. It will track its
 
 <!-- playable -->
 ```js:oscillator
-??? oscillator(frequency) { // This needs to be a generator
+function* oscillate(frequency) {
   const samplingRate = 44100;
   let phase = 0;
-  // The phase increment is the full phase over the sampling rate
-  const phaseIncrement = ???;
+  const phaseIncrement = (2 * Math.PI * frequency) / samplingRate;
 
-  // set the looping condition to `true`, i.e. loop infinitely.
-  while (???) {
+  while (true) {
     yield Math.sin(phase);
-    phase = phase + ???; // Advance by phase increment
+    phase = phase + phaseIncrement;
   }
 }
 ```
@@ -45,46 +43,46 @@ function computeAmplitude(n, totalSamples, adsr) {
 
 ```js:synth
 const {computeAmplitude} = adsr;
+const {oscillate} = oscillator
 
 function* tone(frequency, duration, adsr) {
   const samplingRate = 44100;
   const totalSamples = duration * samplingRate;
-  const osc = oscillator.oscillator(frequency);
+  const osc = oscillate(frequency);
 
   for (let n = 0; n < totalSamples; n = n + 1) {
-    const sample = osc.next().value;
+    const rawSample = osc.next().value;
     const amplitude = computeAmplitude(n, totalSamples, adsr);
 
-    yield sample * amplitude;
-  }
-}
-
-function* sequence(notes) {
-  for (let n = 0; n < notes.length ; n = n + 1) {
-    yield* tone(notes[n][0], notes[n][1], notes[n][2])
+    yield rawSample * amplitude;
   }
 }
 ```
 
 ```js:DoReMi
-const {sequence} = synth;
+const {tone} = synth;
 
-const DoReMi = [
-  [261.63, 1, [0.01, 0.4, 0.8, 0.6]],
-  [293.66, 1, [0.01, 0.4, 0.8, 0.6]],
-  [329.63, 1, [0.01, 0.4, 0.8, 0.6]]
-];
-sequence(DoReMi);
+const plucked = [0.01, 0.4, 0.8, 0.6];
+
+(function* () {
+  yield* tone(261.63, 1, plucked);
+  yield* tone(293.66, 1, plucked);
+  yield* tone(329.63, 1, plucked);
+})();
 ```
 
 >+ The `while (true)` construct is a loop like `for`, but it runs forever since its condition is always true. Normally this would be a problem, but with generators it's perfect - each `yield` pauses execution, and the loop only continues when someone calls `.next()`. The oscillator yields samples on demand, infinitely.
 
-The oscillator is now a generator function that maintains its own phase state. Instead of calculating `frequency * time` for each sample, it tracks where it left off and increments phase with each yield. This is the natural way to model something that continuously generates values.
+The oscillator is now a generator function that maintains its own phase state. Instead of calculating `frequency * time` for each sample, it tracks where it left off and increments phase with each yield.
 
-The `tone` function now creates an oscillator generator and pulls samples from it with `.next().value`. Each call advances the oscillator's internal phase. The oscillator runs indefinitely - `tone` controls when to stop by only pulling `totalSamples` values.
+But notice `tone` is doing two distinct jobs: generating waveform (oscillator + duration) and applying ADSR amplitude shaping. We're also repeating the ADSR three times in `playMelody`. What if we could separate these concerns - have `tone` just generate audio, and apply the envelope separately?
 
-But we still have that repetition problem in DoReMi. The ADSR array appears three times. Next we'll fix that by recognizing what these pieces really are: the oscillator and ADSR together define an instrument's voice.
+To do that, we'll need a way for the ADSR to know where it is in the sound (`n`) and how long it lasts (`totalSamples`) without buffering all the samples first. Next we'll see how to carry that timing information through our pipeline.
 
 ## Back
 
 [Configurable ADSR](25%20Configurable%20ADSR.md)
+
+## Next
+
+[Envelope as transform](27%20Envelope%20as%20transform.md)
