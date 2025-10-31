@@ -12,6 +12,8 @@ export function* harmony(...generators) {
   while (activeCount > 0) {
     let sum = 0;
     let validSamples = 0;
+    let maxN = 0;
+    let maxTotal = 0;
 
     for (let i = 0; i < activeGens.length; i++) {
       if (activeGens[i]) {
@@ -20,14 +22,27 @@ export function* harmony(...generators) {
           activeGens[i] = null;
           activeCount--;
         } else {
-          sum += next.value;
+          const value = next.value;
+          if (Array.isArray(value)) {
+            const [sample, n, totalSamples] = value;
+            sum += sample;
+            maxN = Math.max(maxN, n);
+            maxTotal = Math.max(maxTotal, totalSamples);
+          } else {
+            sum += value;
+          }
           validSamples++;
         }
       }
     }
 
     if (validSamples > 0) {
-      yield sum / validSamples;
+      const mixedSample = sum / validSamples;
+      if (maxTotal > 0) {
+        yield [mixedSample, maxN, maxTotal];
+      } else {
+        yield mixedSample;
+      }
     }
   }
 }

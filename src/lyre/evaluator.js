@@ -1,13 +1,14 @@
 import { tokenize } from './tokenizer.js';
 import { noteFrequencies } from './notes.js';
-import { generateNote, generateSilence } from './audio.js';
+import { tone, silence, envelope, extractSamples } from './audio.js';
 import { sequence, harmony, repeat } from './composition.js';
 
 const atom = (name) => Symbol.for(name);
 
 let streamingEnvironment = [
-  [atom("silence"), generateSilence],
-  [atom("tone"), generateNote],
+  [atom("tone"), tone],
+  [atom("silence"), silence],
+  [atom("envelope"), envelope],
   [atom("sequence"), sequence],
   [atom("harmony"), harmony],
   [atom("repeat"), repeat],

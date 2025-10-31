@@ -1,4 +1,5 @@
 import { runStreaming } from '/lyre/evaluator.js';
+import { extractSamples, envelope } from '/lyre/audio.js';
 
 class LyreStreamingProcessor extends AudioWorkletProcessor {
   constructor() {
@@ -13,7 +14,9 @@ class LyreStreamingProcessor extends AudioWorkletProcessor {
 
       if (type === 'code') {
         try {
-          this.currentGenerator = runStreaming(code);
+          const result = runStreaming(code);
+          const withEnvelope = envelope(result);
+          this.currentGenerator = extractSamples(withEnvelope);
           this.isPlaying = true;
           this.ended = false;
         } catch (error) {

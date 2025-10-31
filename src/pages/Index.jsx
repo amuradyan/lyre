@@ -74,11 +74,15 @@ export default function Index() {
                     <ul className="space-y-2">
                       <li className="text-left">
                         <code className="font-mono text-purple-600 text-xs">(tone C4 500)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Play a single pitch for a certain time</div>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">Generate a single pitch for a certain time</div>
                       </li>
                       <li className="text-left">
                         <code className="font-mono text-purple-600 text-xs">(silence 500)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">Add silence/rest for specified duration</div>
+                      </li>
+                      <li className="text-left">
+                        <code className="font-mono text-purple-600 text-xs">(envelope (tone C4 500))</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">Apply amplitude shaping /ADSR/ to any sound</div>
                       </li>
                     </ul>
                   </div>
