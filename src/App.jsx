@@ -39,7 +39,7 @@ export default function App() {
           <div className="fixed inset-0 bg-gradient-to-br from-purple-50 to-indigo-100 -z-10"></div>
           <div className="font-sans text-gray-900 p-8">
             <div className="max-w-65xl mx-auto">
-              <Slide initialMarkdownPath="./notes/Lyre/0 What I want to get.md" />
+              <Slide initialMarkdownPath="./notes/Lyre/Off we go/0 What I want to get.md" />
             </div>
           </div>
         </>
