@@ -86,8 +86,6 @@ The `sequence` function is beautifully simple - it just yields from each tone in
 
 When envelope receives the sequence, it sees a stream of `[sample, n, totalSamples]` tuples. Each tone maintains its own timing metadata, so envelope shapes each note independently - attack/decay/sustain/release happen per-note, not globally across the whole sequence.
 
-This is the key insight: **sources carry timing, transforms shape using that timing**. Sequence doesn't need to know about durations or ADSR. Envelope doesn't need to know it's processing a sequence vs a single tone. Everything composes naturally because metadata flows through the pipeline.
-
 ## Back
 
 [Envelope as transform](28%20Envelope%20as%20transform.md)
