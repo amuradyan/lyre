@@ -1,6 +1,8 @@
 # Configurable ADSR
 <!-- slide-id: 6fe97db1-831d-4799-bcb8-7fe71335201f -->
 
+We must make the _ADSR_ parameters configurable, so that `tone` accepts attack, decay, sustain, and release times as individual parameters. This will enable us to create notes with different envelope shapes.
+
 <!-- playable -->
 ```js:adsr
 function computeAmplitude(n, totalSamples, ???) { // adsr should be the last argument
@@ -64,8 +66,6 @@ const DoReMi = [
 ];
 sequence(DoReMi);
 ```
-
-The ADSR parameters are now configurable - `tone` accepts attack, decay, sustain, and release times as individual parameters. This means we can create notes with different envelope shapes.
 
 But look at what happened to the `DoReMi`: the _adsr_ is repeated in each tone. It might go to `sequence` below, but `sequence` right now does not accept adsr as a parameter. And even if it did, the tone would still expect _adsr_, or we had to change the note encoding altogether. Thinking a bit further, the _adsr_ must be passed to all the future tone composition functions as well. This might not be the best way to go.
 
