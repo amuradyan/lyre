@@ -17,6 +17,7 @@ export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockI
   );
   const [isPlaying, setIsPlaying] = useState(false);
   const [canPlay, setCanPlay] = useState(true);
+  const [tabErrors, setTabErrors] = useState({});
   const audioContextRef = useRef(null);
   const workletNodeRef = useRef(null);
 
@@ -128,6 +129,20 @@ export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockI
     checkCompilation();
   }, [bundledCode, hasPlayableTab]);
 
+  useEffect(() => {
+    const errors = {};
+
+    blocks.forEach((block, index) => {
+      try {
+        new Function(tabCode[index]);
+      } catch {
+        errors[index] = true;
+      }
+    });
+
+    setTabErrors(errors);
+  }, [tabCode, blocks]);
+
   return (
     <div style={{ marginTop: '2vh' }}>
       <div style={{
@@ -139,6 +154,7 @@ export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockI
         {blocks.map((block, index) => {
           const tabName = block.filename || `tab${index + 1}`;
           const isActive = index === activeTabIndex;
+          const hasError = tabErrors[index];
 
           return (
             <button
@@ -154,10 +170,14 @@ export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockI
                 fontSize: '13px',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                fontWeight: isActive ? 600 : 400
+                fontWeight: isActive ? 600 : 400,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
               }}
             >
               {tabName}
+              {hasError && <span style={{ color: '#dc2626', fontSize: '14px' }}>✗</span>}
             </button>
           );
         })}
