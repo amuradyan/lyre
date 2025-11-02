@@ -50,7 +50,7 @@ Musical structure in one place, timbre in another. The `tone` function knows not
 
 But wait - how will the envelope know when to start the release phase, if we don't pass it the time? It needs to know where we are in the sound and how long it lasts. Without buffering all samples (browser hangs!), we need another trick.
 
-What if each sample carried its own timing? If we can make the oscillator maintain it's internal clock, we can then yield the ticks along with the sample values and whatnot in tuples. Then envelope can read the metadata from the stream and apply amplitude shaping without knowing what generated it.
+What if each sample carried its own timing? If we can make the oscillator maintain its internal clock, we can then yield the ticks along with the sample values and whatnot in tuples. Then envelope can read the metadata from the stream and apply amplitude shaping without knowing what generated it.
 
 Let's see if that works.
 

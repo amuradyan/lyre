@@ -1,7 +1,7 @@
 # Exercises on functions
 <!-- slide-id: 9ecfb3b4-3003-4853-9f7b-4eb6ba532110 -->
 
-Heres a function for reference:
+Here's a function for reference:
 
 ```js
 function circumference(radius) {

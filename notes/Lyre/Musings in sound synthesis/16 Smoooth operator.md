@@ -43,7 +43,7 @@ Done and done. Let's extend this to our `tone` now.
 
 ## Back
 
-[If this, than that](15%20If%20this%2C%20than%20that.md)
+[If this, then that](15%20If%20this%2C%20then%20that.md)
 
 ## Next
 

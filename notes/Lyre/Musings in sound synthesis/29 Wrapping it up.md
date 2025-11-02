@@ -84,7 +84,7 @@ envelope(melody, plucked);
 
 The `sequence` function is beautifully simple - it just yields from each tone in order. It doesn't compute totals, doesn't buffer, doesn't modify the metadata. It's a pure passthrough that chains generators.
 
-When envelope receives the sequence, it sees a stream of `[sample, n, totalSamples]` tuples. Each tone maintains its own timing metadata, so envelope shapes each note independently - attack/decay/sustain/release happen per-note, not globally across the whole sequence.
+When envelope receives the sequence, it sees a stream of `[sample, n, totalSamples]` tuples. Each tone maintains its own timing metadata, so envelope shapes each note independently - attack\decay\sustain\release happen per-note, not globally across the whole sequence.
 
 ## Back
 

@@ -1,7 +1,7 @@
 # Repetitions
 <!-- slide-id: 9a7a480a-5fa6-4c3b-b048-f33e8bc8aae1 -->
 
-One of the ways to repeat doing something in JS is the _iteration_ - more specifically, the `for` loop. Here's how to sum numbers from 1 to  a given number with a  loop.
+One of the ways to repeat doing something in JS is the _iteration_ - more specifically, the `for` loop. Here's how to sum numbers from 1 to a given number with a loop.
 
 ```js
 function sumUpTo(number) {

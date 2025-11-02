@@ -63,7 +63,7 @@ In reality, when you pluck a string, the high-frequency harmonics decay much fas
 
 To capture this properly, we need to control each harmonic independently - giving the high frequencies a short, bright decay and the low frequencies a longer, sustained presence. This means generating each harmonic as its own `tone` and combining them and that would require a new composition mechanics.
 
-Before we get there, let's take another look at our `tone`, it's becoming uncomfortably bulky'.
+Before we get there, let's take another look at our `tone`, it's becoming uncomfortably bulky.
 
 ## Back
 

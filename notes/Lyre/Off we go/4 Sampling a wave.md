@@ -9,7 +9,7 @@ To calculate `n` of something, it's usually helpful to start with calculating _o
 
 >+ One might argue that sometimes creating one of something is harder and different than creating many, and they will be right, but __a)__ on average that is not the case and __b)__ we won't be thinking about optimizations for early experimental structures.
 
-For simplicity, we shall assume the sampling rate `R` to be 4 samples per second. To encode such constants int JS, we can use `const` keyword like so `const samplingRate = 4;`. We will also assume `A` to be 1 and `f` to be 1 Hz, so the wave oscillates between -1 and 1, like in the image below.
+For simplicity, we shall assume the sampling rate `R` to be 4 samples per second. To encode such constants in JS, we can use `const` keyword like so `const samplingRate = 4;`. We will also assume `A` to be 1 and `f` to be 1 Hz, so the wave oscillates between -1 and 1, like in the image below.
 
 ![A sine wave oscillating between -1 and 1](/src/assets/sine-wave.gif)
 
