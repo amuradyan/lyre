@@ -86,8 +86,8 @@ But we still have repetition: `envelope(tone(...), plucked)` appears three times
 
 ## Back
 
-[Phase shift](26%20Phase%20shift.md)
+[Phase shift](27%20Phase%20shift.md)
 
 ## Next
 
-[Wrapping it up](28%20Wrapping%20it%20up.md)
+[Wrapping it up](29%20Wrapping%20it%20up.md)

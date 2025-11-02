@@ -1,6 +1,12 @@
 # New look
 <!-- slide-id: d6ad2cfa-0960-45f9-bbcb-fbf9b05764a4 -->
 
+Below is a step in that direction.
+
+`computeSample` under `oscillator` now generates pure waveform samples - no amplitude parameter, just frequency and time. It returns raw waveform values from -1 to 1, representing the shape of the sound without any volume control.
+
+The ADSR amplitude logic with a bunch of values has been extracted into `computeAmplitude` under `adsr`. Given a sample index and total duration, it returns the volume multiplier at that moment. All the calculations that were cluttering `tone` now live in this dedicated function.
+
 <!-- playable -->
 ```js:oscillator
 function computeSample(frequency, time) {
@@ -63,11 +69,9 @@ const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
 sequence(DoReMi);
 ```
 
-The `oscillator` now generates pure waveform samples - no amplitude parameter, just frequency and time. It returns raw waveform values from -1 to 1, representing the shape of the sound without any volume control.
-
-The ADSR amplitude logic has been extracted into `computeAmplitude` on `adsr` tab. Given a sample index and total duration, it returns the volume multiplier at that moment. All the attack, decay, sustain, and release calculations that were cluttering `tone` now live in this dedicated function.
-
 The `tone` function in `synth` becomes cleaner - it gets the waveform shape from the oscillator, gets the amplitude from ADSR, multiplies them together. The separation is clear: oscillator handles waveform generation, ADSR handles amplitude over time, `tone` combines them.
+
+This, however, leaves us with hardcoded adsr params. Let's extract them into arguments, but this time, pass it from the _very top_. `???`-s incoming!
 
 ## Back
 

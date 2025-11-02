@@ -90,4 +90,4 @@ This is the key insight: **sources carry timing, transforms shape using that tim
 
 ## Back
 
-[Envelope as transform](27%20Envelope%20as%20transform.md)
+[Envelope as transform](28%20Envelope%20as%20transform.md)

@@ -1,7 +1,7 @@
 # Phase shift
 <!-- slide-id: 19173ed6-4d22-4e57-aac6-52ca31e4e07a -->
 
-What if instead of calculating the waveform from scratch each time with `frequency * time`, the oscillator remembered where it left off? A real oscillator keeps oscillating - it maintains phase and just keeps generating samples.
+We know that we must have the time ticks in _adsr_, since it is fundamentally a temporal thing but we don't want to pass time to it. What if we pull the notion of the tick from the inside? Instead of calculating the waveform 'from scratch' each time with `frequency * time`, the oscillator remembered where it left off? A real oscillator keeps oscillating - it maintains phase and just keeps generating samples by increasing the phase by the phase increment.
 
 Let's implement a stateful oscillator as a generator function. It will track its own phase and yield samples indefinitely.
 
@@ -81,8 +81,8 @@ To do that, we'll need a way for the ADSR to know where it is in the sound (`n`)
 
 ## Back
 
-[Configurable ADSR](25%20Configurable%20ADSR.md)
+[Still not there](26%20Still%20not%20there.md)
 
 ## Next
 
-[Envelope as transform](27%20Envelope%20as%20transform.md)
+[Envelope as transform](28%20Envelope%20as%20transform.md)

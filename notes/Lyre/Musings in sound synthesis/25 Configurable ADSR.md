@@ -28,7 +28,7 @@ function computeAmplitude(n, totalSamples, ???) { // adsr should be the last arg
 const {computeSample} = oscillator;
 const {computeAmplitude} = adsr;
 
-function* tone(frequency, duration, adsr) {
+function* tone(frequency, duration, ???) {
   const samplingRate = 44100;
   const totalSamples = duration * samplingRate;
 
@@ -67,9 +67,9 @@ sequence(DoReMi);
 
 The ADSR parameters are now configurable - `tone` accepts attack, decay, sustain, and release times as individual parameters. This means we can create notes with different envelope shapes.
 
-But look at what happened to the `DoReMi` and `synth`: we're repeating the arguments and their values several times. Since our oscillator lives inside tone, we have to drag the info it needs through all tje layers of composition. On the other hand every note played on an instrument typically shares the same envelope characteristics - that's what gives an instrument its consistent timbre. Such repetitions usually suggests we're missing an abstraction.
+But look at what happened to the `DoReMi`: the _adsr_ is repeated in each tone. It might go to `sequence` below, but `sequence` right now does not accept adsr as a parameter. And even if it did, the tone would still expect _adsr_, or we had to change the note encoding altogether. Thinking a bit further, the _adsr_ must be passed to all the future tone composition functions as well. This might not be the best way to go.
 
-What if we try passing thing around some other way?
+Maybe we can find another abstraction? Let's think of what we'd like to have.
 
 ## Back
 
@@ -77,4 +77,4 @@ What if we try passing thing around some other way?
 
 ## Next
 
-[Phase shift](26%20Phase%20shift.md)
+[Still not there](26%20Still%20not%20there.md)

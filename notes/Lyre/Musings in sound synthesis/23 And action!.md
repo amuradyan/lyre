@@ -27,7 +27,7 @@ function* tone(frequency, duration) {
 
 Lines 5 and 6 produce the sample. Note that we pass an amplitude of 1. This bit is useless, since we compute the amplitude later with a proper ADSR. We should remove that.
 
-Lines 8 to 17 deal with the amplitude, adjusting it through time. This again can live in its own function. Note, how a bunch of constant definitions will also move into that function.
+Lines 8 to 17 deal with the amplitude, adjusting it through time. This again can live in its own function. Note, how a bunch of constant definitions will also move into that function, after we extract the piece.
 
 ## Back
 
