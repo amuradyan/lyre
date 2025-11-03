@@ -116,19 +116,41 @@ function mergeHintsIntoEdited(originalCode, editedCode) {
     if (hint) {
       if (editIndex < editedLines.length) {
         const strippedOrig = stripHintsFromLine(originalLine);
-        const editedLine = editedLines[editIndex];
-
         const origTokens = extractTokens(strippedOrig);
-        const editTokens = extractTokens(editedLine);
-        const similarity = calculateSimilarity(origTokens, editTokens);
 
-        if (similarity >= 0.6) {
-          mergedLines.push(`${editedLine} // #! ${hint}`);
+        const currentEditedLine = editedLines[editIndex];
+        const currentTokens = extractTokens(currentEditedLine);
+        const currentSimilarity = calculateSimilarity(origTokens, currentTokens);
+
+        if (currentSimilarity >= 0.6) {
+          mergedLines.push(`${currentEditedLine} // #! ${hint}`);
+          editIndex++;
         } else {
-          failedMatches++;
-          mergedLines.push(editedLine);
+          const lookAheadLimit = Math.min(editedLines.length, editIndex + 10);
+          let bestMatchIndex = -1;
+          let bestSimilarity = currentSimilarity;
+
+          for (let i = editIndex + 1; i < lookAheadLimit; i++) {
+            const tokens = extractTokens(editedLines[i]);
+            const sim = calculateSimilarity(origTokens, tokens);
+            if (sim > bestSimilarity) {
+              bestSimilarity = sim;
+              bestMatchIndex = i;
+            }
+          }
+
+          if (bestMatchIndex !== -1 && bestSimilarity >= 0.6) {
+            for (let i = editIndex; i < bestMatchIndex; i++) {
+              mergedLines.push(editedLines[i]);
+            }
+            mergedLines.push(`${editedLines[bestMatchIndex]} // #! ${hint}`);
+            editIndex = bestMatchIndex + 1;
+          } else {
+            failedMatches++;
+            mergedLines.push(currentEditedLine);
+            editIndex++;
+          }
         }
-        editIndex++;
       }
       origIndex++;
       continue;

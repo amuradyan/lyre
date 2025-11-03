@@ -67,7 +67,9 @@ The solution uses a two-pointer approach. One pointer tracks position in the ori
 
 For single-line hints, we extract tokens from the original line - variable names, operators, keywords. From `const x = ???;` we get `['const', 'x', '=']`. Then we check similarity with the edited line. From `const x = 0.8;` we get `['const', 'x', '=', '0.8']`. Three out of three original tokens are present. Similarity is 100%.
 
-If similarity exceeds 60%, we reattach the hint. Typical `???` replacements preserve most tokens, so this is safe. Students usually replace the placeholder with a value, not restructure the entire line. If similarity is too low, we skip the hint and just emit the edited line.
+If similarity exceeds 60%, we reattach the hint. Typical `???` replacements preserve most tokens, so this is safe. Students usually replace the placeholder with a value, not restructure the entire line.
+
+When similarity is below 60%, the system performs look-ahead matching: it searches the next 10 edited lines for a better match. If a line with ≥60% similarity is found, all intervening lines are emitted without hints, then the hint attaches to the matching line. This handles cases where `???` expands into multi-line constructs - the hint "jumps over" the expansion to find its actual target. If no good match is found within the look-ahead window, the hint is dropped and the current line is emitted without it.
 
 Multi-line hints use a simpler strategy: they always attach to the next edited line, regardless of similarity. The pedagogical reasoning is that block hints explain what comes next. Even if the student changed the code significantly, the hint provides useful context for that section. After emitting the block hint, we skip any blank lines in both original and edited versions to prevent blank line accumulation across multiple toggles.
 
@@ -87,4 +89,4 @@ Two hint patterns create asymmetry. Single-line hints check similarity before re
 
 Author discipline is required. Slide authors must write hints in consistent format. Typos in `// #!` or `/* #! ... */` cause hints to be treated as regular comments. Tooling could validate hint patterns during build.
 
-The merge strategy uses heuristics: 60% similarity threshold for inline hints, 30% divergence limit for prompting reset, 10-line difference tolerance for structure changes. These are tuned to typical student behavior in our exercises - the 10-line threshold specifically accommodates natural expansion of `???` placeholders into multi-line code. Different editing patterns might need different thresholds, but exposing these as configuration would add UI complexity.
+The merge strategy uses heuristics: 60% similarity threshold for inline hints, 10-line look-ahead window for finding better matches, 30% divergence limit for prompting reset, 10-line difference tolerance for structure changes. These are tuned to typical student behavior in our exercises - the 10-line thresholds specifically accommodate natural expansion of `???` placeholders into multi-line code. Different editing patterns might need different thresholds, but exposing these as configuration would add UI complexity.
