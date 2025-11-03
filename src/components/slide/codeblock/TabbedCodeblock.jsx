@@ -12,8 +12,8 @@ function stripHints(code) {
     .split('\n')
     .filter(line => !/^\s*\/\/\s*#!/.test(line))
     .map(line => line.replace(/\/\/\s*#!.*$/, '').trimEnd())
-    .filter(line => line !== '')
-    .join('\n');
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n');
 }
 
 export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, slideId }) {
