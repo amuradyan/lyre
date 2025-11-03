@@ -82,6 +82,8 @@ The `sequence` function is beautifully simple - it just yields from each tone in
 
 When envelope receives the sequence, it sees a stream of `[sample, n, totalSamples]` tuples. Each tone maintains its own timing metadata, so envelope shapes each note independently - attack\decay\sustain\release happen per-note, not globally across the whole sequence.
 
+This was a good run. Seems like we are standing on a pretty solid sound engineering ground. Let's do some language engineering now.
+
 ## Back
 
 [Envelope as transform](28%20Envelope%20as%20transform.md)
