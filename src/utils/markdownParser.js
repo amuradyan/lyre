@@ -121,6 +121,88 @@ const parseFenceLanguage = (languageString) => {
     : [normalizedLanguage, null];
 };
 
+const extractHints = (code) => {
+  const lines = code.split('\n');
+  const hints = [];
+  let inBlockHint = false;
+  let blockHintLines = [];
+  let blockHintStart = -1;
+
+  lines.forEach((line, index) => {
+    if (!inBlockHint) {
+      const blockHintMatch = line.match(/\/\*\s*#!\s*(.*)/);
+      if (blockHintMatch) {
+        inBlockHint = true;
+        blockHintStart = index;
+        blockHintLines = [blockHintMatch[1]];
+
+        if (line.includes('*/')) {
+          const endMatch = line.match(/(.*)?\*\//);
+          if (endMatch && endMatch[1]) {
+            blockHintLines[0] = endMatch[1].trim();
+          }
+
+          let anchorLine = index + 1;
+          while (anchorLine < lines.length && lines[anchorLine].trim() === '') {
+            anchorLine++;
+          }
+
+          hints.push({
+            type: 'block',
+            text: blockHintLines.join('\n').trim(),
+            anchorLine: anchorLine < lines.length ? anchorLine : index + 1,
+            startLine: blockHintStart
+          });
+
+          inBlockHint = false;
+          blockHintLines = [];
+          blockHintStart = -1;
+        }
+        return;
+      }
+
+      const inlineHintMatch = line.match(/\/\/\s*#!\s*(.+)$/);
+      if (inlineHintMatch) {
+        hints.push({
+          type: 'inline',
+          text: inlineHintMatch[1].trim(),
+          line: index
+        });
+      }
+    } else {
+      if (line.includes('*/')) {
+        const endMatch = line.match(/^(.*?)?\*\//);
+        if (endMatch && endMatch[1] && endMatch[1].trim()) {
+          blockHintLines.push(endMatch[1].trim());
+        }
+
+        let anchorLine = index + 1;
+        while (anchorLine < lines.length && lines[anchorLine].trim() === '') {
+          anchorLine++;
+        }
+
+        hints.push({
+          type: 'block',
+          text: blockHintLines.join('\n').trim(),
+          anchorLine: anchorLine < lines.length ? anchorLine : index + 1,
+          startLine: blockHintStart
+        });
+
+        inBlockHint = false;
+        blockHintLines = [];
+        blockHintStart = -1;
+      } else {
+        const continuationMatch = line.match(/^\s*(?:\*\s*)?(.*)$/);
+        if (continuationMatch && continuationMatch[1].trim()) {
+          blockHintLines.push(continuationMatch[1].trim());
+        }
+      }
+    }
+  });
+
+  return hints.length > 0 ? hints : null;
+};
+
 const findTestComment = (lines, startIndex) => {
   const findCommentEnd = (lines, index, accumulator = []) => {
     if (index >= lines.length) return { comment: null, endIndex: startIndex };
@@ -326,6 +408,7 @@ const processLine = (lines) => (state, line, index) => {
       const code = context.codeBuffer.join('\n');
       const { comment, endIndex } = findTestComment(lines, index);
       const [language, filename] = parseFenceLanguage(context.codeLanguage);
+      const hints = extractHints(code);
 
       return {
         ...state,
@@ -335,7 +418,8 @@ const processLine = (lines) => (state, line, index) => {
           testComment: comment,
           language,
           filename,
-          playable: context.playableNext
+          playable: context.playableNext,
+          hints
         }],
         context: {
           ...context,

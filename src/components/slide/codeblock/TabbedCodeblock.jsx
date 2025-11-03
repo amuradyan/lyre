@@ -2,24 +2,48 @@ import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import { bundleTabs } from '../../../utils/moduleBundler.js';
 import { createAudioContext } from '../../../utils/audioPlayer.js';
-import { saveCodeBlock, loadCodeBlock } from '../../../utils/slideStorage.js';
+import { saveCodeBlock, loadCodeBlock, saveHintState, loadHintState } from '../../../utils/slideStorage.js';
+import { mergeHintsIntoEdited } from '../../../utils/hintMerger.js';
+
+function stripHints(code) {
+  return code
+    .replace(/\/\/\s*#!.*$/gm, '')
+    .replace(/\/\*\s*#![\s\S]*?\*\//g, '')
+    .split('\n')
+    .map(line => line.trimEnd())
+    .join('\n');
+}
 
 export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockIndex }) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const [tabCode, setTabCode] = useState(() =>
-    blocks.map((block) => {
-      if (slideId) {
-        const saved = loadCodeBlock(slideId, block.code);
-        return saved || block.code;
-      }
-      return block.code;
-    })
+  const [hintsVisible, setHintsVisible] = useState(() => loadHintState(slideId));
+
+  const [editedCode, setEditedCode] = useState(() =>
+    blocks.map(() => null)
   );
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [canPlay, setCanPlay] = useState(true);
   const [tabErrors, setTabErrors] = useState({});
   const audioContextRef = useRef(null);
   const workletNodeRef = useRef(null);
+
+  const hasHints = useMemo(() => {
+    return blocks.some(block => block.hints && block.hints.length > 0);
+  }, [blocks]);
+
+  const displayCode = useMemo(() => {
+    return blocks.map((block, index) => {
+      return editedCode[index] || block.code;
+    });
+  }, [blocks, editedCode]);
+
+  useEffect(() => {
+    if (!hintsVisible && editedCode.every(code => code === null)) {
+      const strippedCode = blocks.map(block => stripHints(block.code));
+      setEditedCode(strippedCode);
+    }
+  }, []);
 
   const playableTabIndex = blocks.findIndex(block => block.playable);
   const hasPlayableTab = playableTabIndex !== -1 || groupPlayable;
@@ -29,16 +53,16 @@ export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockI
 
     const tabsWithCurrentCode = blocks.map((block, index) => ({
       ...block,
-      code: tabCode[index]
+      code: displayCode[index]
     }));
 
     return bundleTabs(tabsWithCurrentCode);
-  }, [tabCode, blocks, hasPlayableTab]);
+  }, [displayCode, blocks, hasPlayableTab]);
 
   const activeBlock = blocks[activeTabIndex];
 
   const handleCodeChange = (newCode) => {
-    setTabCode(prev => {
+    setEditedCode(prev => {
       const updated = [...prev];
       updated[activeTabIndex] = newCode;
       return updated;
@@ -114,6 +138,60 @@ export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockI
     }
   }, [isPlaying, bundledCode]);
 
+  const handleHintToggle = () => {
+    const newHintsVisible = !hintsVisible;
+
+    if (newHintsVisible) {
+      const hasEdits = editedCode.some(code => code !== null);
+
+      if (hasEdits) {
+        const newEditedCode = [...editedCode];
+        let hasMergeFailure = false;
+
+        for (let index = 0; index < editedCode.length; index++) {
+          const edited = editedCode[index];
+          if (edited === null) continue;
+
+          const original = blocks[index].code;
+          const strippedOriginal = stripHints(original);
+
+          if (edited === strippedOriginal || edited === original) {
+            newEditedCode[index] = null;
+            continue;
+          }
+
+          const result = mergeHintsIntoEdited(original, edited);
+
+          if (!result.success) {
+            hasMergeFailure = true;
+            const shouldReset = window.confirm(
+              'Code structure changed. Reset to original with hints?'
+            );
+
+            if (shouldReset) {
+              newEditedCode[index] = null;
+            } else {
+              return;
+            }
+          } else {
+            newEditedCode[index] = result.code;
+          }
+        }
+
+        setEditedCode(newEditedCode);
+      }
+    } else {
+      const newEditedCode = blocks.map((block, index) => {
+        const current = editedCode[index] || block.code;
+        return stripHints(current);
+      });
+      setEditedCode(newEditedCode);
+    }
+
+    setHintsVisible(newHintsVisible);
+    saveHintState(slideId, newHintsVisible);
+  };
+
   useEffect(() => {
     if (!hasPlayableTab) return;
 
@@ -134,14 +212,14 @@ export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockI
 
     blocks.forEach((block, index) => {
       try {
-        new Function(tabCode[index]);
+        new Function(displayCode[index]);
       } catch {
         errors[index] = true;
       }
     });
 
     setTabErrors(errors);
-  }, [tabCode, blocks]);
+  }, [displayCode, blocks]);
 
   return (
     <div style={{ marginTop: '2vh' }}>
@@ -184,11 +262,34 @@ export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockI
       </div>
       <div className="bg-white/70 backdrop-blur shadow-sm overflow-hidden relative">
         <CodeEditor
-          value={tabCode[activeTabIndex]}
+          value={displayCode[activeTabIndex]}
           onChange={handleCodeChange}
           readOnly={false}
           language={activeBlock.language || 'javascript'}
         />
+        {hasHints && (
+          <button
+            onClick={handleHintToggle}
+            className="absolute flex items-center justify-center w-6 h-6 backdrop-blur text-white transition-all duration-200"
+            style={{
+              top: '8px',
+              right: hasPlayableTab ? '40px' : '8px',
+              zIndex: 9999,
+              backgroundColor: '#6366f1',
+              cursor: 'pointer',
+              opacity: hintsVisible ? 1 : 0.5
+            }}
+            title={hintsVisible ? 'Hide hints' : 'Show hints'}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+              {hintsVisible ? (
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              ) : (
+                <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+              )}
+            </svg>
+          </button>
+        )}
         {hasPlayableTab && (
           <button
             onClick={handlePlayPause}

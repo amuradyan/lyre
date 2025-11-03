@@ -52,8 +52,32 @@ function loadCodeBlock(slideId, initialCode) {
   return slideData?.codeBlocks?.[contentHash] || null;
 }
 
+function saveHintState(slideId, hintsVisible) {
+  if (!slideId) return;
+
+  try {
+    const key = getSlideKey(slideId);
+    let slideData = loadSlideData(slideId) || { codeBlocks: {}, hintsVisible: false };
+
+    slideData.hintsVisible = hintsVisible;
+
+    localStorage.setItem(key, JSON.stringify(slideData));
+  } catch (error) {
+    console.warn('Failed to save hint state:', error);
+  }
+}
+
+function loadHintState(slideId) {
+  if (!slideId) return false;
+
+  const slideData = loadSlideData(slideId);
+  return slideData?.hintsVisible !== undefined ? slideData.hintsVisible : false;
+}
+
 export {
   saveCodeBlock,
   loadCodeBlock,
-  loadSlideData
+  loadSlideData,
+  saveHintState,
+  loadHintState
 };
