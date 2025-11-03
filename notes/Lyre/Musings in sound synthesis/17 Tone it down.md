@@ -2,8 +2,8 @@
 <!-- slide-id: 1716a5bd-881e-461a-8b2b-ae4d2ac82354 -->
 
 <!-- playable -->
-```javascript:sound
-const {computeSample} = synth;
+```javascript:Tone
+const {computeSample} = Synth;
 
 function* tone(frequency, duration) {
   const fadeFraction = 0.01
@@ -27,8 +27,8 @@ function* tone(frequency, duration) {
 }
 ```
 
-```javascript:synth
-const {tone} = sound;
+```javascript:Synth
+const {tone} = Tone;
 
 function computeSample(amplitude, frequency, time) {
   return amplitude * Math.sin(2 * Math.PI * frequency * time);
@@ -42,7 +42,7 @@ function* sequence(notes) {
 ```
 
 ```js:DoReMi
-const {sequence} = synth;
+const {sequence} = Synth;
 
 const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
 sequence(DoReMi);

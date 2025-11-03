@@ -11,8 +11,8 @@ Each characteristic of ADSR is expressed as a decimal number. __A__, __D__, and 
 Let's update the `tone` to produce sound with such parameters.
 
 <!-- playable -->
-```js:sound
-const {computeSample} = synth;
+```js:Tone
+const {computeSample} = Synth;
 
 function* tone(frequency, duration) {
   const samplingRate = 44100;
@@ -44,15 +44,8 @@ function* tone(frequency, duration) {
 }
 ```
 
-```js:DoReMi
-const {sequence} = synth;
-
-const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
-sequence(DoReMi);
-```
-
-```js:synth
-const {tone} = sound
+```js:Synth
+const {tone} = Tone
 
 function computeSample(amplitude, frequency, time) {
   return amplitude * Math.sin(2 * Math.PI * frequency * time);
@@ -63,6 +56,13 @@ function* sequence(notes) {
     yield* tone(notes[n][0], notes[n][1])
   }
 }
+```
+
+```js:DoReMi
+const {sequence} = Synth;
+
+const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
+sequence(DoReMi);
 ```
 
 ## Back

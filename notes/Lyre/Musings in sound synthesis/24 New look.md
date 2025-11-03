@@ -8,14 +8,15 @@ Below is a step in that direction.
 The ADSR amplitude logic with a bunch of values has been extracted into `computeAmplitude` under `adsr`. Given a sample index and total duration, it returns the volume multiplier at that moment. All the calculations that were cluttering `tone` now live in this dedicated function.
 
 <!-- playable -->
-```js:oscillator
+```js:Oscillator
 function computeSample(frequency, time) {
   return 2 * ((frequency * time) % 1) - 1;
 }
 ```
 
-```js:adsr
+```js:ADSR
 function computeAmplitude(n, totalSamples) {
+  const samplingRate = 44100;
   const attackTime = 0.01;
   const decayTime = 0.4;
   const sustainLevel = 0.8;
@@ -38,9 +39,9 @@ function computeAmplitude(n, totalSamples) {
 }
 ```
 
-```js:synth
-const {computeSample} = oscillator;
-const {computeAmplitude} = adsr;
+```js:Synth
+const {computeSample} = Oscillator;
+const {computeAmplitude} = ADSR;
 
 function* tone(frequency, duration) {
   const samplingRate = 44100;
@@ -63,7 +64,7 @@ function* sequence(notes) {
 ```
 
 ```js:DoReMi
-const {sequence} = synth;
+const {sequence} = Synth;
 
 const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
 sequence(DoReMi);

@@ -6,8 +6,8 @@ We know that we must have the time ticks in _adsr_, since it is fundamentally a 
 Let's implement a stateful oscillator as a generator function. It will track its own phase and yield samples indefinitely.
 
 <!-- playable -->
-```js:oscillator
-??? oscillate(frequency) {
+```js:Oscillator
+??? oscillator(frequency) {
   const samplingRate = ???;
   let phase = 0;
   const phaseIncrement = (2 * ??? * frequency) / ???; // would be the whole over the sampling rate
@@ -19,7 +19,7 @@ Let's implement a stateful oscillator as a generator function. It will track its
 }
 ```
 
-```js:adsr
+```js:ADSR
 function computeAmplitude(n, totalSamples, adsr) {
   const [attackTime, decayTime, sustainLevel, releaseTime] = adsr;
   const samplingRate = 44100;
@@ -41,9 +41,9 @@ function computeAmplitude(n, totalSamples, adsr) {
 }
 ```
 
-```js:synth
-const {computeAmplitude} = adsr;
-const {oscillate} = oscillator
+```js:Synth
+const {computeAmplitude} = ADSR;
+const {oscillator} = Oscillator
 
 function* tone(frequency, duration, adsr) {
   const samplingRate = 44100;
@@ -60,7 +60,7 @@ function* tone(frequency, duration, adsr) {
 ```
 
 ```js:DoReMi
-const {tone} = synth;
+const {tone} = Synth;
 
 const plucked = [0.01, 0.4, 0.8, 0.6];
 

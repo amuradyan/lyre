@@ -4,7 +4,7 @@
 What if we could write this instead?
 
 ```js:DoReMi
-const {tone, sequence, envelope} = synth;
+const {tone, sequence, envelope} = Synth;
 
 const plucked = [0.01, 0.4, 0.8, 0.6];
 
@@ -17,14 +17,14 @@ const melody = sequence([
 envelope(melody, plucked);
 ```
 
-```js:synth
+```js:Synth
 function* oscillate(frequency) { ??? }
 function* tone(frequency, duration) { ??? }
 function* sequence(tones) { ??? }
 function* envelope(source, adsr) { ??? }
 ```
 
-```js:amplitude
+```js:ADSR
 function computeAmplitude(n, totalSamples, adsr) {
   const [attackTime, decayTime, sustainLevel, releaseTime] = adsr;
   const samplingRate = 44100;

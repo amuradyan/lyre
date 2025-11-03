@@ -4,7 +4,7 @@
 We must make the _ADSR_ parameters configurable, so that `tone` accepts attack, decay, sustain, and release times as individual parameters. This will enable us to create notes with different envelope shapes.
 
 <!-- playable -->
-```js:adsr
+```js:ADSR
 function computeAmplitude(n, totalSamples, ???) { // adsr should be the last argument
   const [attackTime, ???, ???, releaseTime] = adsr;
   const samplingRate = 44100;
@@ -26,9 +26,9 @@ function computeAmplitude(n, totalSamples, ???) { // adsr should be the last arg
 }
 ```
 
-```js:synth
-const {computeSample} = oscillator;
-const {computeAmplitude} = adsr;
+```js:Synth
+const {computeSample} = Oscillator;
+const {computeAmplitude} = ADSR;
 
 function* tone(frequency, duration, ???) {
   const samplingRate = 44100;
@@ -50,14 +50,14 @@ function* sequence(notes) {
 }
 ```
 
-```js:oscillator
+```js:Oscillator
 function computeSample(frequency, time) {
   return 2 * ((frequency * time) % 1) - 1;
 }
 ```
 
 ```js:DoReMi
-const {sequence} = synth;
+const {sequence} = Synth;
 
 const DoReMi = [
   [261.63, 1, [0.01, 0.4, 0.8, 0.6]],
