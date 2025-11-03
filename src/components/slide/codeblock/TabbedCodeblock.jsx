@@ -7,7 +7,7 @@ import { mergeHintsIntoEdited } from '../../../utils/hintMerger.js';
 
 function stripHints(code) {
   return code
-    .replace(/^\s*\/\*\s*#![\s\S]*?\*\/\s*$/gm, '')
+    .replace(/^\s*\/\*\s*#![\s\S]*?\*\/\s*$\n?/gm, '')
     .replace(/\/\*\s*#![\s\S]*?\*\//g, '')
     .split('\n')
     .filter(line => !/^\s*\/\/\s*#!/.test(line))
