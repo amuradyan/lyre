@@ -7,20 +7,29 @@ import { mergeHintsIntoEdited } from '../../../utils/hintMerger.js';
 
 function stripHints(code) {
   return code
-    .replace(/\/\/\s*#!.*$/gm, '')
+    .replace(/^\s*\/\*\s*#![\s\S]*?\*\/\s*$/gm, '')
     .replace(/\/\*\s*#![\s\S]*?\*\//g, '')
     .split('\n')
-    .map(line => line.trimEnd())
+    .filter(line => !/^\s*\/\/\s*#!/.test(line))
+    .map(line => line.replace(/\/\/\s*#!.*$/, '').trimEnd())
+    .filter(line => line !== '')
     .join('\n');
 }
 
-export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, slideId, blockIndex }) {
+export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, slideId }) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [hintsVisible, setHintsVisible] = useState(() => loadHintState(slideId));
 
-  const [editedCode, setEditedCode] = useState(() =>
-    savedCodes ? savedCodes.map((saved, index) => saved || null) : blocks.map(() => null)
-  );
+  const [editedCode, setEditedCode] = useState(() => {
+    const initialHintsVisible = loadHintState(slideId);
+
+    return blocks.map((block, index) => {
+      const saved = savedCodes?.[index];
+      if (saved) return saved;
+
+      return initialHintsVisible ? null : stripHints(block.code);
+    });
+  });
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [canPlay, setCanPlay] = useState(true);
@@ -35,19 +44,9 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
 
   const displayCode = useMemo(() => {
     return blocks.map((block, index) => {
-      return editedCode[index] || block.code;
+      return editedCode[index] != null ? editedCode[index] : block.code;
     });
   }, [blocks, editedCode]);
-
-  useEffect(() => {
-    if (!hintsVisible && editedCode.every(code => code === null)) {
-      const strippedCode = blocks.map((block, index) => {
-        const saved = savedCodes?.[index];
-        return saved || stripHints(block.code);
-      });
-      setEditedCode(strippedCode);
-    }
-  }, []);
 
   const playableTabIndex = blocks.findIndex(block => block.playable);
   const hasPlayableTab = playableTabIndex !== -1 || groupPlayable;
@@ -175,7 +174,6 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
 
       if (hasEdits) {
         const newEditedCode = [...editedCode];
-        let hasMergeFailure = false;
 
         for (let index = 0; index < editedCode.length; index++) {
           const edited = editedCode[index];
@@ -246,7 +244,7 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
   useEffect(() => {
     const errors = {};
 
-    blocks.forEach((block, index) => {
+    blocks.forEach((_, index) => {
       try {
         new Function(displayCode[index]);
       } catch {
