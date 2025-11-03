@@ -49,6 +49,22 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
           });
         }
       });
+
+      editor.onKeyDown((e) => {
+        if (e.keyCode === monaco.KeyCode.F12) {
+          e.preventDefault();
+          const position = editor.getPosition();
+          const model = editor.getModel();
+          const lineContent = model.getLineContent(position.lineNumber);
+          const word = model.getWordAtPosition(position);
+
+          onCtrlClick({
+            lineContent,
+            lineNumber: position.lineNumber,
+            word: word?.word || null
+          });
+        }
+      });
     }
     monaco.editor.defineTheme('lyreTheme', {
       base: 'vs',
