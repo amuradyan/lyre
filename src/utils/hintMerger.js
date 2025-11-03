@@ -38,7 +38,7 @@ function mergeHintsIntoEdited(originalCode, editedCode) {
   const strippedLines = fullyStripped.split('\n');
 
   const lineDiff = Math.abs(strippedLines.length - editedLines.length);
-  if (lineDiff > 2) {
+  if (lineDiff > 10) {
     return { success: false, reason: 'line_count_changed' };
   }
 

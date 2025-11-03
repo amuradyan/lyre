@@ -14,12 +14,12 @@ function stripHints(code) {
     .join('\n');
 }
 
-export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockIndex }) {
+export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, slideId, blockIndex }) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [hintsVisible, setHintsVisible] = useState(() => loadHintState(slideId));
 
   const [editedCode, setEditedCode] = useState(() =>
-    blocks.map(() => null)
+    savedCodes ? savedCodes.map((saved, index) => saved || null) : blocks.map(() => null)
   );
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -40,7 +40,10 @@ export default function TabbedCodeblock({ blocks, groupPlayable, slideId, blockI
 
   useEffect(() => {
     if (!hintsVisible && editedCode.every(code => code === null)) {
-      const strippedCode = blocks.map(block => stripHints(block.code));
+      const strippedCode = blocks.map((block, index) => {
+        const saved = savedCodes?.[index];
+        return saved || stripHints(block.code);
+      });
       setEditedCode(strippedCode);
     }
   }, []);

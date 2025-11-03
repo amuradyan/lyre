@@ -375,10 +375,14 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                     />
                   );
                 } else if (item.type === 'codeblock-group') {
+                  const savedCodes = item.blocks.map(block =>
+                    parsed.slideId ? loadCodeBlock(parsed.slideId, block.code) : null
+                  );
                   return (
                     <TabbedCodeblock
                       key={i}
                       blocks={item.blocks}
+                      savedCodes={savedCodes}
                       groupPlayable={item.playable}
                       slideId={parsed.slideId}
                       blockIndex={i}
