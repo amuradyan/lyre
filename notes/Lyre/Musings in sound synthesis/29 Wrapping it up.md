@@ -1,12 +1,24 @@
 # Wrapping it up
 <!-- slide-id: 73079e72-2542-40f4-ab71-b2bc130c027d -->
 
-Every note in our melody needs the same envelope. Can we apply it once to the whole sequence instead of wrapping each note individually?
+Usually when you play a tune on an instrument, you mostly change the pitch and not timbre. Of course, there are multitimbral instruments and the _pipe organ_ is the primary example of that - capable of producing flutes and reeds and stings simultaneously, but that's not usually the case. For now, we can safely assume that every note in our melody will use the same envelope.
+
+We need to implement a `sequence` that would consist of `tone`-s and pass it to the `envelope`. Can you do it?
 
 <!-- playable -->
-```js:oscillator
+```js:Sequence
+??? sequence(tones) {
+  // yield the values of each tone generator in tones
+  for (const ??? of ???) {
+    ??? tone;
+  }
+}
+```
+
+```js:Synth
+const samplingRate = ???;
+
 function* oscillate(frequency) {
-  const samplingRate = 44100;
   let phase = 0;
   const phaseIncrement = (2 * Math.PI * frequency) / samplingRate;
 
@@ -15,12 +27,9 @@ function* oscillate(frequency) {
     phase = phase + phaseIncrement;
   }
 }
-```
 
-```js:adsr
-function computeAmplitude(n, totalSamples, adsr) {
+function adjustAmplitude(n, totalSamples, adsr) {
   const [attackTime, decayTime, sustainLevel, releaseTime] = adsr;
-  const samplingRate = 44100;
   const attackSamples = attackTime * samplingRate;
   const releaseSamples = releaseTime * samplingRate;
   const decaySamples = decayTime * samplingRate;
@@ -37,14 +46,8 @@ function computeAmplitude(n, totalSamples, adsr) {
     return sustainLevel
   }
 }
-```
-
-```js:synth
-const {computeAmplitude} = adsr;
-const {oscillate} = oscillator;
 
 function* tone(frequency, duration) {
-  const samplingRate = 44100;
   const totalSamples = duration * samplingRate;
   const osc = oscillate(frequency);
 
@@ -54,23 +57,17 @@ function* tone(frequency, duration) {
   }
 }
 
-function* sequence(tones) {
-  // yield the values of each tone generator in tones
-  for (const ??? of ???) {
-    ??? toneGen;
-  }
-}
-
 function* envelope(source, adsr) {
   for (const [sample, n, totalSamples] of source) {
-    const amplitude = computeAmplitude(n, totalSamples, adsr);
+    const amplitude = adjustAmplitude(n, totalSamples, adsr);
     yield sample * amplitude;
   }
 }
 ```
 
 ```js:DoReMi
-const {tone, sequence, envelope} = synth;
+const {tone, envelope} = Synth;
+const {sequence} = Sequence;
 
 const plucked = [0.01, 0.4, 0.8, 0.6];
 
@@ -80,6 +77,8 @@ envelope(???, ???); // pluck the melody
 ```
 
 The `sequence` function is beautifully simple - it just yields from each tone in order. It doesn't compute totals, doesn't buffer, doesn't modify the metadata - just a passthrough that chains generators.
+
+>+ Note also, how we moved the repeating `samplingRate` out of `tone`, `adjustAmplitude` and `oscillate` in `Synth`. This makes our code more readable, and saves us from modifying the rate in several places when we have to and, possibly, forgetting some.
 
 When envelope receives the sequence, it sees a stream of `[sample, n, totalSamples]` tuples. Each tone maintains its own timing metadata, so envelope shapes each note independently - attack\decay\sustain\release happen per-note, not globally across the whole sequence.
 
