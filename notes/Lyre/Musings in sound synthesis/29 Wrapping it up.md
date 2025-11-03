@@ -55,8 +55,9 @@ function* tone(frequency, duration) {
 }
 
 function* sequence(tones) {
-  for (const toneGen of tones) {
-    yield* toneGen;
+  // yield the values of each tone generator in tones
+  for (const ??? of ???) {
+    ??? toneGen;
   }
 }
 
@@ -73,16 +74,12 @@ const {tone, sequence, envelope} = synth;
 
 const plucked = [0.01, 0.4, 0.8, 0.6];
 
-const melody = sequence([
-  tone(261.63, 1),
-  tone(293.66, 1),
-  tone(329.63, 1)
-]);
+const melody = sequence(???);
 
-envelope(melody, plucked);
+envelope(???, ???); // pluck the melody
 ```
 
-The `sequence` function is beautifully simple - it just yields from each tone in order. It doesn't compute totals, doesn't buffer, doesn't modify the metadata. It's a pure passthrough that chains generators.
+The `sequence` function is beautifully simple - it just yields from each tone in order. It doesn't compute totals, doesn't buffer, doesn't modify the metadata - just a passthrough that chains generators.
 
 When envelope receives the sequence, it sees a stream of `[sample, n, totalSamples]` tuples. Each tone maintains its own timing metadata, so envelope shapes each note independently - attack\decay\sustain\release happen per-note, not globally across the whole sequence.
 

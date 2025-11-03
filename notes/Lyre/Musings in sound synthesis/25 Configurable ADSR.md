@@ -67,7 +67,7 @@ const DoReMi = [
 sequence(DoReMi);
 ```
 
-But look at what happened to the `DoReMi`: the _adsr_ is repeated in each tone. It might go to `sequence` below, but `sequence` right now does not accept adsr as a parameter. And even if it did, the tone would still expect _adsr_, or we had to change the note encoding altogether. Thinking a bit further, the _adsr_ must be passed to all the future tone composition functions as well. This might not be the best way to go.
+But look at what happened to the `DoReMi`: the _adsr_ is repeated in each tone. It might go to `sequence` below, but `sequence` right now does not accept _adsr_ as a parameter. And even if it did, the tone would still expect _adsr_, or we had to change the note encoding altogether. A short glimpse into the future tells us that we'll also have to pass it to all the future tone composition functions. This might not be the best way to go.
 
 Maybe we can find another abstraction? Let's think of what we'd like to have.
 

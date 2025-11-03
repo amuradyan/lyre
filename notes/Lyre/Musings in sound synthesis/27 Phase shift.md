@@ -7,13 +7,13 @@ Let's implement a stateful oscillator as a generator function. It will track its
 
 <!-- playable -->
 ```js:oscillator
-function* oscillate(frequency) {
-  const samplingRate = 44100;
+??? oscillate(frequency) {
+  const samplingRate = ???;
   let phase = 0;
-  const phaseIncrement = (2 * Math.PI * frequency) / samplingRate;
+  const phaseIncrement = (2 * ??? * frequency) / ???; // would be the whole over the sampling rate
 
   while (true) {
-    yield Math.sin(phase);
+    ??? Math.sin(phase);
     phase = phase + phaseIncrement;
   }
 }
@@ -48,10 +48,10 @@ const {oscillate} = oscillator
 function* tone(frequency, duration, adsr) {
   const samplingRate = 44100;
   const totalSamples = duration * samplingRate;
-  const osc = oscillate(frequency);
+  const osc = ???; // Create the oscillator
 
   for (let n = 0; n < totalSamples; n = n + 1) {
-    const rawSample = osc.next().value;
+    const rawSample = ???; // the next value of the oscillator
     const amplitude = computeAmplitude(n, totalSamples, adsr);
 
     yield rawSample * amplitude;
@@ -76,6 +76,8 @@ const plucked = [0.01, 0.4, 0.8, 0.6];
 The oscillator is now a generator function that maintains its own phase state. Instead of calculating `frequency * time` for each sample, it tracks where it left off and increments phase with each yield.
 
 But notice `tone` is doing two distinct jobs: generating waveform (oscillator + duration) and applying ADSR amplitude shaping. We're also repeating the ADSR three times in `playMelody`. What if we could separate these concerns - have `tone` just generate audio, and apply the envelope separately?
+
+>+ Another thing to notice is how the `DoReMi` changed. The `sequence` was replaced by a very specific generator just to make it work. We'll sort it out soon, but before we need to get our lower abstractions in order.
 
 To do that, we'll need a way for the ADSR to know where it is in the sound (`n`) and how long it lasts (`totalSamples`) without buffering all the samples first. Next we'll see how to carry that timing information through our pipeline.
 
