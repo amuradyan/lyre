@@ -1,12 +1,55 @@
 import { useRef, useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 
-export default function CodeEditor({ value, onChange, readOnly = false, language = "javascript" }) {
+export default function CodeEditor({ value, onChange, readOnly = false, language = "javascript", onCtrlClick, navigateToSymbol }) {
   const editorRef = useRef(null);
   const [height, setHeight] = useState(120);
 
+  useEffect(() => {
+    if (navigateToSymbol && editorRef.current) {
+      console.log('CodeEditor: Navigating to symbol:', navigateToSymbol);
+      const editor = editorRef.current;
+      const model = editor.getModel();
+
+      for (let lineNumber = 1; lineNumber <= model.getLineCount(); lineNumber++) {
+        const lineContent = model.getLineContent(lineNumber);
+        const functionMatch = lineContent.match(new RegExp(`^\\s*(?:export\\s+)?function\\*?\\s+${navigateToSymbol}\\s*\\(`));
+        const constMatch = lineContent.match(new RegExp(`^\\s*(?:export\\s+)?const\\s+${navigateToSymbol}\\s*=`));
+
+        if (functionMatch || constMatch) {
+          console.log('Found symbol at line:', lineNumber, lineContent);
+          editor.revealLineInCenter(lineNumber);
+          editor.setSelection({
+            startLineNumber: lineNumber,
+            startColumn: 1,
+            endLineNumber: lineNumber,
+            endColumn: lineContent.length + 1
+          });
+          break;
+        }
+      }
+    }
+  }, [navigateToSymbol]);
+
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
+
+    if (onCtrlClick) {
+      editor.onMouseDown((e) => {
+        if ((e.event.ctrlKey || e.event.metaKey) && e.target.position) {
+          const position = e.target.position;
+          const model = editor.getModel();
+          const lineContent = model.getLineContent(position.lineNumber);
+          const word = model.getWordAtPosition(position);
+
+          onCtrlClick({
+            lineContent,
+            lineNumber: position.lineNumber,
+            word: word?.word || null
+          });
+        }
+      });
+    }
     monaco.editor.defineTheme('lyreTheme', {
       base: 'vs',
       inherit: true,

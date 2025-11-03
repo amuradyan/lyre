@@ -25,6 +25,7 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
   const [isPlaying, setIsPlaying] = useState(false);
   const [canPlay, setCanPlay] = useState(true);
   const [tabErrors, setTabErrors] = useState({});
+  const [navigateToSymbol, setNavigateToSymbol] = useState(null);
   const audioContextRef = useRef(null);
   const workletNodeRef = useRef(null);
 
@@ -141,6 +142,31 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
     }
   }, [isPlaying, bundledCode]);
 
+  const handleCtrlClick = useCallback(({ lineContent, word }) => {
+    console.log('Ctrl+click:', { lineContent, word });
+    const importMatch = lineContent.match(/const\s*\{([^}]*)\}\s*=\s*(\w+)/);
+    console.log('Import match:', importMatch);
+
+    if (importMatch && word) {
+      const imports = importMatch[1].split(',').map(s => s.trim());
+      const sourceTabName = importMatch[2];
+      console.log('Imports:', imports, 'Source tab:', sourceTabName, 'Word:', word);
+
+      if (imports.includes(word)) {
+        const targetIndex = blocks.findIndex(b =>
+          b.filename === sourceTabName
+        );
+        console.log('Target index:', targetIndex);
+
+        if (targetIndex !== -1) {
+          console.log('Navigating to symbol:', word);
+          setNavigateToSymbol(word);
+          setActiveTabIndex(targetIndex);
+        }
+      }
+    }
+  }, [blocks]);
+
   const handleHintToggle = () => {
     const newHintsVisible = !hintsVisible;
 
@@ -194,6 +220,13 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
     setHintsVisible(newHintsVisible);
     saveHintState(slideId, newHintsVisible);
   };
+
+  useEffect(() => {
+    if (navigateToSymbol) {
+      const timer = setTimeout(() => setNavigateToSymbol(null), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [navigateToSymbol, activeTabIndex]);
 
   useEffect(() => {
     if (!hasPlayableTab) return;
@@ -269,6 +302,8 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
           onChange={handleCodeChange}
           readOnly={false}
           language={activeBlock.language || 'javascript'}
+          onCtrlClick={handleCtrlClick}
+          navigateToSymbol={navigateToSymbol}
         />
         {hasHints && (
           <button
