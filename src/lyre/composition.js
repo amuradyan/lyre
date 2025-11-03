@@ -4,7 +4,6 @@ export function* sequence(...generators) {
   }
 }
 
-
 export function* harmony(...generators) {
   const activeGens = [...generators];
   let activeCount = activeGens.length;
