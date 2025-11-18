@@ -52,3 +52,7 @@ function getExtension(filename) {
 ## Next
 
 [More exercises on strings](33%20More%20exercises%20on%20strings.md)
+
+## Skip
+
+[Break it down](34%20Break%20it%20down.md)

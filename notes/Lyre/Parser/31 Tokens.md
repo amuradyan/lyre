@@ -35,4 +35,4 @@ When we hit a space or parenthesis, we know the current token is complete and we
 
 ## Next
 
-[Exercises on strings](32%20String%20operations.md)
+[Exercises on strings](32%20Exercises%20on%20strings.md)

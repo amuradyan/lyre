@@ -42,4 +42,12 @@ function isImageFile(filename) {
 
 ## Back
 
-[Exercises on strings](32%20String%20operations.md)
+[Exercises on strings](32%20Exercises%20on%20strings.md)
+
+## Next
+
+[Break it down](34%20Break%20it%20down.md)
+
+## Skip
+
+[Break it down](34%20Break%20it%20down.md)
