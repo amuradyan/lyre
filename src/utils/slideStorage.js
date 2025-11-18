@@ -52,14 +52,19 @@ function loadCodeBlock(slideId, initialCode) {
   return slideData?.codeBlocks?.[contentHash] || null;
 }
 
-function saveHintState(slideId, hintsVisible) {
+function saveHintState(slideId, hintsVisible, blockIndex = null) {
   if (!slideId) return;
 
   try {
     const key = getSlideKey(slideId);
-    let slideData = loadSlideData(slideId) || { codeBlocks: {}, hintsVisible: false };
+    let slideData = loadSlideData(slideId) || { codeBlocks: {}, hintsVisible: false, blockHints: {} };
 
-    slideData.hintsVisible = hintsVisible;
+    if (blockIndex !== null) {
+      if (!slideData.blockHints) slideData.blockHints = {};
+      slideData.blockHints[blockIndex] = hintsVisible;
+    } else {
+      slideData.hintsVisible = hintsVisible;
+    }
 
     localStorage.setItem(key, JSON.stringify(slideData));
   } catch (error) {
@@ -67,10 +72,15 @@ function saveHintState(slideId, hintsVisible) {
   }
 }
 
-function loadHintState(slideId) {
+function loadHintState(slideId, blockIndex = null) {
   if (!slideId) return false;
 
   const slideData = loadSlideData(slideId);
+
+  if (blockIndex !== null) {
+    return slideData?.blockHints?.[blockIndex] !== undefined ? slideData.blockHints[blockIndex] : false;
+  }
+
   return slideData?.hintsVisible !== undefined ? slideData.hintsVisible : false;
 }
 

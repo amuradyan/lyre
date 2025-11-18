@@ -419,6 +419,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                         slideId={parsed.slideId}
                         blockIndex={i}
                         testComment={item.testComment}
+                        hints={item.hints}
                         onTestStatusChange={testBlockIndex >= 0 ? (isPassing) => handleTestStatusChange(testBlockIndex, isPassing) : undefined}
                       />
                     );
