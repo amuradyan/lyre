@@ -1,20 +1,6 @@
 # Exercises on strings
 <!-- slide-id: bd9cf0ff-74ba-4352-8c6b-8b3f56266b53 -->
 
-Extracting the first word from a sentence:
-
-```js
-function firstWord(sentence) {
-  const words = sentence.split(" ");
-
-  return words[0];
-}
-
-firstWord("hello world")  // "hello"
-```
-
-----
-
 Count the characters in a text message to check if it fits within the 160-character SMS limit. Strings have a `.length` property that tells you how many characters they contain.
 
 ```js
@@ -45,14 +31,51 @@ function getExtension(filename) {
 {"inputs": ["archive.tar.gz"], "expected": "gz"}]
 -->
 
+----
+
+Generate initials from a full name /first letter of each word/.
+
+```js
+function getInitials(fullName) {
+  const words = fullName.???(" "); // #! Split by space
+  let initials = "";
+
+  for (const word of words) {
+    initials = initials + ???; // #! Append the first letter to initials
+  }
+
+  return initials;
+}
+```
+<!-- [
+{"inputs": ["John Doe"], "expected": "JD"},
+{"inputs": ["Alice Marie Smith"], "expected": "AMS"},
+{"inputs": ["Bob"], "expected": "B"}]
+-->
+
+----
+
+Check if a filename is an image file /ends with .jpg, .png, or .gif/.
+
+```js
+function isImageFile(filename) {
+  const parts = filename.split(".");
+  const extension = parts[???]; // #! Take the last part
+  const imageFormats = ["jpg", "png", "gif"];
+
+  return imageFormats.includes(???); // #! Do formats include extensions?
+}
+```
+<!-- [
+{"inputs": ["photo.jpg"], "expected": true},
+{"inputs": ["document.pdf"], "expected": false},
+{"inputs": ["avatar.png"], "expected": true}]
+-->
+
 ## Back
 
 [Tokens](31%20Tokens.md)
 
 ## Next
 
-[More exercises on strings](33%20More%20exercises%20on%20strings.md)
-
-## Skip
-
-[Break it down](34%20Break%20it%20down.md)
+[Break it down](33%20Break%20it%20down.md)
