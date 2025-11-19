@@ -140,7 +140,7 @@ export default function Codeblock({
     } else {
       setUserCode(savedCode || initialCode);
     }
-  }, [savedCode, initialCode, hintsVisible, hints]);
+  }, [savedCode, initialCode, hints]);
 
   return (
     <div style={{ marginTop: '2vh' }}>
