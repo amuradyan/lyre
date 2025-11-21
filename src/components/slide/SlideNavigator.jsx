@@ -5,15 +5,32 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
   const [expandedFolders, setExpandedFolders] = useState({});
   const currentSlideRef = useRef(null);
   const slideRefs = useRef({});
+  const hoverTimerRef = useRef(null);
+  const originalSlideRef = useRef(null);
   useEffect(() => {
+    // Store the original slide when navigator opens
+    if (originalSlideRef.current === null) {
+      originalSlideRef.current = SLIDES[currentIndex - 1]?.path;
+    }
+
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
+        // Return to original slide on escape
+        if (originalSlideRef.current) {
+          onNavigate(originalSlideRef.current);
+        }
+        originalSlideRef.current = null;
         onClose();
       }
     };
 
     const handleClickOutside = (e) => {
       if (e.target.classList.contains('slide-navigator-backdrop')) {
+        // Return to original slide when clicking outside
+        if (originalSlideRef.current) {
+          onNavigate(originalSlideRef.current);
+        }
+        originalSlideRef.current = null;
         onClose();
       }
     };
@@ -28,8 +45,26 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
   }, [onClose]);
 
   const handleSlideClick = (path) => {
+    // Commit the navigation on click
+    originalSlideRef.current = null;
     onNavigate(path);
     onClose();
+  };
+
+  const handleSlideHover = (path) => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+    }
+    hoverTimerRef.current = setTimeout(() => {
+      onNavigate(path);
+    }, 1000);
+  };
+
+  const handleSlideLeave = () => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
   };
 
   const handleFirst = () => {
@@ -222,6 +257,26 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
             First
           </button>
           <button
+            disabled
+            style={{
+              flex: 1,
+              padding: '10px 16px',
+              background: 'rgba(99, 102, 241, 0.1)',
+              border: '1px solid rgba(99, 102, 241, 0.3)',
+              color: '#6366f1',
+              fontFamily: 'Nunito, sans-serif',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'default',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
+          >
+            {currentIndex}
+          </button>
+          <button
             onClick={handleLast}
             style={{
               flex: 1,
@@ -298,6 +353,8 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
                     tabIndex={0}
                     className={`slide-item ${isCurrent ? 'slide-item-current' : ''}`}
                     onClick={() => handleSlideClick(slide.path)}
+                    onMouseEnter={() => handleSlideHover(slide.path)}
+                    onMouseLeave={handleSlideLeave}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         handleSlideClick(slide.path);
