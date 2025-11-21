@@ -9,9 +9,9 @@ Lisps, on the other hand, deal with expressions that are basically lists - hence
 
 >+ We can also have an 'expression' that has no parens /a single atom/ and Lisps should evaluate that properly, but we don't consider that here since it's not relevant yet
 
-Back to our problem: the correct interpretation of `"(move pawn e2e4)"` would be `["move", "pawn", "e2e4"]` - we need to strip the parens and split on spaces.
+Back to our problem: the correct interpretation of `"(move pawn e2e4)"` would be `["move", "pawn", "e2e4"]` - parens being the list with tokens in it.
 
-Let's implement a tokenizer that handles this.
+Now we just need to figure out how to do that.
 
 ## Back
 
@@ -19,4 +19,4 @@ Let's implement a tokenizer that handles this.
 
 ## Next
 
-[Algorithm](34%20Algorithm.md)
+[By hand](34%20By%20hand.md)
