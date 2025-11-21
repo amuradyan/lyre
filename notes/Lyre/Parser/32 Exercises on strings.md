@@ -5,7 +5,7 @@ Count the characters in a text message to check if it fits within the 160-charac
 
 ```js
 function messageLength(text) {
-  return text.???; // #! call the length method on text
+  return text.???; // #! try the `length` property of text, just like lists
 }
 ```
 <!-- [
@@ -19,7 +19,7 @@ Extract the file extension from a filename /the part after the last dot/. String
 
 ```js
 function getExtension(filename) {
-  const parts = filename.???("."); // #! split by '.'
+  const parts = filename.???("."); // #! `split` by '.'
   const lastIndex = ???; // #! remember the index is 0 based
 
   return parts[lastIndex];
@@ -37,7 +37,7 @@ Generate initials from a full name /first letter of each word/.
 
 ```js
 function getInitials(fullName) {
-  const words = fullName.???(" "); // #! Split by space
+  const words = fullName.???(" "); // #! `split` by space
   let initials = "";
 
   for (const word of words) {
@@ -63,7 +63,7 @@ function isImageFile(filename) {
   const extension = parts[???]; // #! Take the last part
   const imageFormats = ["jpg", "png", "gif"];
 
-  return imageFormats.includes(???); // #! Do formats include extensions?
+  return imageFormats.includes(???); // #! Check whether the formal list includes` the extension?
 }
 ```
 <!-- [
