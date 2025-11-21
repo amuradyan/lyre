@@ -161,7 +161,8 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
           maxWidth: '500px',
           width: '90%',
-          maxHeight: SLIDES.length >= 8 ? '500px' : '70vh',
+          height: '500px',
+          minHeight: '400px',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column'
@@ -179,6 +180,78 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
           }}
         >
           Navigate to Slide
+        </div>
+        <div
+          style={{
+            borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+            padding: '16px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: '12px'
+          }}
+        >
+          <button
+            onClick={handleFirst}
+            style={{
+              flex: 1,
+              padding: '10px 16px',
+              background: 'transparent',
+              border: '1px solid rgba(99, 102, 241, 0.3)',
+              color: '#6366f1',
+              fontFamily: 'Nunito, sans-serif',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s',
+              textDecoration: 'underline'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+            }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '16px', height: '16px' }}>
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            First
+          </button>
+          <button
+            onClick={handleLast}
+            style={{
+              flex: 1,
+              padding: '10px 16px',
+              background: 'transparent',
+              border: '1px solid rgba(99, 102, 241, 0.3)',
+              color: '#6366f1',
+              fontFamily: 'Nunito, sans-serif',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s',
+              textDecoration: 'underline'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+            }}
+          >
+            Last
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '16px', height: '16px' }}>
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
         <div
           style={{
@@ -266,78 +339,6 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
               })}
             </div>
           ))}
-        </div>
-        <div
-          style={{
-            borderTop: '1px solid rgba(0, 0, 0, 0.1)',
-            padding: '16px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: '12px'
-          }}
-        >
-          <button
-            onClick={handleFirst}
-            style={{
-              flex: 1,
-              padding: '10px 16px',
-              background: 'transparent',
-              border: '1px solid rgba(99, 102, 241, 0.3)',
-              color: '#6366f1',
-              fontFamily: 'Nunito, sans-serif',
-              fontSize: '14px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s',
-              textDecoration: 'underline'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-            }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '16px', height: '16px' }}>
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            First
-          </button>
-          <button
-            onClick={handleLast}
-            style={{
-              flex: 1,
-              padding: '10px 16px',
-              background: 'transparent',
-              border: '1px solid rgba(99, 102, 241, 0.3)',
-              color: '#6366f1',
-              fontFamily: 'Nunito, sans-serif',
-              fontSize: '14px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s',
-              textDecoration: 'underline'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-            }}
-          >
-            Last
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '16px', height: '16px' }}>
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </button>
         </div>
       </div>
     </div>
