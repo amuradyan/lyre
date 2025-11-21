@@ -38,4 +38,4 @@ Let's implement `tokenize`.
 
 ## Next
 
-[TBD]
+[Tokenize](35%20Tokenize.md)
