@@ -5,26 +5,19 @@ We need two accumulators: one for the current token being built, and one for the
 
 When we see a regular character, we append it to the token accumulator. When we see a space or a paren, we conclude the current token /if there is one/ and add it to the expression. That's it.
 
-```js
+The `handleSymbol` function processes individual symbols using a switch statement, while `tokenize` loops through input and delegates to the handler. You'll find them in `SymbolHandler` and `Tokenize` respectively.
+
+```js:Tokenize
+const {handleSymbol} = SymbolHandler;
+
 function tokenize(input) {
   let token = "" // Current token being built
   let expression = [] // List of completed tokens
 
   for (const symbol of input) { // #! Go through each symbol
-    switch (symbol) { // #! Check what the symbol is
-      case ???: // #! Opening paren 'creates' an empty expression
-        expression = []
-        break
-      case ")": // #! Closing paren and space both conclude tokens
-      case ???:
-        if (token != "") { // Only if we have a token to conclude
-          expression.push(token)
-          token = ??? // #! Don't forget to set it to ""
-        }
-        break
-      default: // Regular symbol otherwise - append to token
-        token = token + ???
-    }
+    const [newToken, newExpression] = handleSymbol(symbol, token, expression)
+    token = ??? // #! Update token
+    expression = ??? // #! Update expression
   }
 
   if (???) { // #! Don't forget the last token, if there is one
@@ -34,13 +27,30 @@ function tokenize(input) {
   return expression
 }
 ```
-<!-- {"layout": "row", "tests": [
+
+```js:SymbolHandler
+function handleSymbol(symbol, token, expression) {
+  switch (symbol) { // #! Check what the symbol is
+    case ???: // #! Opening paren 'creates' an empty expression
+      return ["", []]
+    case ")": // #! Closing paren and space both conclude tokens
+    case ???:
+      if (token != "") { // Only if we have a token to conclude
+        return ["", [...expression, ???]]
+      }
+      return [token, expression]
+    default: // Regular symbol otherwise - append to token
+      return [token + ???, expression]
+  }
+}
+```
+<!-- {"function": "tokenize", "layout": "row", "tests": [
 {"inputs": ["(move pawn e2e4)"], "expected": ["move", "pawn", "e2e4"]},
-{"inputs": ["(Bandwurmsatz)"], "expected": ["Bandwurmsatz"]},
+{"inputs": ["Bandwurmsatz"], "expected": ["Bandwurmsatz"]},
 {"inputs": ["(hang coat rack)"], "expected": ["hang", "coat", "rack"]}]}
 -->
 
-The `switch` checks each symbol against specific cases. When we hit `(`, we reset the expression. When we hit `)` or space, we conclude the current token. Everything else gets appended to the token accumulator. The final check ensures we don't lose a token that wasn't followed by a delimiter.
+The `tokenize` function iterates through each symbol and delegates handling to `handleSymbol`. The handler returns an object with updated `token` and `expression` values. The `switch` checks each symbol against specific cases: `(` resets the expression, `)` or space conclude the current token, and everything else appends to the token accumulator. The final check ensures we don't lose a token that wasn't followed by a delimiter.
 
 >+ Note that we could have grouped `(` with `)` and space since they all conclude tokens, making the code shorter. But keeping `(` separate makes the logic more explicit - we'll reorganize along the way.
 

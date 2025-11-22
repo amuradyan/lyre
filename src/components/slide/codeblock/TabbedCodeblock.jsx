@@ -1,5 +1,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import CodeEditor from './CodeEditor.jsx';
+import TestResults from './tests/TestResults.jsx';
+import { executeMarkdownTest } from './tests/runner/TestRunner.js';
 import { bundleTabs } from '../../../utils/moduleBundler.js';
 import { createAudioContext } from '../../../utils/audioPlayer.js';
 import { saveCodeBlock, loadCodeBlock, saveHintState, loadHintState } from '../../../utils/slideStorage.js';
@@ -16,9 +18,11 @@ function stripHints(code) {
     .replace(/\n{3,}/g, '\n\n');
 }
 
-export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, slideId }) {
+export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, slideId, testComment, onTestStatusChange }) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [hintsVisible, setHintsVisible] = useState(() => loadHintState(slideId));
+  const [testResults, setTestResults] = useState(null);
+  const onTestStatusChangeRef = useRef(onTestStatusChange);
 
   const [editedCode, setEditedCode] = useState(() => {
     const initialHintsVisible = loadHintState(slideId);
@@ -52,7 +56,7 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
   const hasPlayableTab = playableTabIndex !== -1 || groupPlayable;
 
   const bundledCode = useMemo(() => {
-    if (!hasPlayableTab) return null;
+    if (!hasPlayableTab && !testComment) return null;
 
     const tabsWithCurrentCode = blocks.map((block, index) => ({
       ...block,
@@ -60,9 +64,31 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
     }));
 
     return bundleTabs(tabsWithCurrentCode);
-  }, [displayCode, blocks, hasPlayableTab]);
+  }, [displayCode, blocks, hasPlayableTab, testComment]);
 
   const activeBlock = blocks[activeTabIndex];
+  const hasTests = !!testComment;
+
+  useEffect(() => {
+    onTestStatusChangeRef.current = onTestStatusChange;
+  }, [onTestStatusChange]);
+
+  const runTests = useCallback((codeToTest) => {
+    if (testComment) {
+      const results = executeMarkdownTest(codeToTest, testComment);
+      setTestResults(results);
+      const hasPassingTests = results.results?.some(r => r.passed) ?? false;
+      if (onTestStatusChangeRef.current) {
+        onTestStatusChangeRef.current(hasPassingTests);
+      }
+    }
+  }, [testComment]);
+
+  useEffect(() => {
+    if (testComment && bundledCode) {
+      runTests(bundledCode);
+    }
+  }, [bundledCode, testComment, runTests]);
 
   const handleCodeChange = (newCode) => {
     setEditedCode(prev => {
@@ -352,6 +378,9 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
           </button>
         )}
       </div>
+      {hasTests && testResults && (
+        <TestResults testResult={testResults} />
+      )}
     </div>
   );
 }

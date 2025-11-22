@@ -147,7 +147,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   }, [mdPath]);
 
   const allTestsPassing = useMemo(() => {
-    const codeBlocksWithTests = parsed.content?.filter(block => block.type === 'codeblock' && block.testComment) || [];
+    const codeBlocksWithTests = parsed.content?.filter(block =>
+      (block.type === 'codeblock' && block.testComment) ||
+      (block.type === 'codeblock-group' && block.testComment)
+    ) || [];
 
     if (codeBlocksWithTests.length === 0) {
       return true;
@@ -375,6 +378,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                     />
                   );
                 } else if (item.type === 'codeblock-group') {
+                  const testBlockIndex = item.testComment ? testBlockCounter++ : -1;
                   const savedCodes = item.blocks.map(block =>
                     parsed.slideId ? loadCodeBlock(parsed.slideId, block.code) : null
                   );
@@ -386,6 +390,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                       groupPlayable={item.playable}
                       slideId={parsed.slideId}
                       blockIndex={i}
+                      testComment={item.testComment}
+                      onTestStatusChange={testBlockIndex >= 0 ? (isPassing) => handleTestStatusChange(testBlockIndex, isPassing) : undefined}
                     />
                   );
                 } else if (item.type === 'codeblock') {

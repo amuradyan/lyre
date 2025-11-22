@@ -23,7 +23,7 @@ export default function TestCase({
   if (message) {
     displayMessage = message;
   } else if (error) {
-    displayMessage = error;
+    displayMessage = `Error: ${error}`;
   } else {
     const actualPart = actual !== undefined ? formatValue(actual) : '?';
     const expectedPart = expected !== undefined ? formatValue(expected) : '';

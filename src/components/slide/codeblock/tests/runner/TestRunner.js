@@ -2,7 +2,11 @@ const FLOAT_TOLERANCE = 1e-10;
 
 const createResult = (success, result = null, error = null) => ({ success, result, error });
 
-const extractFunctionName = (code) => {
+const extractFunctionName = (code, targetName = null) => {
+  if (targetName) {
+    const targetRegex = new RegExp(`function\\s*\\*?\\s*${targetName}\\s*\\(`);
+    return targetRegex.test(code) ? targetName : null;
+  }
   const match = code.match(/function\s*\*?\s*(\w+)\s*\(/);
   return match ? match[1] : null;
 };
@@ -18,11 +22,28 @@ const tryEvaluate = (code) => {
 const evaluateFunctionByName = (functionName) =>
   tryEvaluate(functionName);
 
-const evaluateFunctionWithReturn = (code, functionName) =>
-  tryEvaluate(`(function() { ${code}\nreturn ${functionName}; })()`);
+const evaluateFunctionWithReturn = (code, functionName) => {
+  const directAttempt = tryEvaluate(`(function() { ${code}\nreturn ${functionName}; })()`);
+  if (directAttempt.success) return directAttempt;
 
-const handleUndefinedResult = (code) => {
-  const functionName = extractFunctionName(code);
+  const capitalizedName = functionName.charAt(0).toUpperCase() + functionName.slice(1);
+  const moduleAttempt = tryEvaluate(`(function() { ${code}\nreturn ${capitalizedName}.${functionName}; })()`);
+  if (moduleAttempt.success) return moduleAttempt;
+
+  const findInModules = tryEvaluate(`(function() {
+    ${code}
+    const modules = [${capitalizedName}];
+    for (const mod of modules) {
+      if (mod && mod.${functionName}) return mod.${functionName};
+    }
+    throw new Error('${functionName} not found');
+  })()`);
+
+  return findInModules.success ? findInModules : directAttempt;
+};
+
+const handleUndefinedResult = (code, targetName = null) => {
+  const functionName = extractFunctionName(code, targetName);
   if (!functionName) return createResult(true, undefined);
 
   const directEval = evaluateFunctionByName(functionName);
@@ -36,7 +57,7 @@ const handleUndefinedResult = (code) => {
     })();
 };
 
-export const evaluateCode = (code) => {
+export const evaluateCode = (code, targetFunctionName = null) => {
   const initialEval = tryEvaluate(code);
 
   if (!initialEval.success) {
@@ -44,7 +65,7 @@ export const evaluateCode = (code) => {
   }
 
   return initialEval.result === undefined
-    ? handleUndefinedResult(code)
+    ? handleUndefinedResult(code, targetFunctionName)
     : createResult(true, initialEval.result);
 };
 
@@ -74,13 +95,15 @@ export const parseTestComment = (comment) => {
   if (parsed.tests && Array.isArray(parsed.tests)) {
     return {
       testSpec: parsed.tests,
-      layout: parsed.layout || 'grid'
+      layout: parsed.layout || 'grid',
+      functionName: parsed.function || null
     };
   }
 
   return {
     testSpec: parsed,
-    layout: 'grid'
+    layout: 'grid',
+    functionName: null
   };
 };
 
@@ -325,8 +348,9 @@ export const runMarkdownTest = (evaluationResult, testSpec, layout = 'grid') => 
 };
 
 export const executeMarkdownTest = (code, testComment) => {
-  const evaluationResult = evaluateCode(code);
   const parsed = parseTestComment(testComment);
+  const targetFunction = parsed?.functionName || null;
+  const evaluationResult = evaluateCode(code, targetFunction);
 
   if (!parsed) {
     return runMarkdownTest(evaluationResult, null);
