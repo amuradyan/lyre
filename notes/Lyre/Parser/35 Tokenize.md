@@ -47,3 +47,7 @@ The `switch` checks each symbol against specific cases. When we hit `(`, we rese
 ## Back
 
 [By hand](34%20By%20hand.md)
+
+## Next
+
+[On to interpreting](36%20On%20to%20interpreting.md)
