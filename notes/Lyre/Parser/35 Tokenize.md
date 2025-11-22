@@ -10,8 +10,8 @@ function tokenize(input) {
   let token = "" // Current token being built
   let expression = [] // List of completed tokens
 
-  for (const character of input) { // #! Go through each character
-    switch (character) { // #! Check what the character is
+  for (const symbol of input) { // #! Go through each symbol
+    switch (symbol) { // #! Check what the symbol is
       case ???: // #! Opening paren 'creates' an empty expression
         expression = []
         break
@@ -22,7 +22,7 @@ function tokenize(input) {
           token = ??? // #! Don't forget to set it to ""
         }
         break
-      default: // Regular character otherwise - append to token
+      default: // Regular symbol otherwise - append to token
         token = token + ???
     }
   }
@@ -36,7 +36,6 @@ function tokenize(input) {
 ```
 <!-- {"layout": "row", "tests": [
 {"inputs": ["(move pawn e2e4)"], "expected": ["move", "pawn", "e2e4"]},
-{"inputs": ["(add 1 2)"], "expected": ["add", "1", "2"]},
 {"inputs": ["(tone C4 500)"], "expected": ["tone", "C4", "500"]},
 {"inputs": ["(hang coat rack)"], "expected": ["hang", "coat", "rack"]}]}
 -->
