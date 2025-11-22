@@ -338,7 +338,7 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
                 <span style={{ fontSize: '10px', transition: 'transform 0.2s', display: 'inline-block', transform: expandedFolders[folder] ? 'rotate(90deg)' : 'rotate(0deg)' }}>
                   ▶
                 </span>
-                {folder}
+                {folder} / {slides.length}
               </div>
               {expandedFolders[folder] && slides.map((slide) => {
                 const isCurrent = slide.index === currentIndex;
