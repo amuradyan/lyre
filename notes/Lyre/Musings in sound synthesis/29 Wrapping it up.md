@@ -7,7 +7,7 @@ We need to implement a `sequence` that would consist of `tone`-s and pass it to 
 
 <!-- playable -->
 ```js:Sequence
-??? sequence(tones) { // #! This should be a generator, remember?
+function* sequence(tones) { // #! This should be a generator, remember?
   for (const ??? of ???) { // #! For each tone generator in tones
     /* #! Yield all samples.
         ! Remember, that simply `yield`-ing would return the generator,
@@ -75,7 +75,9 @@ const plucked = [0.01, 0.4, 0.8, 0.6];
 
 const melody = sequence(???); // #! The list of corresponding tones
 
-envelope(???, ???); // #! Pluck the melody
+(function* () {
+  yield* envelope(???, ???); // #! Pluck the melody
+})();
 ```
 
 The `sequence` function is beautifully simple - it just yields from each tone in order. It doesn't compute totals, doesn't buffer, doesn't modify the metadata - just a passthrough that chains generators.
