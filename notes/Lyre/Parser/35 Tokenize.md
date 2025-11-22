@@ -36,7 +36,7 @@ function tokenize(input) {
 ```
 <!-- {"layout": "row", "tests": [
 {"inputs": ["(move pawn e2e4)"], "expected": ["move", "pawn", "e2e4"]},
-{"inputs": ["(tone C4 500)"], "expected": ["tone", "C4", "500"]},
+{"inputs": ["(Bandwurmsatz)"], "expected": ["Bandwurmsatz"]},
 {"inputs": ["(hang coat rack)"], "expected": ["hang", "coat", "rack"]}]}
 -->
 
