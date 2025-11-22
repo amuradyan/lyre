@@ -62,7 +62,7 @@ export default function TestResults({ testCases, testResult }) {
       );
     }
 
-    const { results, type } = testResult;
+    const { results, type, functionName } = testResult;
 
     const convertedTestCases = results.map((result) => {
       const { input, expected, actual, passed, error } = result;
@@ -73,6 +73,7 @@ export default function TestResults({ testCases, testResult }) {
         actual,
         passed,
         error,
+        functionName,
         color: error ? '#f85149' : (passed ? '#2ea043' : '#f85149')
       };
     });

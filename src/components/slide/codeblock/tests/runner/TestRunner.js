@@ -323,14 +323,14 @@ const executeGeneratorTests = (generatorFn, testSpec) => {
   return createTestResult(allPassed, 'generator', results);
 };
 
-export const runMarkdownTest = (evaluationResult, testSpec, layout = 'grid') => {
+export const runMarkdownTest = (evaluationResult, testSpec, layout = 'grid', functionName = null) => {
   if (testSpec === null || testSpec === undefined) {
     return handleNoTestSpec();
   }
 
   if (!evaluationResult.success) {
     const result = handleFailedEvaluation(testSpec);
-    return { ...result, layout };
+    return { ...result, layout, functionName };
   }
 
   const { result } = evaluationResult;
@@ -344,7 +344,7 @@ export const runMarkdownTest = (evaluationResult, testSpec, layout = 'grid') => 
     testResult = executeValueTest(result, testSpec);
   }
 
-  return { ...testResult, layout };
+  return { ...testResult, layout, functionName };
 };
 
 export const executeMarkdownTest = (code, testComment) => {
@@ -356,5 +356,5 @@ export const executeMarkdownTest = (code, testComment) => {
     return runMarkdownTest(evaluationResult, null);
   }
 
-  return runMarkdownTest(evaluationResult, parsed.testSpec, parsed.layout);
+  return runMarkdownTest(evaluationResult, parsed.testSpec, parsed.layout, targetFunction);
 };

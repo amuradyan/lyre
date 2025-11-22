@@ -6,7 +6,8 @@ export default function TestCase({
   passed,
   error,
   message,
-  color
+  color,
+  functionName
 }) {
   const displayColor = color || (error ? '#f85149' : (passed ? '#2ea043' : '#f85149'));
 
@@ -43,7 +44,8 @@ export default function TestCase({
     return formatValue(input);
   };
 
-  const inputDisplay = inputLabel || (input !== undefined ? `f(${formatInputs(input)}):` : '');
+  const fnName = functionName || 'f';
+  const inputDisplay = inputLabel || (input !== undefined ? `${fnName}(${formatInputs(input)}):` : '');
   const inputWidth = inputDisplay ? Math.max(inputDisplay.length * 8 + 20, 60) : 0;
 
   return (
