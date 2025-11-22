@@ -7,7 +7,7 @@ A language's _look_ is heavily influenced by its grammar. JS looks like `for (co
 
 Lisps, on the other hand, deal with expressions that are basically lists - hence the name "lisp interpreter." The equivalent of `mix(jin, jermuk)` in Lisp would be a list of words like `(mix jin jermuk)`. The interpreter knows it will interpret a list of words, specifically, the first one as the operator and the rest as operands.
 
->+ We can also have an 'expression' that has no parens /a single atom/ and Lisps should evaluate that properly, but we don't consider that here since it's not relevant yet
+>+ We can also have an 'expression' that has no parens - a single symbols and Lisps should evaluate that properly, but we don't consider that here since it's not relevant yet
 
 Back to our problem: the correct interpretation of `"(move pawn e2e4)"` would be `["move", "pawn", "e2e4"]` - parens being the list with tokens in it.
 
