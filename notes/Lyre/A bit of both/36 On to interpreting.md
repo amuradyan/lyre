@@ -13,4 +13,4 @@ Let's build one.
 
 ## Next
 
-[Slide](../Interpreter/37%20Slide.md)
+[On to interpreting](37%20Slide.md)
