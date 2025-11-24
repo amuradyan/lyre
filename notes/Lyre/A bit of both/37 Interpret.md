@@ -19,7 +19,7 @@ const interpret = function(expression) {
     const frequency = parseFloat(operands[0]);  // Frequency in decimals
     const duration = parseInt(operands[???]) / ???; // #! Durations is in milliseconds
 
-    // Envelope because we don't care for now
+    // Envelope it manually for now
     return envelope(tone(???, ???), ???); // #! Frequency, durations and plucked, right?
   }
 };
@@ -84,3 +84,5 @@ function* envelope(source, adsr) {
 [On to interpreting](36%20On%20to%20interpreting.md)
 
 ## Next
+
+[Plucking](38%20Plucking.md)
