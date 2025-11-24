@@ -13,6 +13,12 @@ export default defineConfig({
     react(),
     {
       name: 'copy-notes-and-lyre',
+      transformIndexHtml(html, { mode }) {
+        if (mode === 'development') {
+          return html.replace(/<!-- GA_START -->[\s\S]*?<!-- GA_END -->\n?/m, '');
+        }
+        return html;
+      },
       configureServer(server) {
         server.middlewares.use('/lyre', (req, res, next) => {
           const filePath = resolve(__dirname, 'src/lyre', req.url.substring(1));
