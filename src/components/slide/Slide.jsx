@@ -319,6 +319,9 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       } else if (e.key === '.') {
         e.preventDefault();
         setHelpModalOpen(true);
+      } else if (e.key === '/') {
+        e.preventDefault();
+        setNavigatorOpen(prev => !prev);
       }
     };
 

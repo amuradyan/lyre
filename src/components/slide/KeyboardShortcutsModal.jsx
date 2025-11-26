@@ -144,6 +144,11 @@ export default function KeyboardShortcutsModal({ onClose }) {
           </div>
 
           <div className="shortcut-row">
+            <div className="shortcut-key">/</div>
+            <div className="shortcut-desc">Browse all slides</div>
+          </div>
+
+          <div className="shortcut-row">
             <div className="shortcut-key">.</div>
             <div className="shortcut-desc">Show this help</div>
           </div>
