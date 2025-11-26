@@ -3,8 +3,8 @@
 
 Looking at `(envelope (tone 261.63 500) plucked)`, I have two questions:
 
-    *-* What do we do with the `(tone ...)` nested inside `envelope`, and
-    *-* What about `plucked`?
+    - What do we do with the `(tone ...)` nested inside `envelope`, and
+    - What about `plucked`?
 
 Our [evaluation rule 3](#on-to-interpreting) states that _operands evaluate to themselves_. If that's true, then the `(tone ...)` will evaluate to the list itself, whereas we would like it to be a sound generator that will go in `envelope` to be `plucked`. This breaks because expressions can be nested and lists can be arguments. Good thing we know how to evaluate lists - we just need to rephrase our third rule.
 
