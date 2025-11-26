@@ -1,11 +1,11 @@
 # Reading code
 <!-- slide-id: 3aaf6af9-1be8-41a4-a5ba-9eb646f476d8 -->
 
-I've read in a programming book once that computer programs are written to be mostly read by humans and only occasionally executed by machines. Regardless of whether that's true or not /it is true/, the occasional executions by the machine also assume reading the code. But how does a machine read text? How does it make sense of the sentences in the code?
+I once read that programs are written mostly to be read by humans and only occasionally executed by machines. Whether that's true or not /it is/, machines still need to read code. But how does a machine read text? How does it make sense of the code?
 
-Turns out, that just like us, machines read the text character by character, paying attention to *whitespaces* like spaces and new lines to make up words. Then there are other special characters that denote the end of the sentence, and even its' beginning. Akin to human languages, programming languages also come with their own semantic and syntactic rules that can differ drastically, and similarly they can be grouped in families.
+Turns out machines read character by character, just like us sometimes. They pay attention to whitespaces - spaces and newlines - to figure out where words begin and end. Special characters like parentheses mark boundaries too. Different programming languages have different rules for this, and languages with similar rules get grouped into families.
 
-Lyre will be of Lisp family, i.e. it will use parentheses `(` and `)` to mark both the beginning and the end of every expression and each expressions first word is the operation we want to perform and the rest are the operands. The `DoReMi` in Lyre would look like this:
+Lyre is from the Lisp family - it looks strange at first but uniform. Just words, `(` and `)`, nested and in sequence. _DoReMi_ in Lyre looks like this:
 
 ```lisp
 (sequence
@@ -14,7 +14,9 @@ Lyre will be of Lisp family, i.e. it will use parentheses `(` and `)` to mark bo
   (tone E4 500))
 ```
 
-This does not mention the *ADSR*, but we'll get to that later. First, we deal with parsing.
+Notice that `(tone C4 500)` is itself an expression inside the `sequence` expression. An expression can be either a single word /like `C4` or `500`/ or a list wrapped in parens /first word is the operation, rest can be words or other expressions/.
+
+We're not worrying about ADSR yet - that comes later. First, let's figure out how to parse this.
 
 ## Back
 

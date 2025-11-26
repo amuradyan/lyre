@@ -113,3 +113,5 @@ Awesome! How do we evaluate this now?
 [Stacking expressions](39%20Stacking%20expressions.md)
 
 ## Next
+
+[Nested expressions](41%20Nested%20expressions.md)

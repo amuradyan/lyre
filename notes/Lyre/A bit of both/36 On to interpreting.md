@@ -5,11 +5,11 @@ Here's where we stand: we have a JS engine that can play sounds, and we have a t
 
 Our goal is to make `(tone 261.63 500)` produce actual sound. The tokenizer turns this string into a list `["tone", "261.63", "500"]`, then the interpreter evaluates that list into a sound.
 
-Inspired by Lisps, our list evaluation will follow this simple pattern:
+Inspired by Lisps, our list evaluation will follow these rules:
 
-- operators reference the synth functions
-- operands evaluate to themselves - `"261.63"` and `"500"` are `261.63` and `500`
-- lists evaluate by applying the first element as an operator to the rest as operands - `["tone", "261.63", "500"]` evaluates to "apply `tone` to `261.63` and `500`"
+    *Rule 1*: lists evaluate by applying the first element /operator/ to the rest of the elements as operands - `["tone", "261.63", "500"]` means "apply `tone` to to `261.63` frequency and  `500` duration"
+    *Rule 2*: operators reference the synth functions
+    *Rule 3*: operands evaluate to themselves - `"261.63"` and `"500"` are `261.63` and `500`
 
 ## Back
 
