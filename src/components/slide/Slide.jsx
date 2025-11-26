@@ -366,6 +366,21 @@ export default function SlideExperimental({ initialMarkdownPath }) {
           color: #6366f1;
         }
       `}</style>
+      {/* Help Tab */}
+      <div
+        className="absolute bottom-8 -right-2 bg-white/80 backdrop-blur px-3 py-2 shadow-sm cursor-pointer hover:opacity-80 transition-opacity flex items-center"
+        onClick={() => setHelpModalOpen(true)}
+        style={{
+          fontFamily: 'Nunito, sans-serif',
+          fontSize: '16px',
+          fontWeight: 700,
+          color: '#6366f1',
+          lineHeight: '16px'
+        }}
+      >
+        .
+      </div>
+
       {/* Logo Tab */}
       <div
         className="absolute -top-2 right-8 bg-white/80 backdrop-blur px-3 py-2 shadow-sm cursor-pointer hover:opacity-80 transition-opacity"
