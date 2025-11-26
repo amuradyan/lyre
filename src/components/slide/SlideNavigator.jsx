@@ -104,22 +104,22 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose, onNe
       if (e.key === 'ArrowDown') {
         e.preventDefault();
 
-        if (slidesWithIndex.length === 0) return;
+        if (filteredSlides.length === 0) return;
 
         let targetSlide;
 
         if (focusedIndex === null) {
-          targetSlide = slidesWithIndex.find(s => s.index === currentIndex) || slidesWithIndex[0];
+          targetSlide = filteredSlides.find(s => s.index === currentIndex) || filteredSlides[0];
         } else {
           const visibleSlides = getVisibleSlides();
           const currentFocused = visibleSlides[focusedIndex];
 
           if (!currentFocused) return;
 
-          const globalIdx = slidesWithIndex.findIndex(s => s.index === currentFocused.index);
+          const globalIdx = filteredSlides.findIndex(s => s.index === currentFocused.index);
 
-          if (globalIdx < slidesWithIndex.length - 1) {
-            targetSlide = slidesWithIndex[globalIdx + 1];
+          if (globalIdx < filteredSlides.length - 1) {
+            targetSlide = filteredSlides[globalIdx + 1];
           } else {
             return;
           }
@@ -148,22 +148,22 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose, onNe
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
 
-        if (slidesWithIndex.length === 0) return;
+        if (filteredSlides.length === 0) return;
 
         let targetSlide;
 
         if (focusedIndex === null) {
-          targetSlide = slidesWithIndex.find(s => s.index === currentIndex) || slidesWithIndex[slidesWithIndex.length - 1];
+          targetSlide = filteredSlides.find(s => s.index === currentIndex) || filteredSlides[filteredSlides.length - 1];
         } else {
           const visibleSlides = getVisibleSlides();
           const currentFocused = visibleSlides[focusedIndex];
 
           if (!currentFocused) return;
 
-          const globalIdx = slidesWithIndex.findIndex(s => s.index === currentFocused.index);
+          const globalIdx = filteredSlides.findIndex(s => s.index === currentFocused.index);
 
           if (globalIdx > 0) {
-            targetSlide = slidesWithIndex[globalIdx - 1];
+            targetSlide = filteredSlides[globalIdx - 1];
           } else {
             return;
           }
