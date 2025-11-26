@@ -4,11 +4,33 @@ import { SLIDES } from '../../config/slides.js';
 export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
   const [expandedFolders, setExpandedFolders] = useState({});
   const [focusedIndex, setFocusedIndex] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const currentSlideRef = useRef(null);
   const slideRefs = useRef({});
   const hoverTimerRef = useRef(null);
   const originalSlideRef = useRef(null);
-  const groupedSlides = SLIDES.reduce((groups, slide, idx) => {
+  const searchInputRef = useRef(null);
+
+  const fuzzyMatch = (search, text) => {
+    const searchLower = search.toLowerCase();
+    const textLower = text.toLowerCase();
+
+    let searchIdx = 0;
+    for (let i = 0; i < textLower.length && searchIdx < searchLower.length; i++) {
+      if (textLower[i] === searchLower[searchIdx]) {
+        searchIdx++;
+      }
+    }
+    return searchIdx === searchLower.length;
+  };
+
+  const slidesWithIndex = SLIDES.map((slide, idx) => ({ ...slide, index: idx + 1 }));
+
+  const filteredSlides = searchQuery
+    ? slidesWithIndex.filter(slide => fuzzyMatch(searchQuery, slide.title))
+    : slidesWithIndex;
+
+  const groupedSlides = filteredSlides.reduce((groups, slide) => {
     const pathParts = slide.path.split('/');
     const folder = pathParts.length > 3 ? pathParts[pathParts.length - 2] : 'Other';
 
@@ -16,7 +38,7 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
       groups[folder] = [];
     }
 
-    groups[folder].push({ ...slide, index: idx + 1 });
+    groups[folder].push(slide);
     return groups;
   }, {});
 
@@ -38,6 +60,12 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
 
     const handleKeyboard = (e) => {
       if (e.key === 'Escape') {
+        if (searchQuery) {
+          // Clear search first
+          setSearchQuery('');
+          setFocusedIndex(null);
+          return;
+        }
         // Return to original slide on escape
         if (originalSlideRef.current) {
           onNavigate(originalSlideRef.current);
@@ -100,7 +128,30 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
       document.removeEventListener('keydown', handleKeyboard);
       document.removeEventListener('click', handleClickOutside);
     };
-  }, [onClose, focusedIndex, expandedFolders, currentIndex]);
+  }, [onClose, focusedIndex, expandedFolders, currentIndex, searchQuery]);
+
+  useEffect(() => {
+    // Auto-focus search input on mount
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    // Reset focused index when search changes
+    setFocusedIndex(null);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    // Auto-expand all folders when searching
+    if (searchQuery) {
+      const allExpanded = {};
+      Object.keys(groupedSlides).forEach(folder => {
+        allExpanded[folder] = true;
+      });
+      setExpandedFolders(allExpanded);
+    }
+  }, [searchQuery]);
 
   const handleSlideClick = (path) => {
     // Commit the navigation on click
@@ -268,12 +319,64 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
             padding: '20px',
             borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
             fontFamily: 'Nunito, sans-serif',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '20px'
+          }}
+        >
+          <div style={{
             fontSize: '18px',
             fontWeight: 700,
             color: '#374151'
-          }}
-        >
-          Navigate to Slide
+          }}>
+            Navigate to Slide
+          </div>
+          <div style={{ position: 'relative', flex: '0 0 200px' }}>
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search..."
+              style={{
+                width: '100%',
+                padding: '4px 24px 4px 8px',
+                fontFamily: 'Nunito, sans-serif',
+                fontSize: '14px',
+                border: 'none',
+                borderBottom: '1px solid rgba(0, 0, 0, 0.2)',
+                borderRadius: '0',
+                outline: 'none',
+                backgroundColor: 'transparent'
+              }}
+            />
+            {searchQuery && (
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  searchInputRef.current?.focus();
+                }}
+                style={{
+                  position: 'absolute',
+                  right: '0',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#9ca3af',
+                  fontSize: '16px',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                ×
+              </button>
+            )}
+          </div>
         </div>
         <div
           style={{
@@ -373,7 +476,20 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
             padding: '8px'
           }}
         >
-          {Object.entries(groupedSlides).map(([folder, slides]) => (
+          {filteredSlides.length === 0 ? (
+            <div
+              style={{
+                padding: '40px 20px',
+                textAlign: 'center',
+                fontFamily: 'Nunito, sans-serif',
+                fontSize: '14px',
+                color: '#9ca3af'
+              }}
+            >
+              No slides found
+            </div>
+          ) : (
+            Object.entries(groupedSlides).map(([folder, slides]) => (
             <div key={folder}>
               <div
                 onClick={() => toggleFolder(folder)}
@@ -458,7 +574,8 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
                 );
               })}
             </div>
-          ))}
+          ))
+          )}
         </div>
       </div>
     </div>
