@@ -65,6 +65,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   const handleNextRef = useRef();
   const handleBackRef = useRef();
+  const handleHomeRef = useRef();
+  const handleEndRef = useRef();
 
   const extractSlideIndex = (path) => {
     const filename = path.split('/').pop();
@@ -272,9 +274,27 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleHome = () => {
+    if (SLIDES.length === 0) return;
+    const firstSlide = SLIDES[0].path;
+    setMdPath(firstSlide);
+    updateUrl(firstSlide);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleEnd = () => {
+    if (SLIDES.length === 0) return;
+    const lastSlide = SLIDES[SLIDES.length - 1].path;
+    setMdPath(lastSlide);
+    updateUrl(lastSlide);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     handleNextRef.current = handleNext;
     handleBackRef.current = handleBack;
+    handleHomeRef.current = handleHome;
+    handleEndRef.current = handleEnd;
   });
 
   useEffect(() => {
@@ -288,6 +308,12 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
         handleNextRef.current?.();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        handleHomeRef.current?.();
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        handleEndRef.current?.();
       }
     };
 
