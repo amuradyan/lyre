@@ -73,21 +73,24 @@ export default function KeyboardShortcutsModal({ onClose }) {
         }
         .element-row {
           display: flex;
+          flex-direction: column;
           align-items: center;
-          gap: 12px;
-          padding: 8px 0;
+          gap: 6px;
+          padding: 8px 4px;
           font-family: 'Nunito', sans-serif;
         }
         .element-icon {
-          min-width: 32px;
-          height: 24px;
+          min-width: 28px;
+          height: 28px;
           display: flex;
           align-items: center;
           justify-content: center;
         }
         .element-desc {
-          font-size: 14px;
+          font-size: 12px;
           color: #374151;
+          text-align: center;
+          line-height: 1.3;
         }
       `}</style>
       <div
@@ -96,10 +99,8 @@ export default function KeyboardShortcutsModal({ onClose }) {
           backdropFilter: 'blur(10px)',
           borderRadius: '0',
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
-          maxWidth: '500px',
+          maxWidth: '800px',
           width: '90%',
-          maxHeight: '600px',
-          overflow: 'auto',
           display: 'flex',
           flexDirection: 'column'
         }}
@@ -118,7 +119,7 @@ export default function KeyboardShortcutsModal({ onClose }) {
           Keyboard Shortcuts
         </div>
 
-        <div style={{ padding: '20px' }}>
+        <div style={{ padding: '20px', borderBottom: '1px solid rgba(0, 0, 0, 0.1)' }}>
           <div
             style={{
               fontFamily: 'Nunito, sans-serif',
@@ -130,27 +131,29 @@ export default function KeyboardShortcutsModal({ onClose }) {
               marginBottom: '12px'
             }}
           >
-            Navigation
+            Global Navigation
           </div>
 
-          <div className="shortcut-row">
-            <div className="shortcut-key">← →</div>
-            <div className="shortcut-desc">Navigate between slides</div>
-          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '24px' }}>
+            <div className="shortcut-row">
+              <div className="shortcut-key">← →</div>
+              <div className="shortcut-desc">Previous / Next slide</div>
+            </div>
 
-          <div className="shortcut-row">
-            <div className="shortcut-key">Home / End</div>
-            <div className="shortcut-desc">Jump to first/last slide</div>
-          </div>
+            <div className="shortcut-row">
+              <div className="shortcut-key">Home / End</div>
+              <div className="shortcut-desc">First / Last slide</div>
+            </div>
 
-          <div className="shortcut-row">
-            <div className="shortcut-key">/</div>
-            <div className="shortcut-desc">Browse all slides</div>
-          </div>
+            <div className="shortcut-row">
+              <div className="shortcut-key">/</div>
+              <div className="shortcut-desc">Toggle slide navigator</div>
+            </div>
 
-          <div className="shortcut-row">
-            <div className="shortcut-key">.</div>
-            <div className="shortcut-desc">Show this help</div>
+            <div className="shortcut-row">
+              <div className="shortcut-key">.</div>
+              <div className="shortcut-desc">Show this help</div>
+            </div>
           </div>
 
           <div
@@ -161,53 +164,109 @@ export default function KeyboardShortcutsModal({ onClose }) {
               color: '#6366f1',
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
-              marginTop: '24px',
+              marginBottom: '12px'
+            }}
+          >
+            Slide Navigator
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+            <div className="shortcut-row">
+              <div className="shortcut-key">Type</div>
+              <div className="shortcut-desc">Search with fuzzy matching</div>
+            </div>
+
+            <div className="shortcut-row">
+              <div className="shortcut-key">↑ ↓</div>
+              <div className="shortcut-desc">Navigate filtered slides</div>
+            </div>
+
+            <div className="shortcut-row">
+              <div className="shortcut-key">Enter</div>
+              <div className="shortcut-desc">Go to selected slide</div>
+            </div>
+
+            <div className="shortcut-row">
+              <div className="shortcut-key">Esc</div>
+              <div className="shortcut-desc">Clear search / Close</div>
+            </div>
+
+            <div className="shortcut-row">
+              <div className="shortcut-key">Home / End</div>
+              <div className="shortcut-desc">Jump to first/last</div>
+            </div>
+
+            <div className="shortcut-row">
+              <div className="shortcut-key">Click</div>
+              <div className="shortcut-desc">Select slide</div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ padding: '16px 20px 20px 20px' }}>
+          <div
+            style={{
+              fontFamily: 'Nunito, sans-serif',
+              fontSize: '13px',
+              fontWeight: 700,
+              color: '#6366f1',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
               marginBottom: '12px'
             }}
           >
             Interactive Elements
           </div>
 
-          <div className="element-row">
-            <div className="element-icon">
-              <svg viewBox="0 0 24 24" fill="#6366f1" style={{ width: '20px', height: '20px' }}>
-                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-              </svg>
-            </div>
-            <div className="element-desc">Show/hide exercise hints</div>
-          </div>
-
-          <div className="element-row">
-            <div className="element-icon">
-              <svg viewBox="0 0 24 24" fill="#B187D8" style={{ width: '20px', height: '20px' }}>
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-            <div className="element-desc">Run code or play audio</div>
-          </div>
-
-          <div className="element-row">
-            <div className="element-icon">
-              <div style={{ display: 'flex', gap: '4px' }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2ea043' }}></div>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f85149' }}></div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
+            <div className="element-row">
+              <div className="element-icon">
+                <svg viewBox="0 0 24 24" fill="#6366f1" style={{ width: '20px', height: '20px' }}>
+                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                </svg>
               </div>
+              <div className="element-desc">Show/hide hints</div>
             </div>
-            <div className="element-desc">Test results - Green (passed), Red (failed)</div>
-          </div>
 
-          <div className="element-row">
-            <div className="element-icon" style={{ minWidth: '40px' }}>
-              <span style={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', fontWeight: 600, color: '#9ca3af' }}>1/42</span>
+            <div className="element-row">
+              <div className="element-icon">
+                <svg viewBox="0 0 24 24" fill="#B187D8" style={{ width: '20px', height: '20px' }}>
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+              <div className="element-desc">Run/Play</div>
             </div>
-            <div className="element-desc">Click to browse all slides</div>
-          </div>
 
-          <div className="element-row">
-            <div className="element-icon">
-              <img src="/lyre-logo.png" alt="Logo" style={{ width: '16px', height: 'auto' }} />
+            <div className="element-row">
+              <div className="element-icon">
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2ea043' }}></div>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f85149' }}></div>
+                </div>
+              </div>
+              <div className="element-desc">Test results</div>
             </div>
-            <div className="element-desc">Return to home</div>
+
+            <div className="element-row">
+              <div className="element-icon">
+                <span style={{ fontFamily: 'Nunito, sans-serif', fontSize: '11px', fontWeight: 600, color: '#9ca3af' }}>1/42</span>
+              </div>
+              <div className="element-desc">Browse slides</div>
+            </div>
+
+            <div className="element-row">
+              <div className="element-icon">
+                <img src="/lyre-logo.png" alt="Logo" style={{ width: '18px', height: 'auto' }} />
+              </div>
+              <div className="element-desc">Home</div>
+            </div>
+
+            <div className="element-row">
+              <div className="element-icon">
+                <span style={{ fontFamily: 'Nunito, sans-serif', fontSize: '18px', fontWeight: 600, color: '#6366f1' }}>.</span>
+              </div>
+              <div className="element-desc">Help button</div>
+            </div>
           </div>
         </div>
       </div>
