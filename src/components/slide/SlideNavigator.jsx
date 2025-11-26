@@ -3,17 +3,40 @@ import { SLIDES } from '../../config/slides.js';
 
 export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
   const [expandedFolders, setExpandedFolders] = useState({});
+  const [focusedIndex, setFocusedIndex] = useState(null);
   const currentSlideRef = useRef(null);
   const slideRefs = useRef({});
   const hoverTimerRef = useRef(null);
   const originalSlideRef = useRef(null);
+  const groupedSlides = SLIDES.reduce((groups, slide, idx) => {
+    const pathParts = slide.path.split('/');
+    const folder = pathParts.length > 3 ? pathParts[pathParts.length - 2] : 'Other';
+
+    if (!groups[folder]) {
+      groups[folder] = [];
+    }
+
+    groups[folder].push({ ...slide, index: idx + 1 });
+    return groups;
+  }, {});
+
+  const getVisibleSlides = () => {
+    const visible = [];
+    Object.entries(groupedSlides).forEach(([folder, slides]) => {
+      if (expandedFolders[folder]) {
+        slides.forEach(slide => visible.push(slide));
+      }
+    });
+    return visible;
+  };
+
   useEffect(() => {
     // Store the original slide when navigator opens
     if (originalSlideRef.current === null) {
       originalSlideRef.current = SLIDES[currentIndex - 1]?.path;
     }
 
-    const handleEscape = (e) => {
+    const handleKeyboard = (e) => {
       if (e.key === 'Escape') {
         // Return to original slide on escape
         if (originalSlideRef.current) {
@@ -21,6 +44,41 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
         }
         originalSlideRef.current = null;
         onClose();
+        return;
+      }
+
+      const visibleSlides = getVisibleSlides();
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (visibleSlides.length === 0) return;
+
+        if (focusedIndex === null) {
+          const currentIdx = visibleSlides.findIndex(s => s.index === currentIndex);
+          setFocusedIndex(currentIdx >= 0 ? currentIdx : 0);
+        } else {
+          const nextIdx = (focusedIndex + 1) % visibleSlides.length;
+          setFocusedIndex(nextIdx);
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (visibleSlides.length === 0) return;
+
+        if (focusedIndex === null) {
+          const currentIdx = visibleSlides.findIndex(s => s.index === currentIndex);
+          setFocusedIndex(currentIdx >= 0 ? currentIdx : visibleSlides.length - 1);
+        } else {
+          const prevIdx = focusedIndex === 0 ? visibleSlides.length - 1 : focusedIndex - 1;
+          setFocusedIndex(prevIdx);
+        }
+      } else if (e.key === 'Enter' && focusedIndex !== null) {
+        e.preventDefault();
+        const focusedSlide = visibleSlides[focusedIndex];
+        if (focusedSlide) {
+          originalSlideRef.current = null;
+          onNavigate(focusedSlide.path);
+          onClose();
+        }
       }
     };
 
@@ -35,14 +93,14 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
+    document.addEventListener('keydown', handleKeyboard);
     document.addEventListener('click', handleClickOutside);
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('keydown', handleKeyboard);
       document.removeEventListener('click', handleClickOutside);
     };
-  }, [onClose]);
+  }, [onClose, focusedIndex, expandedFolders, currentIndex]);
 
   const handleSlideClick = (path) => {
     // Commit the navigation on click
@@ -109,18 +167,6 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
     }, 100);
   };
 
-  const groupedSlides = SLIDES.reduce((groups, slide, idx) => {
-    const pathParts = slide.path.split('/');
-    const folder = pathParts.length > 3 ? pathParts[pathParts.length - 2] : 'Other';
-
-    if (!groups[folder]) {
-      groups[folder] = [];
-    }
-
-    groups[folder].push({ ...slide, index: idx + 1 });
-    return groups;
-  }, {});
-
   useEffect(() => {
     const initialExpanded = {};
     Object.entries(groupedSlides).forEach(([folder, slides]) => {
@@ -138,6 +184,19 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
       }
     }, 100);
   }, [currentIndex]);
+
+  useEffect(() => {
+    if (focusedIndex !== null) {
+      const visibleSlides = getVisibleSlides();
+      const focusedSlide = visibleSlides[focusedIndex];
+      if (focusedSlide && slideRefs.current[focusedSlide.index]) {
+        slideRefs.current[focusedSlide.index].scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }
+  }, [focusedIndex]);
 
   const toggleFolder = (folder) => {
     setExpandedFolders(prev => ({
@@ -340,8 +399,10 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
                 </span>
                 {folder} / {slides.length}
               </div>
-              {expandedFolders[folder] && slides.map((slide) => {
+              {expandedFolders[folder] && slides.map((slide, slideIdx) => {
                 const isCurrent = slide.index === currentIndex;
+                const visibleSlides = getVisibleSlides();
+                const isFocused = focusedIndex !== null && visibleSlides[focusedIndex]?.index === slide.index;
 
                 return (
                   <div
@@ -369,7 +430,9 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
                       gap: '12px',
                       alignItems: 'center',
                       borderRadius: '0px',
-                      margin: '4px 0'
+                      margin: '4px 0',
+                      outline: isFocused ? '2px solid #6366f1' : 'none',
+                      outlineOffset: '-2px'
                     }}
                   >
                     <span
