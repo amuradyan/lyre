@@ -612,8 +612,6 @@ export default function SlideExperimental({ initialMarkdownPath }) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           onClose={() => setNavigatorOpen(false)}
-          onNext={() => handleNextRef.current?.()}
-          onBack={() => handleBackRef.current?.()}
           onHome={() => handleHomeRef.current?.()}
           onEnd={() => handleEndRef.current?.()}
         />,

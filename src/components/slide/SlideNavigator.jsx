@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { SLIDES } from '../../config/slides.js';
 
-export default function SlideNavigator({ currentIndex, onNavigate, onClose, onNext, onBack, onHome, onEnd }) {
+export default function SlideNavigator({ currentIndex, onNavigate, onClose, onHome, onEnd }) {
   const [expandedFolders, setExpandedFolders] = useState({});
   const [focusedIndex, setFocusedIndex] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -72,18 +72,6 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose, onNe
         }
         originalSlideRef.current = null;
         onClose();
-        return;
-      }
-
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        if (onBack) onBack();
-        return;
-      }
-
-      if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        if (onNext) onNext();
         return;
       }
 
