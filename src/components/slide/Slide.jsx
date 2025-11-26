@@ -7,6 +7,7 @@ import TabbedCodeblock from './codeblock/TabbedCodeblock.jsx';
 import { loadCodeBlock } from '../../utils/slideStorage.js';
 import { parseMarkdown } from '../../utils/markdownParser.js';
 import SlideNavigator from './SlideNavigator.jsx';
+import KeyboardShortcutsModal from './KeyboardShortcutsModal.jsx';
 import { SLIDES } from '../../config/slides.js';
 
 function CollapsibleParagraph({ content }) {
@@ -62,6 +63,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   const [testStatuses, setTestStatuses] = useState({});
   const [slugToPathMap, setSlugToPathMap] = useState({});
   const [navigatorOpen, setNavigatorOpen] = useState(false);
+  const [helpModalOpen, setHelpModalOpen] = useState(false);
 
   const handleNextRef = useRef();
   const handleBackRef = useRef();
@@ -314,6 +316,9 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       } else if (e.key === 'End') {
         e.preventDefault();
         handleEndRef.current?.();
+      } else if (e.key === '.') {
+        e.preventDefault();
+        setHelpModalOpen(true);
       }
     };
 
@@ -589,6 +594,12 @@ export default function SlideExperimental({ initialMarkdownPath }) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           onClose={() => setNavigatorOpen(false)}
+        />,
+        document.body
+      )}
+      {helpModalOpen && createPortal(
+        <KeyboardShortcutsModal
+          onClose={() => setHelpModalOpen(false)}
         />,
         document.body
       )}
