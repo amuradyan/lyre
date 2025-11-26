@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Codeblock from './codeblock/Codeblock.jsx';
 import LyreCodeblock from './codeblock/LyreCodeblock.jsx';
@@ -62,6 +62,9 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   const [testStatuses, setTestStatuses] = useState({});
   const [slugToPathMap, setSlugToPathMap] = useState({});
   const [navigatorOpen, setNavigatorOpen] = useState(false);
+
+  const handleNextRef = useRef();
+  const handleBackRef = useRef();
 
   const extractSlideIndex = (path) => {
     const filename = path.split('/').pop();
@@ -268,6 +271,31 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     updateUrl(skipAbs);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    handleNextRef.current = handleNext;
+    handleBackRef.current = handleBack;
+  });
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+        return;
+      }
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handleBackRef.current?.();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        handleNextRef.current?.();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return (
     <div className="bg-white/70 backdrop-blur shadow-sm relative" style={{ padding: '32px 32px 32px 32px' }}>
