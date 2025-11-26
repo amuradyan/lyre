@@ -33,10 +33,6 @@ function tone(frequency, duration) {
   {"inputs": [1, 3], "expected": [0, 1, 0, -1, 0, 1, 0, -1, 0, 1, 0, -1]}]}
 -->
 
-## Back
+##### Back: [Exercises on lists](8%20Exercises%20on%20lists.md)
 
-[Exercises on lists](8%20Exercises%20on%20lists.md)
-
-## Next
-
-[One step at a time](10%20One%20step%20at%20a%20time.md)
+##### Next: [One step at a time](10%20One%20step%20at%20a%20time.md)

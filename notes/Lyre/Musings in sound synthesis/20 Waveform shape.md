@@ -14,10 +14,6 @@ Real instruments produce complex, time-varying sounds, but each tends to be domi
 
 Let's see what DoReMi would sound like as a sawtooth wave.
 
-## Back
+##### Back: [ADSR](19%20ADSR.md)
 
-[ADSR](19%20ADSR.md)
-
-## Next
-
-[Not yet a lyre](21%20Not%20yet%20a%20lyre.md)
+##### Next: [Not yet a lyre](21%20Not%20yet%20a%20lyre.md)

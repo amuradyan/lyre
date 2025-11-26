@@ -27,10 +27,6 @@ l ....... | "pl"    | [["envelope", ["tone", "261.63", "500"]]] // ...
 
 The key insight: `)` concludes the token _and_ pops the current list off the stack, appending it to its parent. On to the implementation.
 
-## Back
+##### Back: [Plucking](38%20Plucking.md)
 
-[Plucking](38%20Plucking.md)
-
-## Next
-
-[Tokenize again](40%20Tokenize%20again.md)
+##### Next: [Tokenize again](40%20Tokenize%20again.md)

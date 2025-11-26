@@ -65,10 +65,6 @@ const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
 sequence(DoReMi);
 ```
 
-## Back
+##### Back: [Long time, no acronyms](18%20Long%20time%2C%20no%20acronyms.md)
 
-[Long time, no acronyms](18%20Long%20time%2C%20no%20acronyms.md)
-
-## Next
-
-[Waveform shape](20%20Waveform%20shape.md)
+##### Next: [Waveform shape](20%20Waveform%20shape.md)

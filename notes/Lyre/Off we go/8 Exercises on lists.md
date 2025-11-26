@@ -67,10 +67,6 @@ function calculateTotal(prices) {
 {"inputs": [[1.25, 2.75, 3.00, 2.00]], "expected": 9.00}]
 -->
 
-## Back
+##### Back: [Lists](7%20Lists.md)
 
-[Lists](7%20Lists.md)
-
-## Next
-
-[Actually sampling](9%20Actually%20sampling.md)
+##### Next: [Actually sampling](9%20Actually%20sampling.md)

@@ -71,10 +71,6 @@ But look at what happened to the `DoReMi`: the _adsr_ is repeated in each tone. 
 
 Maybe we can find another abstraction? Let's think of what we'd like to have.
 
-## Back
+##### Back: [New look](24%20New%20look.md)
 
-[New look](24%20New%20look.md)
-
-## Next
-
-[Still not there](26%20Still%20not%20there.md)
+##### Next: [Still not there](26%20Still%20not%20there.md)

@@ -29,14 +29,8 @@ token = token + "o"  // token is now "to"
 
 When we hit a space or parenthesis, we know the current token is complete and we can add it to our list.
 
-## Back
+##### Back: [Reading code](30%20Reading%20code.md)
 
-[Reading code](30%20Reading%20code.md)
+##### Next: [Exercises on strings](32%20Exercises%20on%20strings.md)
 
-## Next
-
-[Exercises on strings](32%20Exercises%20on%20strings.md)
-
-## Skip
-
-[Break it down](33%20Break%20it%20down.md)
+##### Skip: [Break it down](33%20Break%20it%20down.md)

@@ -11,10 +11,6 @@ Inspired by Lisps, our list evaluation will follow these rules:
     *Rule 2*: operators reference the synth functions
     *Rule 3*: operands evaluate to themselves - `"261.63"` and `"500"` are `261.63` and `500`
 
-## Back
+##### Back: [Tokenize](35%20Tokenize.md)
 
-[Tokenize](35%20Tokenize.md)
-
-## Next
-
-[Interpret](37%20Interpret.md)
+##### Next: [Interpret](37%20Interpret.md)

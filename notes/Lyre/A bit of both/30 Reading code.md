@@ -18,10 +18,6 @@ Notice that `(tone C4 500)` is itself an expression inside the `sequence` expres
 
 We're not worrying about ADSR yet - that comes later. First, let's figure out how to parse this.
 
-## Back
+##### Back: [Wrapping it up](../Musings%20in%20sound%20synthesis/29%20Wrapping%20it%20up.md)
 
-[Wrapping it up](../Musings%20in%20sound%20synthesis/29%20Wrapping%20it%20up.md)
-
-## Next
-
-[Tokens](31%20Tokens.md)
+##### Next: [Tokens](31%20Tokens.md)

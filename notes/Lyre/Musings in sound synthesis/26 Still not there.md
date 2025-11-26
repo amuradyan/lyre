@@ -54,10 +54,6 @@ What if each sample carried its own timing? If we can make the oscillator mainta
 
 Let's see if that works.
 
-## Back
+##### Back: [Configurable ADSR](25%20Configurable%20ADSR.md)
 
-[Configurable ADSR](25%20Configurable%20ADSR.md)
-
-## Next
-
-[Phase shift](27%20Phase%20shift.md)
+##### Next: [Phase shift](27%20Phase%20shift.md)

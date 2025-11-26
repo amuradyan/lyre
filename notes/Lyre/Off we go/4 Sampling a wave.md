@@ -33,10 +33,6 @@ function computeSample(index) {
 
 Once this is done, we can _calculate the indices by multiplying the sampling rate with duration_ /in seconds/, then repetitively  apply the `computeSample` to every index, thus computing all the samples for a given duration.
 
-## Back
+##### Back: [Sounds and computers](3%20Sounds%20and%20computers.md)
 
-[Sounds and computers](3%20Sounds%20and%20computers.md)
-
-## Next
-
-[Repetitions](5%20Repetitions.md)
+##### Next: [Repetitions](5%20Repetitions.md)

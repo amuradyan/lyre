@@ -31,14 +31,8 @@ Note how on line 12 we _manually_ get a value from the generator. Lines 14-19 th
 
 Turns out that's not complicated at all. Here, let me show you...
 
-## Back
+##### Back: [Do, Re, Mi...](13%20Do%2C%20Re%2C%20Mi....md)
 
-[Do, Re, Mi...](13%20Do%2C%20Re%2C%20Mi....md)
+##### Next: [If this, then that](15%20If%20this%2C%20then%20that.md)
 
-## Next
-
-[If this, then that](15%20If%20this%2C%20then%20that.md)
-
-## Skip
-
-[Smoooth Operator](16%20Smoooth%20operator.md)
+##### Skip: [Smoooth Operator](16%20Smoooth%20operator.md)

@@ -28,10 +28,6 @@ tone(???, ???) // C4 is approximately 261.63 Hz
 
 Nice! How do we play several notes though?
 
-## Back
+##### Back: [Sampling once more](11%20Sampling%20once%20more.md)
 
-[Sampling once more](11%20Sampling%20once%20more.md)
-
-## Next
-
-[Do, Re, Mi...](../Musings%20in%20sound%20synthesis/13%20Do%2C%20Re%2C%20Mi....md)
+##### Next: [Do, Re, Mi...](../Musings%20in%20sound%20synthesis/13%20Do%2C%20Re%2C%20Mi....md)

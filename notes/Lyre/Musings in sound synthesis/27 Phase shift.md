@@ -81,10 +81,6 @@ But notice `tone` is doing two distinct jobs: generating waveform (oscillator + 
 
 To do that, we'll need a way for the ADSR to know where it is in the sound (`n`) and how long it lasts (`totalSamples`) without buffering all the samples first. Next we'll see how to carry that timing information through our pipeline.
 
-## Back
+##### Back: [Still not there](26%20Still%20not%20there.md)
 
-[Still not there](26%20Still%20not%20there.md)
-
-## Next
-
-[Envelope as transform](28%20Envelope%20as%20transform.md)
+##### Next: [Envelope as transform](28%20Envelope%20as%20transform.md)

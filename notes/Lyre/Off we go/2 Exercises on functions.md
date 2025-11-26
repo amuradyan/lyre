@@ -55,10 +55,6 @@ redshift(400, 500);
 ```
 <!-- 0.2 -->
 
-## Back
+##### Back: [Where do I start?](1%20Where%20do%20I%20start.md)
 
-[Where do I start?](1%20Where%20do%20I%20start.md)
-
-## Next
-
-[Sounds and computers](3%20Sounds%20and%20computers.md)
+##### Next: [Sounds and computers](3%20Sounds%20and%20computers.md)

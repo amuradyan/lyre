@@ -24,10 +24,6 @@ Note the `*` after the `function` keyword on line 1 - that is what makes this fu
 
 Let's try and rewrite our `tone` function to produce samples one at a time using a generator.
 
-## Back
+##### Back: [Actually sampling](9%20Actually%20sampling.md)
 
-[Actually sampling](9%20Actually%20sampling.md)
-
-## Next
-
-[Sampling once more](11%20Sampling%20once%20more.md)
+##### Next: [Sampling once more](11%20Sampling%20once%20more.md)

@@ -108,10 +108,6 @@ function* envelope(source, adsr) {
 
 Awesome! How do we evaluate this now?
 
-## Back
+##### Back: [Stacking expressions](39%20Stacking%20expressions.md)
 
-[Stacking expressions](39%20Stacking%20expressions.md)
-
-## Next
-
-[Nested expressions](41%20Nested%20expressions.md)
+##### Next: [Nested expressions](41%20Nested%20expressions.md)

@@ -74,10 +74,6 @@ The `tone` function in `synth` becomes cleaner - it gets the waveform shape from
 
 This, however, leaves us with hardcoded adsr params. Let's extract them into arguments, but this time, pass it from the _very top_. `???`-s incoming!
 
-## Back
+##### Back: [And action!](23%20And%20action!.md)
 
-[And action!](23%20And%20action!.md)
-
-## Next
-
-[Configurable ADSR](25%20Configurable%20ADSR.md)
+##### Next: [Configurable ADSR](25%20Configurable%20ADSR.md)

@@ -78,10 +78,6 @@ Now `tone` is pure audio generation - oscillator scoped by duration, yielding tu
 
 Seems we're ready to replace gnarly sequencer in `DoReMi` wit a proper `sequence`.
 
-## Back
+##### Back: [Phase shift](27%20Phase%20shift.md)
 
-[Phase shift](27%20Phase%20shift.md)
-
-## Next
-
-[Wrapping it up](29%20Wrapping%20it%20up.md)
+##### Next: [Wrapping it up](29%20Wrapping%20it%20up.md)

@@ -32,10 +32,6 @@ Here's what we have:
 
 Let's implement `tokenize`.
 
-## Back
+##### Back: [Lists again](33%20Lists%20again.md)
 
-[Lists again](33%20Lists%20again.md)
-
-## Next
-
-[Tokenize](35%20Tokenize.md)
+##### Next: [Tokenize](35%20Tokenize.md)

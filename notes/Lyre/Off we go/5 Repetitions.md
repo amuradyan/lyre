@@ -34,14 +34,8 @@ Inside the loop, we add the current value of `i` to `sum`. When `i` exceeds 10, 
 
 Let's do a few exercises to get familiar with loops.
 
-## Back
+##### Back: [Sampling a wave](4%20Sampling%20a%20wave.md)
 
-[Sampling a wave](4%20Sampling%20a%20wave.md)
+##### Next: [Exercises on loops](6%20Exercises%20on%20loops.md)
 
-## Next
-
-[Exercises on loops](6%20Exercises%20on%20loops.md)
-
-## Skip
-
-[Lists](7%20Lists.md)
+##### Skip: [Lists](7%20Lists.md)

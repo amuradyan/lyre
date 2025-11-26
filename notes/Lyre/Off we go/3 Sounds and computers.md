@@ -34,10 +34,6 @@ function tone(frequency, duration) {
 
 How do I calculate the samples, though?
 
-## Back
+##### Back: [Exercises on functions](2%20Exercises%20on%20functions.md)
 
-[Exercises on functions](2%20Exercises%20on%20functions.md)
-
-## Next
-
-[Sampling a wave](4%20Sampling%20a%20wave.md)
+##### Next: [Sampling a wave](4%20Sampling%20a%20wave.md)

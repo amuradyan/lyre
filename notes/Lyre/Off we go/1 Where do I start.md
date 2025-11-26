@@ -17,14 +17,8 @@ Lines 1-3 define the function, and line 5 calls it. `area` is its name and `widt
 
 Let's do a few exercises to get familiar with functions, and then we can move on to representing a sound with the computer.
 
-## Back
+##### Back: [What I want to get?](0%20What%20I%20want%20to%20get.md)
 
-[What I want to get?](0%20What%20I%20want%20to%20get.md)
+##### Next: [Exercises on functions](2%20Exercises%20on%20functions.md)
 
-## Next
-
-[Exercises on functions](2%20Exercises%20on%20functions.md)
-
-## Skip
-
-[Sounds and computers](3%20Sounds%20and%20computers.md)
+##### Skip: [Sounds and computers](3%20Sounds%20and%20computers.md)

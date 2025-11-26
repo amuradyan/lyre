@@ -65,10 +65,6 @@ To capture this properly, we need to control each harmonic independently - givin
 
 Before we get there, let's take another look at our `tone`, it's becoming uncomfortably bulky.
 
-## Back
+##### Back: [Waveform shape](20%20Waveform%20shape.md)
 
-[Waveform shape](20%20Waveform%20shape.md)
-
-## Next
-
-[Refactone](22%20Refactone.md)
+##### Next: [Refactone](22%20Refactone.md)

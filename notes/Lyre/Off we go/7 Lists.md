@@ -33,14 +33,8 @@ The key operation happens on _line 5_. The spread operator `...` explodes the ex
 
 Let's practice these operations!
 
-## Back
+##### Back: [Exercises on loops](6%20Exercises%20on%20loops.md)
 
-[Exercises on loops](6%20Exercises%20on%20loops.md)
+##### Next: [Exercises on lists](8%20Exercises%20on%20lists.md)
 
-## Next
-
-[Exercises on lists](8%20Exercises%20on%20lists.md)
-
-## Skip
-
-[Actually sampling](9%20Actually%20sampling.md)
+##### Skip: [Actually sampling](9%20Actually%20sampling.md)

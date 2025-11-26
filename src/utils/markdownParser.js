@@ -36,14 +36,10 @@ const extractSlideId = (line) => {
   return match ? match[1].trim() : null;
 };
 
-const extractLink = (line) => {
-  const match = line.match(/\[([^\]]+)\]\(([^)]+)\)/);
-  return match ? { text: match[1].trim(), href: match[2].trim() } : null;
+const extractInlineNavigation = (line) => {
+  const match = line.match(/^#####\s+(Next|Back|Skip):\s+\[([^\]]+)\]\(([^)]+)\)/i);
+  return match ? { type: match[1].toLowerCase(), text: match[2].trim(), href: match[3].trim() } : null;
 };
-
-const isNextSection = (line) => /^##\s+Next(\s+section)?\s*$/i.test(line.trim());
-const isBackSection = (line) => /^##\s+Back(\s+section)?\s*$/i.test(line.trim());
-const isSkipSection = (line) => /^##\s+Skip(\s+section)?\s*$/i.test(line.trim());
 const isCodeFence = (line) => line.startsWith('```');
 const isHeader = (line) => /^#/.test(line);
 const isEmpty = (line) => line.trim() === '';
@@ -245,9 +241,6 @@ const createInitialState = () => ({
     currentCollapsible: [],
     codeBuffer: [],
     codeLanguage: null,
-    inNext: false,
-    inBack: false,
-    inSkip: false,
     playableNext: false
   }
 });
@@ -345,62 +338,18 @@ const processLine = (lines) => (state, line, index) => {
       context: { ...context, playableNext: true }
     };
   }
-  
-  if (!context.inCode && isNextSection(line)) {
+
+  const inlineNav = !context.inCode ? extractInlineNavigation(line) : null;
+  if (inlineNav) {
     const flushed = flushAll(state);
+    const navLink = { text: inlineNav.text, href: inlineNav.href };
     return {
       ...flushed,
-      context: { ...flushed.context, inNext: true, inBack: false, inSkip: false }
+      navigation: {
+        ...flushed.navigation,
+        [inlineNav.type]: navLink
+      }
     };
-  }
-  
-  if (!context.inCode && isBackSection(line)) {
-    const flushed = flushAll(state);
-    return {
-      ...flushed,
-      context: { ...flushed.context, inBack: true, inNext: false, inSkip: false }
-    };
-  }
-
-  if (!context.inCode && isSkipSection(line)) {
-    const flushed = flushAll(state);
-    return {
-      ...flushed,
-      context: { ...flushed.context, inSkip: true, inNext: false, inBack: false }
-    };
-  }
-
-  if (context.inNext) {
-    const link = extractLink(line);
-    return link 
-      ? {
-          ...state,
-          navigation: { ...state.navigation, next: link },
-          context: { ...state.context, inNext: false }
-        }
-      : state;
-  }
-  
-  if (context.inBack) {
-    const link = extractLink(line);
-    return link
-      ? {
-          ...state,
-          navigation: { ...state.navigation, back: link },
-          context: { ...state.context, inBack: false }
-        }
-      : state;
-  }
-
-  if (context.inSkip) {
-    const link = extractLink(line);
-    return link
-      ? {
-          ...state,
-          navigation: { ...state.navigation, skip: link },
-          context: { ...state.context, inSkip: false }
-        }
-      : state;
   }
 
   if (isCodeFence(line)) {

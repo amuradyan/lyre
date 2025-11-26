@@ -48,10 +48,6 @@ The `tokenize` function iterates through each symbol and delegates handling to `
 
 >+ Note that we could have grouped `(` with `)` and space since they all conclude tokens, making the code shorter. But keeping `(` separate makes the logic more explicit - we'll reorganize along the way.
 
-## Back
+##### Back: [By hand](34%20By%20hand.md)
 
-[By hand](34%20By%20hand.md)
-
-## Next
-
-[On to interpreting](36%20On%20to%20interpreting.md)
+##### Next: [On to interpreting](36%20On%20to%20interpreting.md)

@@ -30,10 +30,6 @@ Let's hear what our generator produces!
 
 >+ If you change the sampling rate in the implementation above you'll see numbers like `0.5877852522924731` or `-0.9510565162951535`. This is so because _a)_ `Math.PI` is not the actual `π` and _b)_ computers interpret such /_floating point_/ numbers inherently inaccurately because of how the [specification of such operations](https://en.wikipedia.org/wiki/IEEE_754) is designed.
 
-## Back
+##### Back: [One sample at a time](10%20One%20step%20at%20a%20time.md)
 
-[One sample at a time](10%20One%20step%20at%20a%20time.md)
-
-## Next
-
-[Play me something!](12%20Play%20me%20something!.md)
+##### Next: [Play me something!](12%20Play%20me%20something!.md)

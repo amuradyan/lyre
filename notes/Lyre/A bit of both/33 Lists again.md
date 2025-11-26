@@ -13,10 +13,6 @@ Back to our problem: the correct interpretation of `"(move pawn e2e4)"` would be
 
 Now we just need to figure out how to do that.
 
-## Back
+##### Back: [Exercises on strings](32%20Exercises%20on%20strings.md)
 
-[Exercises on strings](32%20Exercises%20on%20strings.md)
-
-## Next
-
-[By hand](34%20By%20hand.md)
+##### Next: [By hand](34%20By%20hand.md)

@@ -88,10 +88,6 @@ When envelope receives the sequence, it sees a stream of `[sample, n, totalSampl
 
 This was a good run. Seems like we are standing on a pretty solid sound engineering ground. Let's do some language engineering now.
 
-## Back
+##### Back: [Envelope as transform](28%20Envelope%20as%20transform.md)
 
-[Envelope as transform](28%20Envelope%20as%20transform.md)
-
-## Next
-
-[Reading code](../A%20bit%20of%20both/30%20Reading%20code.md)
+##### Next: [Reading code](../A%20bit%20of%20both/30%20Reading%20code.md)

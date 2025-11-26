@@ -41,10 +41,6 @@ function* simpleSample(duration, samplingRate, fadeFraction, generator) {
 
 Done and done. Let's extend this to our `tone` now.
 
-## Back
+##### Back: [If this, then that](15%20If%20this%2C%20then%20that.md)
 
-[If this, then that](15%20If%20this%2C%20then%20that.md)
-
-## Next
-
-[Tone it down](17%20Tone%20it%20down.md)
+##### Next: [Tone it down](17%20Tone%20it%20down.md)

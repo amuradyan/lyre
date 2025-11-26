@@ -7,10 +7,6 @@ We will still create a new list each time we see a `(` and tokens will still go 
 
 Let's do the manual run again, but this time with the `(envelope (tone ...`.
 
-## Back
+##### Back: [Interpret](37%20Interpret.md)
 
-[Interpret](37%20Interpret.md)
-
-## Next
-
-[Stacking expressions](39%20Stacking%20expressions.md)
+##### Next: [Stacking expressions](39%20Stacking%20expressions.md)

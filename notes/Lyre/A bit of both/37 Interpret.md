@@ -79,10 +79,6 @@ function* envelope(source, adsr) {
 }
 ```
 
-## Back
+##### Back: [On to interpreting](36%20On%20to%20interpreting.md)
 
-[On to interpreting](36%20On%20to%20interpreting.md)
-
-## Next
-
-[Plucking](38%20Plucking.md)
+##### Next: [Plucking](38%20Plucking.md)

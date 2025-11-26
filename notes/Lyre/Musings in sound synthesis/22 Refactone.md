@@ -37,10 +37,6 @@ function* tone(frequency, duration) {
 
 It has a long neck of values /lines 2-10/ and a round belly of actions /lines 12-28/. Let's start with the actions.
 
-## Back
+##### Back: [Not yet a lyre](21%20Not%20yet%20a%20lyre.md)
 
-[Not yet a lyre](21%20Not%20yet%20a%20lyre.md)
-
-## Next
-
-[And action!](23%20And%20action!.md)
+##### Next: [And action!](23%20And%20action!.md)

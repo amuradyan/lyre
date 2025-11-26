@@ -24,6 +24,4 @@ It might do instrument sounds or allow writing filters, but we'll see when we ge
 
 As its [predecessor](https://github.com/amuradyan/shvi), it will be written in JS, but with _streaming at its core_ this time, so it can _run in the browser_. While taking these notes, I'll do that from the standpoint of someone who knows nothing of the Javascript language and accompany the notes with exploratory JS exercises.
 
-## Next
-
-[Where do I start?](1%20Where%20do%20I%20start.md)
+##### Next: [Where do I start?](1%20Where%20do%20I%20start.md)

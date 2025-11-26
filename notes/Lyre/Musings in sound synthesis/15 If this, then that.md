@@ -58,10 +58,6 @@ function deliveryDays(orderTotal) {
 {"inputs": [75], "expected": 3}]}
 -->
 
-## Back
+##### Back: [That clicking sound](14%20That%20clicking%20sound.md)
 
-[That clicking sound](14%20That%20clicking%20sound.md)
-
-## Next
-
-[Smoooth Operator](16%20Smoooth%20operator.md)
+##### Next: [Smoooth Operator](16%20Smoooth%20operator.md)

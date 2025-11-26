@@ -48,10 +48,6 @@ const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
 sequence(DoReMi);
 ```
 
-## Back
+##### Back: [Smoooth Operator](16%20Smoooth%20operator.md)
 
-[Smoooth Operator](16%20Smoooth%20operator.md)
-
-## Next
-
-[Long time, no acronyms](18%20Long%20time%2C%20no%20acronyms.md)
+##### Next: [Long time, no acronyms](18%20Long%20time%2C%20no%20acronyms.md)

@@ -29,10 +29,6 @@ Lines 5 and 6 produce the sample. Note that we pass an amplitude of 1. This bit 
 
 Lines 8 to 17 deal with the amplitude, adjusting it through time. This again can live in its own function. Note, how a bunch of constant definitions will also move into that function, after we extract the piece.
 
-## Back
+##### Back: [Refactone](22%20Refactone.md)
 
-[Refactone](22%20Refactone.md)
-
-## Next
-
-[New look](24%20New%20look.md)
+##### Next: [New look](24%20New%20look.md)

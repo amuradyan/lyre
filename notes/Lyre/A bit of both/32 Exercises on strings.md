@@ -72,10 +72,6 @@ function isImageFile(filename) {
 {"inputs": ["avatar.png"], "expected": true}]
 -->
 
-## Back
+##### Back: [Tokens](31%20Tokens.md)
 
-[Tokens](31%20Tokens.md)
-
-## Next
-
-[Break it down](33%20Break%20it%20down.md)
+##### Next: [Break it down](33%20Break%20it%20down.md)

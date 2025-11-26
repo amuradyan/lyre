@@ -14,10 +14,6 @@ Different instruments have different ADSR characteristics. _Piano_ has fast atta
 
 Our fade-in\fade-out is a simplified ADSR with just _attack_ and _release_. Let's add the _decay_, which is the pitch but at a smaller amplitude.
 
-## Back
+##### Back: [Tone it down](17%20Tone%20it%20down.md)
 
-[Tone it down](17%20Tone%20it%20down.md)
-
-## Next
-
-[ADSR](19%20ADSR.md)
+##### Next: [ADSR](19%20ADSR.md)

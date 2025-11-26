@@ -71,10 +71,6 @@ Let's write a function that calculates _bacterial population_ - how many bacteri
 {"inputs": [50, 3], "expected": 400}]
 -->
 
-## Back
+##### Back: [Repetitions](5%20Repetitions.md)
 
-[Repetitions](5%20Repetitions.md)
-
-## Next
-
-[Lists](7%20Lists.md)
+##### Next: [Lists](7%20Lists.md)

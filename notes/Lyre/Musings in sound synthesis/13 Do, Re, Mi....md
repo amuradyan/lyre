@@ -33,10 +33,6 @@ const DoReMi = [[261.63, 1], [293.66, 1], [329.63, 1]];
 sequence(???);
 ```
 
-## Back
+##### Back: [Play me something!](../Off%20we%20go/12%20Play%20me%20something!.md)
 
-[Play me something!](../Off%20we%20go/12%20Play%20me%20something!.md)
-
-## Next
-
-[That clicking sound](14%20That%20clicking%20sound.md)
+##### Next: [That clicking sound](14%20That%20clicking%20sound.md)
