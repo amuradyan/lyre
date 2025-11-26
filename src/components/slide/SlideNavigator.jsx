@@ -79,26 +79,92 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose }) {
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        if (visibleSlides.length === 0) return;
+
+        if (slidesWithIndex.length === 0) return;
+
+        let targetSlide;
 
         if (focusedIndex === null) {
-          const currentIdx = visibleSlides.findIndex(s => s.index === currentIndex);
-          setFocusedIndex(currentIdx >= 0 ? currentIdx : 0);
+          targetSlide = slidesWithIndex.find(s => s.index === currentIndex) || slidesWithIndex[0];
         } else {
-          const nextIdx = (focusedIndex + 1) % visibleSlides.length;
-          setFocusedIndex(nextIdx);
+          const visibleSlides = getVisibleSlides();
+          const currentFocused = visibleSlides[focusedIndex];
+
+          if (!currentFocused) return;
+
+          const globalIdx = slidesWithIndex.findIndex(s => s.index === currentFocused.index);
+
+          if (globalIdx < slidesWithIndex.length - 1) {
+            targetSlide = slidesWithIndex[globalIdx + 1];
+          } else {
+            return;
+          }
         }
+
+        const pathParts = targetSlide.path.split('/');
+        const targetFolder = pathParts.length > 3 ? pathParts[pathParts.length - 2] : 'Other';
+
+        setExpandedFolders(prev => {
+          const newExpanded = { ...prev, [targetFolder]: true };
+
+          const newVisibleSlides = [];
+          Object.entries(groupedSlides).forEach(([folder, slides]) => {
+            if (newExpanded[folder]) {
+              slides.forEach(slide => newVisibleSlides.push(slide));
+            }
+          });
+
+          const newIdx = newVisibleSlides.findIndex(s => s.index === targetSlide.index);
+          if (newIdx >= 0) {
+            setFocusedIndex(newIdx);
+          }
+
+          return newExpanded;
+        });
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        if (visibleSlides.length === 0) return;
+
+        if (slidesWithIndex.length === 0) return;
+
+        let targetSlide;
 
         if (focusedIndex === null) {
-          const currentIdx = visibleSlides.findIndex(s => s.index === currentIndex);
-          setFocusedIndex(currentIdx >= 0 ? currentIdx : visibleSlides.length - 1);
+          targetSlide = slidesWithIndex.find(s => s.index === currentIndex) || slidesWithIndex[slidesWithIndex.length - 1];
         } else {
-          const prevIdx = focusedIndex === 0 ? visibleSlides.length - 1 : focusedIndex - 1;
-          setFocusedIndex(prevIdx);
+          const visibleSlides = getVisibleSlides();
+          const currentFocused = visibleSlides[focusedIndex];
+
+          if (!currentFocused) return;
+
+          const globalIdx = slidesWithIndex.findIndex(s => s.index === currentFocused.index);
+
+          if (globalIdx > 0) {
+            targetSlide = slidesWithIndex[globalIdx - 1];
+          } else {
+            return;
+          }
         }
+
+        const pathParts = targetSlide.path.split('/');
+        const targetFolder = pathParts.length > 3 ? pathParts[pathParts.length - 2] : 'Other';
+
+        setExpandedFolders(prev => {
+          const newExpanded = { ...prev, [targetFolder]: true };
+
+          const newVisibleSlides = [];
+          Object.entries(groupedSlides).forEach(([folder, slides]) => {
+            if (newExpanded[folder]) {
+              slides.forEach(slide => newVisibleSlides.push(slide));
+            }
+          });
+
+          const newIdx = newVisibleSlides.findIndex(s => s.index === targetSlide.index);
+          if (newIdx >= 0) {
+            setFocusedIndex(newIdx);
+          }
+
+          return newExpanded;
+        });
       } else if (e.key === 'Enter' && focusedIndex !== null) {
         e.preventDefault();
         const focusedSlide = visibleSlides[focusedIndex];
