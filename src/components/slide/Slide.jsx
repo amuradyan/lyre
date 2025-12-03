@@ -57,6 +57,7 @@ function joinUrlFs(path) {
 
 export default function SlideExperimental({ initialMarkdownPath }) {
   const [mdPath, setMdPath] = useState(initialMarkdownPath);
+  const [displayPath, setDisplayPath] = useState(initialMarkdownPath);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -102,15 +103,18 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   const handleBrowserNavigation = useCallback((event) => {
     if (event.state && event.state.slidePath) {
       setMdPath(event.state.slidePath);
+      setDisplayPath(event.state.slidePath);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (window.location.hash) {
       const slug = window.location.hash.slice(1);
       const pathFromSlug = slugToPath(slug);
       if (pathFromSlug) {
         setMdPath(pathFromSlug);
+        setDisplayPath(pathFromSlug);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (slugToPathMap[slug]) {
         setMdPath(slugToPathMap[slug]);
+        setDisplayPath(slugToPathMap[slug]);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
@@ -129,8 +133,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       const pathFromSlug = slugToPath(slug);
       if (pathFromSlug) {
         setMdPath(pathFromSlug);
+        setDisplayPath(pathFromSlug);
       } else if (slugToPathMap[slug]) {
         setMdPath(slugToPathMap[slug]);
+        setDisplayPath(slugToPathMap[slug]);
       }
     } else if (mdPath) {
       updateUrl(mdPath);
@@ -188,11 +194,11 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      if (!mdPath) return;
+      if (!displayPath) return;
       setLoading(true);
       setError(null);
       try {
-        const url = joinUrlFs(mdPath);
+        const url = joinUrlFs(displayPath);
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
         const text = await res.text();
@@ -205,7 +211,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }
     load();
     return () => { cancelled = true; };
-  }, [mdPath]);
+  }, [displayPath]);
 
   const handleNext = () => {
     const { nextHref } = parsed;
@@ -226,6 +232,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }
 
     setMdPath(nextAbs);
+    setDisplayPath(nextAbs);
     updateUrl(nextAbs);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -249,6 +256,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }
 
     setMdPath(backAbs);
+    setDisplayPath(backAbs);
     updateUrl(backAbs);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -272,6 +280,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }
 
     setMdPath(skipAbs);
+    setDisplayPath(skipAbs);
     updateUrl(skipAbs);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -280,6 +289,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     if (SLIDES.length === 0) return;
     const firstSlide = SLIDES[0].path;
     setMdPath(firstSlide);
+    setDisplayPath(firstSlide);
     updateUrl(firstSlide);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -288,6 +298,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     if (SLIDES.length === 0) return;
     const lastSlide = SLIDES[SLIDES.length - 1].path;
     setMdPath(lastSlide);
+    setDisplayPath(lastSlide);
     updateUrl(lastSlide);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -608,8 +619,12 @@ export default function SlideExperimental({ initialMarkdownPath }) {
           currentIndex={slideIndex?.current}
           onNavigate={(path) => {
             setMdPath(path);
+            setDisplayPath(path);
             updateUrl(path);
             window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onPreview={(path) => {
+            setDisplayPath(path);
           }}
           onClose={() => setNavigatorOpen(false)}
           onHome={() => handleHomeRef.current?.()}

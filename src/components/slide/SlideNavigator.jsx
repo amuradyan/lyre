@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { SLIDES } from '../../config/slides.js';
 
-export default function SlideNavigator({ currentIndex, onNavigate, onClose, onHome, onEnd }) {
+export default function SlideNavigator({ currentIndex, onNavigate, onPreview, onClose, onHome, onEnd }) {
   const [expandedFolders, setExpandedFolders] = useState({});
   const [focusedIndex, setFocusedIndex] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -243,7 +243,9 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose, onHo
       clearTimeout(hoverTimerRef.current);
     }
     hoverTimerRef.current = setTimeout(() => {
-      onNavigate(path);
+      if (onPreview) {
+        onPreview(path);
+      }
     }, 1000);
   };
 
@@ -593,7 +595,7 @@ export default function SlideNavigator({ currentIndex, onNavigate, onClose, onHo
                 </span>
                 {folder} / {slides.length}
               </div>
-              {expandedFolders[folder] && slides.map((slide, slideIdx) => {
+              {expandedFolders[folder] && slides.map((slide) => {
                 const isCurrent = slide.index === currentIndex;
                 const visibleSlides = getVisibleSlides();
                 const isFocused = focusedIndex !== null && visibleSlides[focusedIndex]?.index === slide.index;
