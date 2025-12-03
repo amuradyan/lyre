@@ -14,6 +14,6 @@ And then there is `plucked`. It is not a list, it's not a number and it's mispla
 
 This is what we'll be evaluating: `(envelope (tone 261.63 500) 0.01 0.1 0.7 0.2)`
 
->+ We can fix this by extending the third rule to also handle the case when it's not a list, not /yet/ a number, and look it up in the Synth, but that would force us into a messy partial implementation of something we'll do properly along the way.
+>+ We can 'fix' this by extending the third rule to also handle the case when it's not a list, not /yet/ a number, and look it up in the Synth, but that would force us into a messy partial implementation of something we'll do properly along the way.
 
 ##### Back: [Tokenize again](40%20Tokenize%20again.md)
