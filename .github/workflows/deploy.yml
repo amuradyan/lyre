@@ -31,4 +31,4 @@ jobs:
 
       - name: Deploy to Amazon Server
         run: |
-          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=accept-new" dist/ ${{ secrets.USERNAME }}@${{ secrets.REMOTE_HOST }}:/var/www/lyre/
+          scp -r -o StrictHostKeyChecking=no dist/* ${{ secrets.USERNAME }}@${{ secrets.REMOTE_HOST }}:/var/www/lyre/
