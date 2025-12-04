@@ -12,8 +12,7 @@ const {interpret} = Interpreter;
 
 const play = function(code) {
   const tokens = ???(code);  // #! tokenize the code into a list
-  // tokenize returns a list containing the expression, extracting it with [0]
-  const generator = ???(tokens[0]);  // #! interpret the list into a sound generator
+  const generator = ???(tokens);  // #! interpret the list into a sound generator
   return generator;
 };
 
@@ -39,7 +38,9 @@ function tokenize(input) {
     current.push(token);
   }
 
-  return expressions.pop();
+  const result = expressions.pop();
+  // ! Tokenize returns a list containing the expression, extract it with [0]
+  return result[0];
 }
 ```
 
@@ -151,6 +152,6 @@ function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {
 }
 ```
 
->+ We use `tokens[0]` assuming the list has exactly one expression. If there's more than one element, something went wrong in tokenization - but we're assuming correct input for now and will handle error cases later.
+>+ The action is in `Tokenizer` - we extract the first element from the list that `expressions.pop()` returns. If tokenization is correct, there's exactly one expression. If there's more than one, something went wrong - but we're assuming correct input for now and will handle error cases later.
 
 ##### Back: [What next?](45%20What%20next.md)
