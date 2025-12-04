@@ -96,3 +96,5 @@ function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {
 >+ Switch cases use strict equality by default - `case "tone"` checks if operator is exactly the string `"tone"`. In JS, we have two equality operators: `==` /loose/ and `===` /strict/. The strict version `===` checks both value and type, while `==` converts types before comparing. We'll use `===` from now on.
 
 ##### Back: [Status quo](43%20Status%20quo.md)
+
+##### Next: [What next?](45%20What%20next.md)
