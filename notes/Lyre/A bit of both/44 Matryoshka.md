@@ -13,7 +13,7 @@ const interpret = function(expression) {
     return ???(expression); // #! turn it into a decimal with `parseFloat`
   } else { // it's a list, evaluate as expression
     // Rule 1: extract operator and operands
-    const [operator, ...operands] = expression;
+    const [operator, ...???] = expression;
 
     // Rule 3: evaluate each operand
     const evaluated = [];
@@ -21,7 +21,7 @@ const interpret = function(expression) {
       if (???) {  // #! Check if operand is a string
         evaluated.push(???(operand));
       } else {
-        evaluated.push(???);  // #! What evaluates a list expression?
+        evaluated.push(???(???));  // #! We shall `interpret` it then
       }
     }
 
@@ -93,6 +93,6 @@ function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {
 }
 ```
 
->+ Switch cases use strict equality by default - `case "tone"` checks if operator is exactly the string `"tone"`. In JS, we have two equality operators: `==` /loose/ and `===` /strict/. The strict version `===` checks both value and type, while `==` converts types before comparing. We'll use `===` for explicit equality checks.
+>+ Switch cases use strict equality by default - `case "tone"` checks if operator is exactly the string `"tone"`. In JS, we have two equality operators: `==` /loose/ and `===` /strict/. The strict version `===` checks both value and type, while `==` converts types before comparing. We'll use `===` from now on.
 
 ##### Back: [Status quo](43%20Status%20quo.md)
