@@ -7,7 +7,7 @@ import TabbedCodeblock from './codeblock/TabbedCodeblock.jsx';
 import { loadCodeBlock } from '../../utils/slideStorage.js';
 import { parseMarkdown } from '../../utils/markdownParser.js';
 import SlideNavigator from './SlideNavigator.jsx';
-import KeyboardShortcutsModal from './KeyboardShortcutsModal.jsx';
+import InfoPlaque from './KeyboardShortcutsModal.jsx';
 import { SLIDES } from '../../config/slides.js';
 
 function CollapsibleParagraph({ content }) {
@@ -633,7 +633,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
         document.body
       )}
       {helpModalOpen && createPortal(
-        <KeyboardShortcutsModal
+        <InfoPlaque
           onClose={() => setHelpModalOpen(false)}
         />,
         document.body

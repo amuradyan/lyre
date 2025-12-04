@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export default function KeyboardShortcutsModal({ onClose }) {
+export default function InfoPlaque({ onClose }) {
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
@@ -116,7 +116,7 @@ export default function KeyboardShortcutsModal({ onClose }) {
             color: '#374151'
           }}
         >
-          Keyboard Shortcuts
+          Info
         </div>
 
         <div style={{ padding: '20px', borderBottom: '1px solid rgba(0, 0, 0, 0.1)' }}>
@@ -199,6 +199,29 @@ export default function KeyboardShortcutsModal({ onClose }) {
             <div className="shortcut-row">
               <div className="shortcut-key">Click</div>
               <div className="shortcut-desc">Select slide</div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ padding: '20px', borderBottom: '1px solid rgba(0, 0, 0, 0.1)' }}>
+          <div
+            style={{
+              fontFamily: 'Nunito, sans-serif',
+              fontSize: '13px',
+              fontWeight: 700,
+              color: '#6366f1',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              marginBottom: '12px'
+            }}
+          >
+            Code Editor
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+            <div className="shortcut-row">
+              <div className="shortcut-key">Esc Esc Esc</div>
+              <div className="shortcut-desc">Unfocus editor</div>
             </div>
           </div>
         </div>

@@ -34,6 +34,29 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
 
+    let escapeCount = 0;
+    let lastEscapeTime = 0;
+
+    editor.onKeyDown((e) => {
+      if (e.keyCode === monaco.KeyCode.Escape) {
+        const now = Date.now();
+        if (now - lastEscapeTime > 500) {
+          escapeCount = 0;
+        }
+        escapeCount++;
+        lastEscapeTime = now;
+
+        if (escapeCount === 3) {
+          e.preventDefault();
+          editor.getContainerDomNode().blur();
+          document.activeElement?.blur();
+          escapeCount = 0;
+        }
+      } else {
+        escapeCount = 0;
+      }
+    });
+
     if (onCtrlClick) {
       editor.onMouseDown((e) => {
         if ((e.event.ctrlKey || e.event.metaKey) && e.target.position) {
