@@ -3,10 +3,14 @@
 
 We can play single tones with envelopes. Now let's play multiple notes one after another - a sequence.
 
-The `sequence` function in the synth takes multiple sound generators and yields from each in turn using `yield*`. Your job is to add the "sequence" case to the interpreter.
+Three things to do:
+
+- update the tokenizer to handle all whitespace - treat `\n`, `\t`, `\r`, etc. like spaces, so we can have nicer formatting in Lyre
+- write the Lyre expression using `sequence` to play Do-Re-Mi
+- add the "sequence" case to the interpreter. The synth already has `sequence` - it yields from each generator in turn using `yield*`.
 
 <!-- playable -->
-```js:App
+```js:DoReMi
 const {tokenize} = Tokenizer;
 const {interpret} = Interpreter;
 
@@ -20,7 +24,7 @@ const DoReMi = `
   (envelope
     (???
       (tone 261.63 500) (tone 293.66 500) (tone 329.63 500))
-    0.01 0.1 0.7 0.2)`;
+    0.01 0.1 0.7 0.2)`;  // #! It's the name of the slide
 
 (function* () {
   yield* play(DoReMi);
@@ -57,7 +61,9 @@ function process(symbol, token, expressions) {
       expressions.push([]);
       return ["", expressions];
     case " ":
-    case ???:  // #! the new line is "/n"
+    case ???:  // #! new line is "\n"
+    case "\t":  // tab
+    case "\r":  // carriage return
       if (token != "") {
         current.push(token);
       }
@@ -101,8 +107,8 @@ function interpret(expression) {
       case "envelope":
         const [source, attackTime, decayTime, sustainLevel, releaseTime] = evaluated;
         return envelope(source, attackTime, decayTime, sustainLevel, releaseTime);
-      case "sequence":  // #! add the "sequence" case
-        return sequence(...evaluated);  // #! call sequence with all evaluated operands
+      case "???":  // #! add the "sequence" case
+        return sequence(...???);  // #! call sequence with all _evaluated_ operands
     }
   }
 }
