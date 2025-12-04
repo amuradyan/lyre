@@ -21,6 +21,8 @@ Now all operands are evaluated. Apply Rule 2: `"envelope"` references `Synth.env
 
     ["envelope", sound generator, 0.01, 0.1, 0.7, 0.2] → envelope(sound generator, 0.01, 0.1, 0.7, 0.2) → enveloped sound
 
-This enveloped sound is the _value_ of our expression - what it evaluates to. Now let's implement this evaluation process.
+This enveloped sound is the _value_ of our expression - what it evaluates to.
 
 ##### Back: [Nested expressions](41%20Nested%20expressions.md)
+
+##### Next: [Status quo](43%20Status%20quo.md)
