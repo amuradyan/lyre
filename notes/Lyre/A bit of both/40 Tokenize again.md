@@ -56,56 +56,6 @@ function process(symbol, token, expressions) {
 {"inputs": ["(envelope (tone 261.63 500) plucked)"], "expected": [["envelope", ["tone", "261.63", "500"], "plucked"]]}]}
 -->
 
-```js:Synth
-const samplingRate = 44100;
-
-function* oscillate(frequency) {
-  let phase = 0;
-  const phaseIncrement = (2 * Math.PI * frequency) / samplingRate;
-
-  while (true) {
-    yield Math.sin(phase);
-    phase = phase + phaseIncrement;
-  }
-}
-
-function adjustAmplitude(n, totalSamples, adsr) {
-  const [attackTime, decayTime, sustainLevel, releaseTime] = adsr;
-  const attackSamples = attackTime * samplingRate;
-  const releaseSamples = releaseTime * samplingRate;
-  const decaySamples = decayTime * samplingRate;
-
-  if (n < attackSamples) {
-    return (n + 1) / attackSamples;
-  } else if (n < attackSamples + decaySamples) {
-    const decayProgress = (n - attackSamples) / decaySamples;
-    return 1 - (1 - sustainLevel) * decayProgress;
-  } else if (n >= totalSamples - releaseSamples) {
-    const releaseProgress = (totalSamples - n - 1) / releaseSamples;
-    return sustainLevel * releaseProgress;
-  } else {
-    return sustainLevel
-  }
-}
-
-function* tone(frequency, duration) {
-  const totalSamples = duration * samplingRate;
-  const osc = oscillate(frequency);
-
-  for (let n = 0; n < totalSamples; n = n + 1) {
-    const sample = osc.next().value;
-    yield [sample, n, totalSamples];
-  }
-}
-
-function* envelope(source, adsr) {
-  for (const [sample, n, totalSamples] of source) {
-    const amplitude = adjustAmplitude(n, totalSamples, adsr);
-    yield sample * amplitude;
-  }
-}
-```
-
 Awesome! How do we evaluate this now?
 
 ##### Back: [Stacking expressions](39%20Stacking%20expressions.md)
