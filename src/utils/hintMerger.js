@@ -4,7 +4,8 @@ function extractTokens(line) {
 }
 
 function calculateSimilarity(originalTokens, editedTokens) {
-  if (originalTokens.length === 0) return 1;
+  if (originalTokens.length === 0 && editedTokens.length === 0) return 1;
+  if (originalTokens.length === 0 || editedTokens.length === 0) return 0;
 
   const matchCount = originalTokens.filter(token => editedTokens.includes(token)).length;
   return matchCount / originalTokens.length;

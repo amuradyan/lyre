@@ -1,9 +1,9 @@
-# Playing Lyre
-<!-- slide-id: a0f4e70c-09a7-42a4-b324-da45cbf49f4c -->
+# Sequence
+<!-- slide-id: 1039f9e5-95a8-448d-84b8-452fcdfba4f1 -->
 
-We have tokenizer, interpreter, synth - all the pieces ready. Let's connect them.
+We can play single tones with envelopes. Now let's play multiple notes one after another - a sequence.
 
-We need a `play` function that takes Lyre code as a string and turns it into a sound generator. The flow is simple: tokenize the code into a list, then interpret that list into a generator.
+The `sequence` function in the synth takes multiple sound generators and yields from each in turn using `yield*`. Your job is to add the "sequence" case to the interpreter.
 
 <!-- playable -->
 ```js:App
@@ -11,13 +11,19 @@ const {tokenize} = Tokenizer;
 const {interpret} = Interpreter;
 
 const play = function(code) {
-  const tokens = ???(code);  // #! tokenize the code into a list
-  const generator = ???(tokens);  // #! interpret the list into a sound generator
+  const tokens = tokenize(code);
+  const generator = interpret(tokens);
   return generator;
 };
 
+const DoReMi = `
+  (envelope
+    (???
+      (tone 261.63 500) (tone 293.66 500) (tone 329.63 500))
+    0.01 0.1 0.7 0.2)`;
+
 (function* () {
-  yield* play("(envelope (tone 261.63 500) 0.01 0.1 0.7 0.2)");
+  yield* play(DoReMi);
 })();
 ```
 
@@ -29,8 +35,7 @@ function tokenize(input) {
   let expressions = [[]];
 
   for (const symbol of input) {
-    // #! process the symbol
-    [token, expressions] = ???(symbol, token, expressions);
+    [token, expressions] = process(symbol, token, expressions);
   }
 
   if (token != "") {
@@ -39,7 +44,6 @@ function tokenize(input) {
   }
 
   const result = expressions.pop();
-  // ! Tokenize returns a list containing the expression, extract it with [0]
   return result[0];
 }
 ```
@@ -53,6 +57,7 @@ function process(symbol, token, expressions) {
       expressions.push([]);
       return ["", expressions];
     case " ":
+    case ???:  // #! the new line is "/n"
       if (token != "") {
         current.push(token);
       }
@@ -72,7 +77,7 @@ function process(symbol, token, expressions) {
 ```
 
 ```js:Interpreter
-const {tone, envelope} = Synth;
+const {tone, envelope, sequence} = Synth;
 
 function interpret(expression) {
   if (typeof expression === 'string') {
@@ -96,6 +101,8 @@ function interpret(expression) {
       case "envelope":
         const [source, attackTime, decayTime, sustainLevel, releaseTime] = evaluated;
         return envelope(source, attackTime, decayTime, sustainLevel, releaseTime);
+      case "sequence":  // #! add the "sequence" case
+        return sequence(...evaluated);  // #! call sequence with all evaluated operands
     }
   }
 }
@@ -150,10 +157,12 @@ function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {
     yield sample * amplitude;
   }
 }
+
+function* sequence(...generators) {
+  for (const generator of generators) {
+    yield* generator;
+  }
+}
 ```
 
->+ The action is in `Tokenizer` - we extract the first element from the list that `expressions.pop()` returns. If tokenization is correct, there's exactly one expression. If there's more than one, something went wrong - but we're assuming correct input for now and will handle error cases later.
-
-##### Back: [What next?](45%20What%20next.md)
-
-##### Next: [Sequence](47%20Sequence.md)
+##### Back: [Playing Lyre](46%20Playing%20Lyre.md)
