@@ -6,7 +6,7 @@ We have tokenizer, interpreter, synth - all the pieces ready. Let's connect them
 We need a `play` function that takes Lyre code as a string and turns it into a sound generator. The flow is simple: tokenize the code into a list, then interpret that list into a generator.
 
 <!-- playable -->
-```js:App
+```js:C4
 const {tokenize} = Tokenizer;
 const {interpret} = Interpreter;
 
