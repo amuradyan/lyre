@@ -1,7 +1,7 @@
 # Matryoshka 🪆
 <!-- slide-id: d203236e-b81b-4526-90d0-9154e7c666e6 -->
 
-We have `["envelope", ["tone", 261.63, 500], 0.01, 0.1, 0.7, 0.2]` with a `tone` nested inside. When we evaluate the operands, we check each one: if it's a number, convert it; if it's a list, evaluate it as an expression. Let's implement this.
+We need to handle any operator, and when we see a list as an operand, evaluate it too. Our tokenizer produces string numbers like `"261.63"` and lists. To check if something is a string, we use `typeof expression === 'string'`. Let's implement this.
 
 <!-- playable -->
 ```js:Interpreter
@@ -9,30 +9,30 @@ const {tone, envelope} = Synth;
 
 const interpret = function(expression) {
   // Rule 3: check if expression is a string number
-  if (typeof expression === 'string') {
-    return parseFloat(expression);
-  } else {
-    // it's a list, evaluate as expression
-
+  if (typeof expression === 'string') { // `typeof` checks the type
+    return ???(expression); // #! turn it into a decimal with `parseFloat`
+  } else { // it's a list, evaluate as expression
     // Rule 1: extract operator and operands
     const [operator, ...operands] = expression;
 
     // Rule 3: evaluate each operand
     const evaluated = [];
     for (const operand of operands) {
-      if (typeof operand === 'string') {
-        evaluated.push(parseFloat(operand));
+      if (???) {  // #! Check if operand is a string
+        evaluated.push(???(operand));
       } else {
-        evaluated.push(interpret(operand));
+        evaluated.push(???);  // #! What evaluates a list expression?
       }
     }
 
     // Rule 2: operators reference synth functions
-    switch (operator) {
+    ??? (operator) {  // #! `switch` over the known words
       case "tone":
-        return tone(evaluated[0], evaluated[1]);
+        const [frequency, duration] = evaluated;  // #! Extract frequency and duration
+        return ???; // #! tone duration is in milliseconds, right?
       case "envelope":
-        return envelope(evaluated[0], evaluated[1], evaluated[2], evaluated[3], evaluated[4]);
+        const ??? = evaluated;  // #! Extract source and ADSR values
+        return envelope(???, ???, ???, ???, ???);
     }
   }
 };
@@ -92,5 +92,7 @@ function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {
   }
 }
 ```
+
+>+ Switch cases use strict equality by default - `case "tone"` checks if operator is exactly the string `"tone"`. In JS, we have two equality operators: `==` /loose/ and `===` /strict/. The strict version `===` checks both value and type, while `==` converts types before comparing. We'll use `===` for explicit equality checks.
 
 ##### Back: [Status quo](43%20Status%20quo.md)
