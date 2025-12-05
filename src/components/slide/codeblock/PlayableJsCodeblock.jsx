@@ -104,6 +104,20 @@ export default function PlayableJsCodeblock({ code, readOnly = false, slideId, b
     checkCompilation();
   }, [userCode]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'p' && canPlay) {
+        e.preventDefault();
+        handlePlayPause();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handlePlayPause, canPlay]);
+
   return (
     <div className="bg-white/70 backdrop-blur shadow-sm overflow-hidden relative">
       <CodeEditor

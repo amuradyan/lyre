@@ -281,6 +281,22 @@ export default function TabbedCodeblock({ blocks, savedCodes, groupPlayable, sli
     setTabErrors(errors);
   }, [displayCode, blocks]);
 
+  useEffect(() => {
+    if (!hasPlayableTab) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'p' && canPlay) {
+        e.preventDefault();
+        handlePlayPause();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handlePlayPause, canPlay, hasPlayableTab]);
+
   return (
     <div style={{ marginTop: '2vh' }}>
       <div style={{

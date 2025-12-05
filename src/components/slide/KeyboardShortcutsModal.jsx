@@ -223,6 +223,11 @@ export default function InfoPlaque({ onClose }) {
               <div className="shortcut-key">Esc Esc Esc</div>
               <div className="shortcut-desc">Unfocus editor</div>
             </div>
+
+            <div className="shortcut-row">
+              <div className="shortcut-key">p</div>
+              <div className="shortcut-desc">Play/pause playable code</div>
+            </div>
           </div>
         </div>
 

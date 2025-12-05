@@ -333,6 +333,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       } else if (e.key === '/') {
         e.preventDefault();
         setNavigatorOpen(prev => !prev);
+      } else if (e.key === 'p') {
+        return;
       }
     };
 
