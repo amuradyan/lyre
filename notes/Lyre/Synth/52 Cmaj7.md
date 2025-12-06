@@ -1,7 +1,9 @@
 # Cmaj7
 <!-- slide-id: aa83b7cc-de65-4417-b00f-f4ac9fb804b0 -->
 
-Let's implement `parallel`. The idea is simple: pull a sample from each generator, add them up, yield the sum. Repeat until all generators are exhausted.
+Let's implement `parallel`. We'll test it with a Cmaj7 chord - C, E, G, and B played together, a jazz staple.
+
+The idea is simple: pull a sample from each generator, add them up, yield the sum. Repeat until all generators are exhausted.
 
 When one tone ends before others, we keep going - the finished generator contributes nothing, the rest continue. This pads with silence naturally.
 
