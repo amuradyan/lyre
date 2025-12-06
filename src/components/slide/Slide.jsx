@@ -159,6 +159,12 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     return { current: currentIndex, total: SLIDES.length };
   }, [mdPath]);
 
+  const currentChapter = useMemo(() => {
+    if (!mdPath) return null;
+    const slide = SLIDES.find(s => mdPath.endsWith(s.path.replace('./notes/Lyre/', '')));
+    return slide?.chapter || null;
+  }, [mdPath]);
+
   const allTestsPassing = useMemo(() => {
     const codeBlocksWithTests = parsed.content?.filter(block =>
       (block.type === 'codeblock' && block.testComment) ||
@@ -414,7 +420,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       {!loading && !error && (
         <div className="px-6 sm:px-10 md:px-16">
           {parsed.title && (
-            <h1 className="text-3xl font-bold text-left mb-8">{parsed.title}</h1>
+            <h1 className="text-3xl font-bold text-left mb-8">
+              {parsed.title}
+              {currentChapter && <span className="text-gray-400 text-base font-normal"> / {currentChapter}</span>}
+            </h1>
           )}
           <div className="space-y-6 text-left">
             {(() => {
