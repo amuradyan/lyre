@@ -9,12 +9,13 @@ This is called _superposition_ - waves pass through each other, and at every ins
 
 ![Two sine waves and their sum](https://www.acs.psu.edu/drussell/demos/superposition/beats.gif)
 
-Let's look at concrete numbers. This particular case shows that silence does not affect the other wave. Say we have two sine waves sampled at 4 Hz, both 1 second long. The resulting wave would be the the not-silence:
+Let's look at concrete numbers. Say we have two sine waves sampled at 4 Hz, both 1 second long. When one is silence, the result is just the other wave - silence contributes nothing. When both waves are identical, they add up to double the amplitude, making the sound louder:
 
 ```plain
       Wave 1 /1 Hz/      |      Wave 2 /2 Hz/      |        Combined
 -----------------------------------------------------------------------------
  `[0.0, 1.0, 0.0, -1.0]` | `[0.0, 0.0, 0.0, 0.0]`  | `[0.0, 1.0, 0.0, -1.0]`
+ `[0.0, 1.0, 0.0, -1.0]` | `[0.0, 1.0, 0.0, -1.0]` | `[0.0, 2.0, 0.0, -2.0]`
 ```
 
 This is how chords and overtones should work. A C major chord is C + E + G - three sine waves at 261.63 Hz, 329.63 Hz, and 392.00 Hz, added together sample by sample. A plucked string produces its fundamental frequency plus harmonics at 2x, 3x, 4x that frequency. What we hear is the sum of all these components.
