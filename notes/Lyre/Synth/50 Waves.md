@@ -7,7 +7,7 @@ Physically, when two sound waves meet in air, their amplitudes add at each point
 
 This is called _superposition_ - waves pass through each other, and at every instant, the total displacement is just the sum of individual displacements.
 
-![Two sine waves and their sum](https://www.acs.psu.edu/drussell/demos/superposition/beats.gif)
+![wave-superposition]()
 
 Let's look at concrete numbers. Say we have two sine waves sampled at 4 Hz, both 1 second long. When one is silence, the result is just the other wave - silence contributes nothing. When both waves are identical, they add up to double the amplitude, making the sound louder:
 

@@ -48,7 +48,7 @@ const isCollapsible = (line) => /^>\+\s+/.test(line.trim());
 const isBlockquote = (line) => /^\s*>\s+/.test(line) && !isCollapsible(line);
 const isIndentedContent = (line) => /^\s{4,}/.test(line) || /^\t{2,}/.test(line);
 const isHorizontalRule = (line) => /^-{4,}\s*$/.test(line.trim());
-const isImage = (line) => /^!\[([^\]]*)\]\(([^)]+)\)\s*$/.test(line.trim());
+const isImage = (line) => /^!\[([^\]]*)\]\(([^)]*)\)\s*$/.test(line.trim());
 
 const createParagraph = (lines) => {
   if (!lines.length) return null;
@@ -103,8 +103,17 @@ const extractIndentedContent = (line) => {
 };
 
 const extractImage = (line) => {
-  const match = line.trim().match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
-  return match ? { alt: match[1], src: match[2] } : null;
+  const match = line.trim().match(/^!\[([^\]]*)\]\(([^)]*)\)$/);
+  if (!match) return null;
+
+  const alt = match[1];
+  const src = match[2];
+
+  if (alt === 'wave-superposition') {
+    return { type: 'wave-superposition' };
+  }
+
+  return { type: 'image', alt, src };
 };
 
 const parseFenceLanguage = (languageString) => {
@@ -477,7 +486,7 @@ const processLine = (lines) => (state, line, index) => {
       const flushed = flushAll(state);
       return {
         ...flushed,
-        content: [...flushed.content, { type: 'image', alt: image.alt, src: image.src }]
+        content: [...flushed.content, image]
       };
     }
   }

@@ -9,6 +9,7 @@ import { parseMarkdown } from '../../utils/markdownParser.js';
 import SlideNavigator from './SlideNavigator.jsx';
 import InfoPlaque from './KeyboardShortcutsModal.jsx';
 import { SLIDES } from '../../config/slides.js';
+import WaveSuperposition from './WaveSuperposition.jsx';
 
 function CollapsibleParagraph({ content }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -461,6 +462,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                   return <HeaderTag key={i} className={headerClass} dangerouslySetInnerHTML={{ __html: item.text }} />;
                 } else if (item.type === 'hr') {
                   return <hr key={i} className="border-gray-300 my-6" />;
+                } else if (item.type === 'wave-superposition') {
+                  return <WaveSuperposition key={i} />;
                 } else if (item.type === 'image') {
                   const resolveImagePath = (src) => {
                     if (src.startsWith('http://') || src.startsWith('https://')) {
