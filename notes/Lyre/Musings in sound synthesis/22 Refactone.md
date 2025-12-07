@@ -1,5 +1,6 @@
 # Refactone
 <!-- slide-id: 84aa1f38-2f78-4d79-a71f-ee60c0f981cd -->
+<!-- tags: refactoring, architecture -->
 
 This looks too long, right? Let us break it down line-by line.
 

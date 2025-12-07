@@ -1,5 +1,6 @@
 # Tone it down
 <!-- slide-id: 1716a5bd-881e-461a-8b2b-ae4d2ac82354 -->
+<!-- tags: exercise, fades, tone -->
 
 <!-- playable -->
 ```javascript:Tone

@@ -1,5 +1,6 @@
 # A good run
 <!-- slide-id: 9de20e6f-ca65-4214-9d80-983b86e9f71d -->
+<!-- tags: summary, synth -->
 
 We've connected all the pieces. We can now write Lyre code as strings, tokenize it into lists, interpret those lists into sound generators, and stream the results to audio. The full pipeline works - from code to sound.
 

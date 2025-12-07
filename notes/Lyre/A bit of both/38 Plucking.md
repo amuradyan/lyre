@@ -1,5 +1,6 @@
 # Plucking
 <!-- slide-id: b0baaa33-4a2a-403a-affc-3b1141b979b9 -->
+<!-- tags: nesting, scope -->
 
 Now let's take care of the envelope. First, let's see how we would write that in Lyre. It's up to us as long as we keep the `(pull curtains down)` format. We can do what we do in JS by moving the parens around - `(envelope (tone 261.63 500) plucked)`. This immediately poses a problem - _the nested parens_, and here's where the `)` comes into play.
 

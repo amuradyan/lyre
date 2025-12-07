@@ -1,5 +1,6 @@
 # Waveform shape
 <!-- slide-id: fb141ed3-273a-4d84-84b8-ffc3db7efc28 -->
+<!-- tags: waveforms, harmonics, timbre -->
 
 We've given our sound the envelope of a plucked string, but it still doesn't sound like a lyre. The ADSR profile controls how the volume changes over time, but that's only half the story. The other half is the waveform itself - the actual shape of the vibration that produces the sound. Below are the _fundamental_ waveforms in synthesis:
 

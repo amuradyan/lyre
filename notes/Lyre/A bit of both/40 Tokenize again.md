@@ -1,5 +1,6 @@
 # Tokenize again
 <!-- slide-id: 2bc141b2-c470-4598-b8b3-6a14f3ea84cc -->
+<!-- tags: exercise, tokenization, nesting -->
 
 Now let's implement the nested tokenizer. We'll use a list of lists for expressions to track the current expression and its parents - rightmost being the newest child. When we see `(`, we push a new list onto expressions. When we see `)`, we pop the current list and append it to its parent.
 

@@ -1,5 +1,6 @@
 # Tokens
 <!-- slide-id: 24e725ab-8f0c-44cb-a7b0-8f9fd66ca794 -->
+<!-- tags: tokenization, strings -->
 
 To parse code, we first need to break it into meaningful pieces called *tokens*. Think of it like breaking a sentence into words - `"a list of words"` becomes `["a", "list", "of", "words"]`.
 

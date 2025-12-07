@@ -1,5 +1,6 @@
 # Wrapping it up
 <!-- slide-id: 73079e72-2542-40f4-ab71-b2bc130c027d -->
+<!-- tags: exercise, sequence, composition -->
 
 Usually when you play a tune on an instrument, you mostly change the pitch and not timbre. Of course, there are multitimbral instruments and the _pipe organ_ is the primary example of that - capable of producing flutes and reeds and stings simultaneously, but that's not usually the case. For now, we can safely assume that every note in our melody will use the same envelope.
 

@@ -1,5 +1,6 @@
 # Where do I start?
 <!-- slide-id: 3e4b9f1c-7a2d-4c8e-9b5f-1d2c3e4f5a6b -->
+<!-- tags: functions, javascript -->
 
 Well, If I am going to instruct the computer to stream music, I need to know how to make it do anything at all. In JS, to describe the computer its function, we use _functions_. Below is an example of a function that calculates the area of a rectangle given its width and height.
 

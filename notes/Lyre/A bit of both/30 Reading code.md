@@ -1,5 +1,6 @@
 # Reading code
 <!-- slide-id: 3aaf6af9-1be8-41a4-a5ba-9eb646f476d8 -->
+<!-- tags: parsing, lisp, expressions -->
 
 I once read that programs are written mostly to be read by humans and only occasionally executed by machines. Whether that's true or not /it is/, machines still need to read code. But how does a machine read text? How does it make sense of the code?
 

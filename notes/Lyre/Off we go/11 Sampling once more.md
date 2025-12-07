@@ -1,5 +1,6 @@
 # Sampling once more
 <!-- slide-id: 173c5573-0d4c-45e3-9bb9-1cdb99b7a66b -->
+<!-- tags: exercise, generators, tone -->
 
 Our original `tone` function computed all samples and returned them as a list. Here we need to turn it into a _generator_ that does the same as before, but instead of building a list of samples, it should yield them one at a time.
 

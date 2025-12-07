@@ -1,5 +1,6 @@
 # Exercises on loops
 <!-- slide-id: e4e3a452-5dc9-4934-8c75-e849ea941f16 -->
+<!-- tags: exercise, loops -->
 
 Here's the reference loop for summing numbers:
 

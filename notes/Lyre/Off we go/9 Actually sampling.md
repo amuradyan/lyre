@@ -1,5 +1,6 @@
 # Actually sampling
 <!-- slide-id: 93569740-c8b4-49ae-b714-c2138ac80e09 -->
+<!-- tags: exercise, sampling, tone -->
 
 Seems we figured out all the tools we need to actually sample a wave for a given duration, so let's give it a go!
 

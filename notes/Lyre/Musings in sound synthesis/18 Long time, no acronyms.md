@@ -1,5 +1,6 @@
 # Long time, no acronyms
 <!-- slide-id: d1999f6a-103c-4200-8b2b-34220899fbb7 -->
+<!-- tags: adsr, envelope, timbre -->
 
 __ADSR__ /Attack, Decay, Sustain, Release/ is a standard way to shape sound amplitude over time.
 

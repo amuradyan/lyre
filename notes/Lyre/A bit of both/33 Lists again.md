@@ -1,5 +1,6 @@
 # Lists again
 <!-- slide-id: 437fbe48-4b0b-41f8-8e48-594e6709653f -->
+<!-- tags: lisp, expressions, lists -->
 
 We know how to turn a `sentence like this` into a JS list of words, but Lyre, being a Lisp-like language, operates on expressions wrapped in parens like `(move pawn e2e4)`. If we split the expression with spaces, we get words like `"(move"` and `"e2e4)"`. What do we do with the parens? What's the deal with them anyway? Let's talk some Lisp.
 

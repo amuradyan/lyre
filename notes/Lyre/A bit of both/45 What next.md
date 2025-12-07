@@ -1,5 +1,6 @@
 # What next?
 <!-- slide-id: 64f12883-6226-4b5c-a3af-ce10a7ebcdb9 -->
+<!-- tags: pipeline, integration -->
 
 We have three pieces now: a tokenizer that turns Lyre code into lists, an interpreter that evaluates those lists into sound generators, and a synth that turns generators into audio samples. Let's connect them.
 

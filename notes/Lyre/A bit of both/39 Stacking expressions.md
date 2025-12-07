@@ -1,5 +1,6 @@
 # Stacking expressions
 <!-- slide-id: fe9ebaa7-f7ac-4e3e-950a-5a5a72b0c5ee -->
+<!-- tags: nesting, stack, tokenization -->
 
 Let's tokenize `(envelope (tone 261.63 500) plucked)`, by hand once more, and see what happens with nested parens. This time we'll track a _stack_ of expressions - a list of lists where the last one is the current expression we're building.
 

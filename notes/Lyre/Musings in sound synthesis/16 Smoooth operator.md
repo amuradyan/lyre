@@ -1,5 +1,6 @@
 # Smoooth operator
 <!-- slide-id: 8bb2d737-52a8-47d7-aeb2-ce206f8b091d -->
+<!-- tags: exercise, fades, conditionals -->
 
 We can do branching now, let's finish up the `simpleSample`.
 

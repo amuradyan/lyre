@@ -1,5 +1,6 @@
 # If this, then that
 <!-- slide-id: 954aa3e6-a073-4835-a251-3201b70bde26 -->
+<!-- tags: conditionals, if-else -->
 
 Sometimes we want our code to do different things depending on conditions. JavaScript gives us the `if-else` statement for this, and it's stackable. The basic pattern is:
 

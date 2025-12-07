@@ -1,5 +1,6 @@
 # Exercises on lists
 <!-- slide-id: 69203ff3-cca4-4bf1-8cbf-48351b2e6330 -->
+<!-- tags: exercise, lists -->
 
 ```js
 function zip(left, right) {

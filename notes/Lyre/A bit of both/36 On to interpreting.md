@@ -1,5 +1,6 @@
 # On to interpreting
 <!-- slide-id: 80698164-4c62-437d-9a13-292db1661561 -->
+<!-- tags: interpreter, evaluation, rules -->
 
 Here's where we stand: we have a JS engine that can play sounds, and we have a tokenizer that can turn Lyre expressions into lists. What we don't have is the interpreter itself, so let's build one.
 

@@ -1,5 +1,6 @@
 # Sequence
 <!-- slide-id: 1039f9e5-95a8-448d-84b8-452fcdfba4f1 -->
+<!-- tags: exercise, sequence, whitespace -->
 
 We can play single tones with envelopes. Now let's play multiple notes one after another - a sequence.
 

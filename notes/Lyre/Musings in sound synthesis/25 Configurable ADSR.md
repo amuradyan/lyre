@@ -1,5 +1,6 @@
 # Configurable ADSR
 <!-- slide-id: 6fe97db1-831d-4799-bcb8-7fe71335201f -->
+<!-- tags: exercise, adsr, parameters -->
 
 We must make the _ADSR_ parameters configurable, so that `tone` accepts attack, decay, sustain, and release times as individual parameters. This will enable us to create notes with different envelope shapes.
 

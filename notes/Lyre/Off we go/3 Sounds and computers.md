@@ -1,5 +1,6 @@
 # Sounds and computers
 <!-- slide-id: 0486ef29-7d7e-4ff1-861f-dbe252e8046b -->
+<!-- tags: sound, sampling, sine -->
 
 Sound is a wave - vibrations traveling through air.
 

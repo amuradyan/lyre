@@ -1,5 +1,6 @@
 # And action!
 <!-- slide-id: 67d83ba8-647e-4d6c-b6d1-b22118d39feb -->
+<!-- tags: refactoring, extraction -->
 
 ```js
 function* tone(frequency, duration) {

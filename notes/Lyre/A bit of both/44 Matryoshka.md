@@ -1,5 +1,6 @@
 # Matryoshka 🪆
 <!-- slide-id: d203236e-b81b-4526-90d0-9154e7c666e6 -->
+<!-- tags: exercise, interpreter, recursion -->
 
 We need to handle any operator, and when we see a list as an operand, evaluate it too. Our tokenizer produces string numbers like `"261.63"` and lists. To check if something is a string, we use `typeof expression === 'string'`. Let's implement this.
 

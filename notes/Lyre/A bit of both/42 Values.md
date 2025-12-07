@@ -1,5 +1,6 @@
 # Values
 <!-- slide-id: 68d69580-a9bb-41fa-b980-e4fc43055f54 -->
+<!-- tags: evaluation, walkthrough, recursion -->
 
 Here are our evaluation rules:
 

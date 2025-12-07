@@ -1,5 +1,6 @@
 # Playing Lyre
 <!-- slide-id: a0f4e70c-09a7-42a4-b324-da45cbf49f4c -->
+<!-- tags: exercise, integration, play -->
 
 We have tokenizer, interpreter, synth - all the pieces ready. Let's connect them.
 

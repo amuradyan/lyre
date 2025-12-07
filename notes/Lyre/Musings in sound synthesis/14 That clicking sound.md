@@ -1,5 +1,6 @@
 # That clicking sound
 <!-- slide-id: 8bb2d737-52a8-47d7-aeb2-ce206f8b091d -->
+<!-- tags: discontinuity, fades, artifacts -->
 
 Very good! Now we can play a sequence of notes, but immediately we have a problem - the clicking sound when the notes change. This happens because when we stop one note and start the next, the waveform jumps abruptly from whatever sample it was at to zero and then back to whatever sample the next note starts at. One way to fix this is via fading by gradually increasing and decreasing the sample based on where are we in time. Let's break it down on a simpler example.
 

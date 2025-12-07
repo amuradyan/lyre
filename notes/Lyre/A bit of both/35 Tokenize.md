@@ -1,5 +1,6 @@
 # Tokenize
 <!-- slide-id: 9770cb32-df68-46ae-900a-71d37652bb9a -->
+<!-- tags: exercise, tokenization, switch -->
 
 We need two accumulators: one for the current token being built, and one for the list of completed tokens. When we see a regular character, we append it to the token accumulator. When we see a space or a paren, we conclude the current token /if there is one/ and add it to the expression. The `process` function processes individual symbols using a switch statement, while `tokenize` loops through input and delegates to the handler.
 

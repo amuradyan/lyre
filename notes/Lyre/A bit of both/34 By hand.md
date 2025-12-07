@@ -1,5 +1,6 @@
 # By hand
 <!-- slide-id: 3ca5af90-369b-43fc-8e91-f0c8acab3566 -->
+<!-- tags: tokenization, walkthrough, state -->
 
 So, we need to turn a string into a list of strings. Obviously, if the string is empty, the list is empty - this one is easy. What do we do if it's not? We know that string split leaves us with the `(` and the word pinned together, but the `(` has a special meaning and has to be treated accordingly. We can run around after the split and handle the parens, but there's a more elegant way.
 

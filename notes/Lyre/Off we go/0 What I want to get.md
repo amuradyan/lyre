@@ -1,5 +1,6 @@
 # What I want to get?
 <!-- slide-id: f47ac10b-58cc-4372-a567-0e02b2c3d479 -->
+<!-- tags: introduction, vision, lisp -->
 
 Ideally, a path of how to implement a lisp-like language that makes music. I'd like to make it interactive, not boring, and coherent. Possible for anyone to follow the notes through and build the tool, small step at a time, understanding why each one is taken.
 

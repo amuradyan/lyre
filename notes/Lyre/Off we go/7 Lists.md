@@ -1,5 +1,6 @@
 # Lists
 <!-- slide-id: ff7f6da0-f607-4cb5-81eb-43d897e3b847 -->
+<!-- tags: lists, arrays -->
 
 Now that we know how to do something repeatedly, let us get back to our sampling problem. In the previous loop exercises we stored results in single variables. Sound samples, however, are not a single number, but rather a list of numbers.
 

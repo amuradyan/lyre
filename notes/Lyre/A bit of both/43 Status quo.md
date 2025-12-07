@@ -1,5 +1,6 @@
 # Status quo
 <!-- slide-id: 15c25b99-574a-4f65-84de-9fe95556f5df -->
+<!-- tags: interpreter, limitations -->
 
 Our interpreter works for `["tone", "261.63", "500"]`, but it's hardcoded for `tone` only:
 

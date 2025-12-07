@@ -1,5 +1,6 @@
 # Envelope as transform
 <!-- slide-id: bb431905-8335-4f59-af36-235c0c29d59d -->
+<!-- tags: exercise, envelope, transform -->
 
 The `tone` function is doing two distinct jobs: generating waveform /oscillator + duration/ and applying ADSR amplitude shaping. What if pull the latter out and make an envelope out of it? It will take the samples and apply the _adsr_ config. The challenge here is to get the info on _where we are in the sound_ /`n`/ and _the total length_ /`totalSamples`/ to compute when to start the release phase for example. Luckily, we have all the info we need in the `tone`, we just never shared with it. By yielding the total length and current position along with sample /`[sample, n, totalSamples]` in a tuple, we turn `tone` into a comfortable-to-use sound source.
 

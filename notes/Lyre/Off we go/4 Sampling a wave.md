@@ -1,5 +1,6 @@
 # Sampling a wave
 <!-- slide-id: f51a6fdc-fbb4-49ba-b87c-faaf2d545376 -->
+<!-- tags: exercise, sampling, sine -->
 
 `nth sample = A ⋅ sin(2π ⋅ f ⋅ (n / R))`
 

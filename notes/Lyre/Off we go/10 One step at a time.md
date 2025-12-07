@@ -1,5 +1,6 @@
 # One sample at a time
 <!-- slide-id: 39c37da1-b074-4ca6-9a7d-573183f6f664 -->
+<!-- tags: generators, yield, streaming -->
 
 Awesome! We now have a function that can sample a wave for a given duration. However, it computes _all_ the samples first and returns them as a list.
 

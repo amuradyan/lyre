@@ -1,5 +1,6 @@
 # Exercises on strings
 <!-- slide-id: bd9cf0ff-74ba-4352-8c6b-8b3f56266b53 -->
+<!-- tags: exercise, strings -->
 
 Count the characters in a text message to check if it fits within the 160-character SMS limit. Strings have a `.length` property that tells you how many characters they contain.
 

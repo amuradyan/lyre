@@ -1,5 +1,6 @@
 # New look
 <!-- slide-id: d6ad2cfa-0960-45f9-bbcb-fbf9b05764a4 -->
+<!-- tags: architecture, modules, separation -->
 
 Below is a step in that direction.
 

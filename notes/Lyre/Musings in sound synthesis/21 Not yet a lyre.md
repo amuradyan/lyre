@@ -1,5 +1,6 @@
 # Not yet a lyre
 <!-- slide-id: cf365ea7-6567-4b96-ad1e-9d7259aba4af -->
+<!-- tags: exercise, sawtooth, harmonics -->
 
 The mathematical formula for a sawtooth wave is `2 * ((frequency * time) % 1) - 1`. Let's replace our sine wave with a sawtooth and hear the difference.
 

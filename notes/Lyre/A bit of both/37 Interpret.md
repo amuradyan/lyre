@@ -1,5 +1,6 @@
 # Interpret
 <!-- slide-id: 398db218-ab17-49fd-9966-c0cd5952886f -->
+<!-- tags: exercise, interpreter, evaluation -->
 
 Our first version of interpreter is rather simple: check if the operator is `"tone"`, extract the operands, convert them from strings to numbers, and call the synth `tone`.
 

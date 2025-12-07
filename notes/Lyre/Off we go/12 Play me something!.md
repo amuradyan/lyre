@@ -1,5 +1,6 @@
 # Play me something
 <!-- slide-id: e05cba93-44ea-4873-aa46-77936b835f09 -->
+<!-- tags: audio, playback, C4 -->
 
 We've built a generator that produces audio samples one at a time. Now let's actually hear what it sounds like!
 
