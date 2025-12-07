@@ -13,7 +13,7 @@ This is called _superposition_ - waves pass through each other, and at every ins
 Let's look at concrete numbers. Say we have two sine waves sampled at 4 Hz, both 1 second long. When one is silence, the result is just the other wave - silence contributes nothing. When both waves are identical, they add up to double the amplitude, making the sound louder:
 
 ```plain
-      Wave 1 /1 Hz/      |      Wave 2 /2 Hz/      |        Combined
+         Wave 1          |          Wave 2         |        Combined
 -----------------------------------------------------------------------------
  `[0.0, 1.0, 0.0, -1.0]` | `[0.0, 0.0, 0.0, 0.0]`  | `[0.0, 1.0, 0.0, -1.0]`
  `[0.0, 1.0, 0.0, -1.0]` | `[0.0, 1.0, 0.0, -1.0]` | `[0.0, 2.0, 0.0, -2.0]`
