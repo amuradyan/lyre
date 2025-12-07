@@ -4,6 +4,8 @@ export default function WaveSuperposition() {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [phase, setPhase] = useState(0);
+  const [frequency, setFrequency] = useState(1);
+  const [amplitude, setAmplitude] = useState(1);
   const [cursorX, setCursorX] = useState(null);
 
   useEffect(() => {
@@ -21,9 +23,9 @@ export default function WaveSuperposition() {
 
     ctx.clearRect(0, 0, width, height);
 
-    const drawWave = (yOffset, color, phaseShift = 0) => {
-      const amplitude = sectionHeight * 0.24;
-      const frequency = 2;
+    const drawWave = (yOffset, color, phaseShift = 0, freqMultiplier = 1, ampMultiplier = 1) => {
+      const baseAmplitude = sectionHeight * 0.24;
+      const baseFrequency = 2;
       const centerY = yOffset + sectionHeight / 2;
 
       ctx.strokeStyle = color;
@@ -31,8 +33,8 @@ export default function WaveSuperposition() {
       ctx.beginPath();
 
       for (let x = 0; x < width; x++) {
-        const t = (x / width) * Math.PI * 2 * frequency;
-        const y = centerY + amplitude * Math.sin(t + phaseShift);
+        const t = (x / width) * Math.PI * 2 * baseFrequency * freqMultiplier;
+        const y = centerY + baseAmplitude * ampMultiplier * Math.sin(t + phaseShift);
         if (x === 0) {
           ctx.moveTo(x, y);
         } else {
@@ -44,8 +46,8 @@ export default function WaveSuperposition() {
     };
 
     const drawSuperposition = (yOffset) => {
-      const amplitude = sectionHeight * 0.24;
-      const frequency = 2;
+      const baseAmplitude = sectionHeight * 0.24;
+      const baseFrequency = 2;
       const centerY = yOffset + sectionHeight / 2;
 
       ctx.strokeStyle = '#374151';
@@ -53,9 +55,10 @@ export default function WaveSuperposition() {
       ctx.beginPath();
 
       for (let x = 0; x < width; x++) {
-        const t = (x / width) * Math.PI * 2 * frequency;
-        const wave1 = amplitude * Math.sin(t);
-        const wave2 = amplitude * Math.sin(t + phase);
+        const t1 = (x / width) * Math.PI * 2 * baseFrequency;
+        const t2 = (x / width) * Math.PI * 2 * baseFrequency * frequency;
+        const wave1 = baseAmplitude * Math.sin(t1);
+        const wave2 = baseAmplitude * amplitude * Math.sin(t2 + phase);
         const sum = wave1 + wave2;
         const y = centerY + sum;
 
@@ -88,17 +91,18 @@ export default function WaveSuperposition() {
     ctx.fillText('Wave 2', 10, sectionHeight + 25);
     ctx.fillText('Superposition', 10, sectionHeight * 2 + 25);
 
-    drawWave(0, '#9ca3af', 0);
-    drawWave(sectionHeight, '#9ca3af', phase);
+    drawWave(0, '#9ca3af', 0, 1, 1);
+    drawWave(sectionHeight, '#9ca3af', phase, frequency, amplitude);
     drawSuperposition(sectionHeight * 2);
 
     if (cursorX !== null && cursorX >= 0 && cursorX <= width) {
-      const amplitude = sectionHeight * 0.24;
-      const frequency = 2;
+      const baseAmplitude = sectionHeight * 0.24;
+      const baseFrequency = 2;
 
-      const t = (cursorX / width) * Math.PI * 2 * frequency;
-      const wave1Y = amplitude * Math.sin(t);
-      const wave2Y = amplitude * Math.sin(t + phase);
+      const t1 = (cursorX / width) * Math.PI * 2 * baseFrequency;
+      const t2 = (cursorX / width) * Math.PI * 2 * baseFrequency * frequency;
+      const wave1Y = baseAmplitude * Math.sin(t1);
+      const wave2Y = baseAmplitude * amplitude * Math.sin(t2 + phase);
       const sumY = wave1Y + wave2Y;
 
       ctx.setLineDash([5, 5]);
@@ -135,7 +139,7 @@ export default function WaveSuperposition() {
       drawDot(cursorX, sectionHeight * 2 + sectionHeight / 2 + sumY, '#374151');
     }
 
-  }, [phase, cursorX]);
+  }, [phase, frequency, amplitude, cursorX]);
 
   const handleMouseMove = (e) => {
     const canvas = canvasRef.current;
@@ -155,26 +159,57 @@ export default function WaveSuperposition() {
         ref={canvasRef}
         height={200}
         className="w-full bg-transparent"
+        style={{ height: '200px' }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       />
-      <div className="mt-4 flex items-center justify-center gap-4">
-        <label htmlFor="phase-slider" className="text-sm text-gray-700">
-          Phase shift:
-        </label>
-        <input
-          id="phase-slider"
-          type="range"
-          min="0"
-          max={Math.PI * 2}
-          step="0.01"
-          value={phase}
-          onChange={(e) => setPhase(parseFloat(e.target.value))}
-          className="w-1/2"
-        />
-        {/* <span className="text-sm text-gray-600 font-mono w-20">
-          {(phase / Math.PI).toFixed(2)}π
-        </span> */}
+      <div className="mt-4 flex items-center justify-center gap-6">
+        <span className="text-sm text-gray-700">Wave 2:</span>
+        <div className="flex items-center gap-2">
+          <label htmlFor="phase-slider" className="text-sm text-gray-700 whitespace-nowrap">
+            Phase:
+          </label>
+          <input
+            id="phase-slider"
+            type="range"
+            min="0"
+            max={Math.PI * 2}
+            step="0.01"
+            value={phase}
+            onChange={(e) => setPhase(parseFloat(e.target.value))}
+            style={{ width: '120px' }}
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="frequency-slider" className="text-sm text-gray-700 whitespace-nowrap">
+            Frequency:
+          </label>
+          <input
+            id="frequency-slider"
+            type="range"
+            min="1"
+            max="4"
+            step="0.1"
+            value={frequency}
+            onChange={(e) => setFrequency(parseFloat(e.target.value))}
+            style={{ width: '120px' }}
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="amplitude-slider" className="text-sm text-gray-700 whitespace-nowrap">
+            Amplitude:
+          </label>
+          <input
+            id="amplitude-slider"
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            value={amplitude}
+            onChange={(e) => setAmplitude(parseFloat(e.target.value))}
+            style={{ width: '120px' }}
+          />
+        </div>
       </div>
     </div>
   );
