@@ -1,5 +1,6 @@
 # What we have
 <!-- slide-id: f1721624-224c-4b9b-be62-22f3461aa2fc -->
+<!-- tags: melody, harmony, primitives, chords, synth -->
 
 We've built a working pipeline from Lyre code to sound. The synth has three primitives: `tone` generates sine waves, `envelope` applies ADSR shaping, and `sequence` plays generators one after another. This gives us melody.
 

@@ -1,5 +1,6 @@
 # Cmaj7
 <!-- slide-id: aa83b7cc-de65-4417-b00f-f4ac9fb804b0 -->
+<!-- tags: exercise, chord, generators, jazz, implementation -->
 
 Let's implement `harmony`. We'll test it with a Cmaj7 chord - C, E, G, and B played together, a jazz staple.
 

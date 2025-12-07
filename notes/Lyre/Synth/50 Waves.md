@@ -1,5 +1,6 @@
 # Waves
 <!-- slide-id: 0752f3c3-1166-4c12-abde-fbb9a78dc72b -->
+<!-- tags: waves, superposition, physics, addition, combining -->
 
 How do we combine two sounds? What happens when a C note and an E note play at the same time?
 

@@ -27,7 +27,10 @@ export default function SlideNavigator({ currentIndex, onNavigate, onPreview, on
   const slidesWithIndex = SLIDES.map((slide, idx) => ({ ...slide, index: idx + 1 }));
 
   const filteredSlides = searchQuery
-    ? slidesWithIndex.filter(slide => fuzzyMatch(searchQuery, slide.title))
+    ? slidesWithIndex.filter(slide =>
+        fuzzyMatch(searchQuery, slide.title) ||
+        (slide.tags && slide.tags.some(tag => fuzzyMatch(searchQuery, tag)))
+      )
     : slidesWithIndex;
 
   const groupedSlides = filteredSlides.reduce((groups, slide) => {

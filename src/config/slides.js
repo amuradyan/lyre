@@ -24,12 +24,18 @@ const extractChapter = (path) => {
   return null;
 };
 
+const extractTags = (content) => {
+  const match = content.match(/<!--\s*tags:\s*(.+?)\s*-->/);
+  return match ? match[1].split(',').map(t => t.trim()) : [];
+};
+
 export const SLIDES = Object.entries(slideModules)
   .map(([path, content]) => ({
     path: path.replace('../../notes/Lyre/', './notes/Lyre/'),
     title: extractTitle(content),
     chapter: extractChapter(path),
+    tags: extractTags(content),
     _sortOrder: extractLeadingNumber(path)
   }))
   .sort((a, b) => a._sortOrder - b._sortOrder)
-  .map(({ path, title, chapter }) => ({ path, title, chapter }));
+  .map(({ path, title, chapter, tags }) => ({ path, title, chapter, tags }));

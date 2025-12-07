@@ -1,5 +1,6 @@
 # The plan
 <!-- slide-id: e9d0a3ce-4dcd-4bb9-8f25-8f9245226f4d -->
+<!-- tags: implementation, architecture, harmony, interpreter -->
 
 We know we need to add samples together. Looking at our current architecture, we have two places to work at.
 
