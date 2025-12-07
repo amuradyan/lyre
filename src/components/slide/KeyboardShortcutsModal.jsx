@@ -172,8 +172,8 @@ export default function InfoPlaque({ onClose }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
             <div className="shortcut-row">
-              <div className="shortcut-key">Type</div>
-              <div className="shortcut-desc">Search with fuzzy matching</div>
+              <div className="shortcut-key">Home / End</div>
+              <div className="shortcut-desc">Jump to first/last</div>
             </div>
 
             <div className="shortcut-row">
@@ -192,14 +192,26 @@ export default function InfoPlaque({ onClose }) {
             </div>
 
             <div className="shortcut-row">
-              <div className="shortcut-key">Home / End</div>
-              <div className="shortcut-desc">Jump to first/last</div>
+              <div className="shortcut-key">Type</div>
+              <div className="shortcut-desc">Search with fuzzy matching</div>
             </div>
 
             <div className="shortcut-row">
               <div className="shortcut-key">Click</div>
               <div className="shortcut-desc">Select slide</div>
             </div>
+          </div>
+
+          <div
+            style={{
+              fontFamily: 'Nunito, sans-serif',
+              fontSize: '12px',
+              color: '#9ca3af',
+              marginTop: '12px',
+              fontStyle: 'italic'
+            }}
+          >
+            * Slides are tagged with keywords - fuzzy search matches both titles and tags
           </div>
         </div>
 
