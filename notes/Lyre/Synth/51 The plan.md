@@ -3,33 +3,33 @@
 
 We know we need to add samples together. Looking at our current architecture, we have two places to work at.
 
-**In the Synth** - we need to add a `parallel` function alongside its brethren.
+**In the Synth** - we need to add a `harmony` function alongside its brethren.
 
 ```js
 function* oscillate(frequency) {...}
 function* tone(frequency, duration) { ... }
 function* sequence(...generators) { ... }
 ...
-// add the `parallel` generator
+// add the `harmony` generator
 ```
 
 It takes multiple generators and yields from all of them simultaneously, adding their values together at each sample point.
 
-**In the Interpreter** - we need to add a case for "parallel" that calls the synth's `parallel` function.
+**In the Interpreter** - we need to add a case for "harmony" that calls the synth's `harmony` function.
 
 ```js
 switch (operator) {
   case "tone":
     ...
-  // match the "parallel" case
+  // match the "harmony" case
 }
 ```
 
 So the pattern is the same as when we added `sequence`:
 
-- Write the synth function `parallel` that combines generators by adding samples
-- Add the interpreter case `"parallel"` that calls it
-- Test it with Lyre code like `(parallel (tone 261.63 500) (tone 329.63 500))`
+- Write the synth function `harmony` that combines generators by adding samples
+- Add the interpreter case `"harmony"` that calls it
+- Test it with Lyre code like `(harmony (tone 261.63 500) (tone 329.63 500))`
 
 ##### Back: [Waves](50%20Waves.md)
 

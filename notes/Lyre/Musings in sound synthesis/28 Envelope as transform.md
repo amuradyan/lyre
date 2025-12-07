@@ -74,7 +74,7 @@ const plucked = [0.01, 0.4, 0.8, 0.6];
 })();
 ```
 
-Now `tone` is pure audio generation - oscillator scoped by duration, yielding tuples with timing metadata. The `envelope` function is a transform - it reads `[sample, n, totalSamples]` from any source and applies amplitude shaping using that timing information. Notice how envelope doesn't know or care that the source is a tone. It just reads metadata tuples and shapes them. This separation means we could apply envelopes to other things later /sequences, parallel sounds, etc./.
+Now `tone` is pure audio generation - oscillator scoped by duration, yielding tuples with timing metadata. The `envelope` function is a transform - it reads `[sample, n, totalSamples]` from any source and applies amplitude shaping using that timing information. Notice how envelope doesn't know or care that the source is a tone. It just reads metadata tuples and shapes them. This separation means we could apply envelopes to other things later /sequences, harmony, etc./.
 
 Seems we're ready to replace gnarly sequencer in `DoReMi` wit a proper `sequence`.
 

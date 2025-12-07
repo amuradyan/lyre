@@ -1,7 +1,7 @@
 # Cmaj7
 <!-- slide-id: aa83b7cc-de65-4417-b00f-f4ac9fb804b0 -->
 
-Let's implement `parallel`. We'll test it with a Cmaj7 chord - C, E, G, and B played together, a jazz staple.
+Let's implement `harmony`. We'll test it with a Cmaj7 chord - C, E, G, and B played together, a jazz staple.
 
 The idea is simple: pull a sample from each generator, add them up, yield the sum. Repeat until all generators are exhausted.
 
@@ -22,7 +22,7 @@ const play = function(code) {
 
 const Cmaj7 = `
   (envelope
-    (parallel
+    (harmony
       (tone 261.63 1000)
       (tone 329.63 1000)
       (tone 392.00 1000)
@@ -35,7 +35,7 @@ const Cmaj7 = `
 ```
 
 ```js:Interpreter
-const {tone, envelope, sequence, parallel} = Synth;
+const {tone, envelope, sequence, harmony} = Synth;
 
 function interpret(expression) {
   if (typeof expression === 'string') {
@@ -61,8 +61,8 @@ function interpret(expression) {
         return envelope(source, attackTime, decayTime, sustainLevel, releaseTime);
       case "sequence":
         return sequence(...evaluated);
-      case "parallel":  // #! add the "parallel" case
-        return parallel(...evaluated);  // #! call parallel with all _evaluated_ operands
+      case ???:  // #! add the "harmony" case
+        return ???(...???);  // #! call harmony with all _evaluated_ operands
     }
   }
 }
@@ -124,7 +124,7 @@ function* sequence(...generators) {
   }
 }
 
-function* parallel(...generators) {
+function* harmony(...generators) {
   let n = 0;  // track our current sample index
   let maxTotalSamples = 0;  // track the longest duration
 

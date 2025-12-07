@@ -46,7 +46,7 @@ function computeAmplitude(n, totalSamples, adsr) {
 }
 ```
 
-Musical structure in one place, timbre in another. The `tone` function knows nothing about ADSR - just pitch and duration. The `sequence` function knows nothing about envelopes - just combining tones. And `envelope` wraps around anything - a single tone, a sequence, a parallel composition. You can see the draft on `synth` tab.
+Musical structure in one place, timbre in another. The `tone` function knows nothing about ADSR - just pitch and duration. The `sequence` function knows nothing about envelopes - just combining tones. And `envelope` wraps around anything - a single tone, a sequence, harmony. You can see the draft on `synth` tab.
 
 But wait - how will the envelope know when to start the release phase, if we don't pass it the time? It needs to know where we are in the sound and how long it lasts. Without buffering all samples (browser hangs!), we need another trick.
 
