@@ -21,8 +21,9 @@ function* tone(frequency, duration) {  // remove duration
 The `envelope` change is more involved. We add a `gateTime` parameter with a default of 0, then calculate our own duration from the ADSR times. Since the source no longer yields metadata tuples, we maintain our own sample counter `n`. We stop consuming samples when we hit our calculated duration.
 
 ```js
-function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {  // add gateTime = 0
-  // calculate duration: A + D + gateTime + R
+// add gateTime argument with default 0
+function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {
+  // calculate duration: A + D + (gateTime * S) + R
   // convert to samples: totalTime * samplingRate
 
   const adsr = [attackTime, decayTime, sustainLevel, releaseTime];
