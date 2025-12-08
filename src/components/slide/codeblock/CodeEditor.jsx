@@ -7,7 +7,6 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
 
   useEffect(() => {
     if (navigateToSymbol && editorRef.current) {
-      console.log('CodeEditor: Navigating to symbol:', navigateToSymbol);
       const editor = editorRef.current;
       const model = editor.getModel();
 
@@ -17,7 +16,6 @@ export default function CodeEditor({ value, onChange, readOnly = false, language
         const constMatch = lineContent.match(new RegExp(`^\\s*(?:export\\s+)?const\\s+${navigateToSymbol}\\s*=`));
 
         if (functionMatch || constMatch) {
-          console.log('Found symbol at line:', lineNumber, lineContent);
           editor.revealLineInCenter(lineNumber);
           editor.setSelection({
             startLineNumber: lineNumber,
