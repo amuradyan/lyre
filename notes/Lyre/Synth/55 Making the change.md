@@ -8,12 +8,12 @@ The `tone` change is straightforward. We remove the duration parameter - tone do
 
 ```js
 function* tone(frequency, duration) {  // remove duration
-  const totalSamples = duration * samplingRate;  // remove this
+  const totalSamples = duration * samplingRate;  // no need for totalSamples
   const osc = oscillate(frequency);
 
-  for (let n = 0; n < totalSamples; n = n + 1) {  // while (true)
+  for (let n = 0; n < totalSamples; n = n + 1) {  // while true...
     const sample = osc.next().value;
-    yield [sample, n, totalSamples];  // yield sample
+    yield [sample, n, totalSamples];  // yield just the sample
   }
 }
 ```
@@ -39,3 +39,5 @@ function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {
 ```
 
 ##### Back: [Sustain and decay](54%20Sustain%20and%20decay.md)
+
+##### Next: [Exercises on envelopes](56%20Exercises%20on%20envelopes.md)
