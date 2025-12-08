@@ -340,6 +340,13 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       } else if (e.key === '/') {
         e.preventDefault();
         setNavigatorOpen(prev => !prev);
+      } else if (e.key === 'Insert') {
+        e.preventDefault();
+        const allTextareas = document.querySelectorAll('textarea');
+        const firstEditableEditor = Array.from(allTextareas).find(ta => !ta.readOnly);
+        if (firstEditableEditor) {
+          firstEditableEditor.focus();
+        }
       } else if (e.key === 'p') {
         return;
       }

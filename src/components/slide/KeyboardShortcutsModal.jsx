@@ -232,6 +232,11 @@ export default function InfoPlaque({ onClose }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
             <div className="shortcut-row">
+              <div className="shortcut-key">Insert</div>
+              <div className="shortcut-desc">Focus first editable block</div>
+            </div>
+
+            <div className="shortcut-row">
               <div className="shortcut-key">Esc Esc Esc</div>
               <div className="shortcut-desc">Unfocus editor</div>
             </div>
