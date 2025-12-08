@@ -1,17 +1,15 @@
-# Cmaj7
-<!-- slide-id: aa83b7cc-de65-4417-b00f-f4ac9fb804b0 -->
-<!-- tags: exercise, chord -->
+# Pluck
+<!-- slide-id: 418bf236-5aa4-43a2-beff-815996777f55 -->
+<!-- tags: pluck, envelope -->
 
-Let's implement `harmony`. We'll test it with a Cmaj7 chord - C, E, G, and B played together, a jazz staple.
+That Cmaj7 chord works, but it sounds nothing like a real lyre or harp. Real plucked strings ring and fade naturally over a second or two - you can't hold them longer by keeping your finger on the string. Our chord has a fixed 1-second duration with a sustain level, more like a synthesizer than a string instrument.
 
-The idea is simple: pull a sample from each generator, add them up, yield the sum. Repeat until all generators are exhausted.
+A plucked lyre string has a distinctive lifecycle: sharp attack, then it dies away naturally. The decay time is intrinsic to the string itself.
 
-When one tone ends before others, we keep going - the finished generator contributes nothing, the rest continue. This pads with silence naturally.
-
-The loop keeps asking "are we done yet?" by checking each generator. If any are still running, the answer is "not yet!" When all are done, we stop.
+Let's try to simulate this with our current tools. We'll set sustain to 0 so the sound dies to silence, then use a long decay and release. The trick is to calculate tone duration from the ADSR times - attack + decay + release = 0.01 + 1.0 + 0.5 = 1.51 seconds. This way the sustain phase has no time to exist.
 
 <!-- playable -->
-```js:Cmaj7
+```js:Pluck
 const {tokenize} = Tokenizer;
 const {interpret} = Interpreter;
 
@@ -21,17 +19,13 @@ const play = function(code) {
   return generator;
 };
 
-const Cmaj7 = `
+const pluck = `
   (envelope
-    (harmony
-      (tone 261.63 1000)
-      (tone 329.63 1000)
-      (tone 392.00 1000)
-      (tone 493.88 1000))
-    0.01 0.1 0.7 0.2)`;
+    (tone 261.63 1510)
+    0.01 1.0 0 0.5)`;
 
 (function* () {
-  yield* play(Cmaj7);
+  yield* play(pluck);
 })();
 ```
 
@@ -62,8 +56,8 @@ function interpret(expression) {
         return envelope(source, attackTime, decayTime, sustainLevel, releaseTime);
       case "sequence":
         return sequence(...evaluated);
-      case ???:  // #! add the "harmony" case
-        return ???(...???);  // #! call harmony with all _evaluated_ operands
+      case "harmony":
+        return harmony(...evaluated);
     }
   }
 }
@@ -126,31 +120,31 @@ function* sequence(...generators) {
 }
 
 function* harmony(...generators) {
-  let n = 0;  // track our current sample index
-  let maxTotalSamples = 0;  // track the longest duration
+  let n = 0;
+  let maxTotalSamples = 0;
 
-  while (???) {  // #! loop forever, asking "are we done?"
-    let sum = ???; // #! initially it's 0
-    let allDone = true;  // assume all generators are done
+  while (true) {
+    let sum = 0;
+    let allDone = true;
 
-    for (const gen of ???) {  // #! check each generator
-      const { value, done } = gen.next();  // pull the next sample and status
-      if (???) {  // #! if this generator is still running
-        const [sample, _, totalSamples] = value; // remember the sample structure?
-        sum = ??? + ???;  // #! add the sample value to the sum
-        if (totalSamples > maxTotalSamples) {  // find the longest generator
-          maxTotalSamples = ???;  // #! update the max if needed for proper enveloping
+    for (const gen of generators) {
+      const { value, done } = gen.next();
+      if (!done) {
+        const [sample, _, totalSamples] = value;
+        sum = sum + sample;
+        if (totalSamples > maxTotalSamples) {
+          maxTotalSamples = totalSamples;
         }
-        allDone = ???;  // #! we're not done yet!
+        allDone = false;
       }
     }
 
-    if (???) {  // #! if all generators finished
-      return;  // stop the generator
+    if (allDone) {
+      return;
     }
 
-    yield [sum, n, maxTotalSamples];  // yield tuple for envelope
-    n = ???;  // #! increment sample counter
+    yield [sum, n, maxTotalSamples];
+    n = n + 1;
   }
 }
 ```
@@ -206,6 +200,10 @@ function tokenize(input) {
 }
 ```
 
-##### Back: [The plan](51%20The%20plan.md)
+This is closer - the sound dies away naturally. But we're still manually calculating tone duration from ADSR times, which is error-prone. And it still doesn't quite sound like a real string - we're missing the brightness decay and harmonic richness of a plucked instrument.
 
-##### Next: [Pluck](53%20Pluck.md)
+Our architecture has a ceiling. To get there, we'll need to redesign.
+
+##### Back: [Cmaj7](52%20Cmaj7.md)
+
+##### Next: [Sustain and decay](54%20Sustain%20and%20decay.md)
