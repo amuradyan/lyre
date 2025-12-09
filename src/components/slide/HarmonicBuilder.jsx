@@ -201,13 +201,6 @@ export default function HarmonicBuilder() {
 
   return (
     <div ref={containerRef} className="my-6 w-full">
-      <canvas
-        ref={canvasRef}
-        className="w-full bg-transparent"
-        style={{ height: `${canvasHeight}px` }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      />
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
         {activeHarmonics.map((active, index) => {
           const harmonicNumber = index + 1;
@@ -232,6 +225,14 @@ export default function HarmonicBuilder() {
           );
         })}
       </div>
+      <canvas
+        ref={canvasRef}
+        className="w-full bg-transparent"
+        style={{ height: `${canvasHeight}px` }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      />
+
     </div>
   );
 }
