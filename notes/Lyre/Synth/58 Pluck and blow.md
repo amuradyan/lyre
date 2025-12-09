@@ -208,3 +208,5 @@ function tokenize(input) {
 The key changes: tone no longer accepts duration, it just generates infinite samples. Envelope now has an optional sixth parameter for gateTime /in milliseconds/. If not provided, it defaults to 0 for plucks. If provided, the interpreter converts it from milliseconds to seconds before passing to envelope.
 
 ##### Back: [Updating the interpreter](57%20Updating%20the%20interpreter.md)
+
+##### Next: [String harmonics](59%20String%20harmonics.md)

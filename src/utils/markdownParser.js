@@ -113,6 +113,10 @@ const extractImage = (line) => {
     return { type: 'wave-superposition' };
   }
 
+  if (alt === 'harmonic-builder') {
+    return { type: 'harmonic-builder' };
+  }
+
   return { type: 'image', alt, src };
 };
 
