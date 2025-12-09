@@ -1,4 +1,4 @@
-# Exercises on envelopes
+# Instruments
 <!-- slide-id: f341ff3c-1f30-409a-b307-be86a0cdebe1 -->
 <!-- tags: exercise, envelope, gate -->
 
@@ -93,3 +93,5 @@ const woodwind = function*() {
 The key insight: `tone(frequency)` generates infinite samples, yielding just the sample value. The `envelope` calculates total duration from A + D + gateTime + R, then consumes exactly that many samples from the source before stopping. For plucks, gateTime = 0 so the sound dies during decay. For sustained instruments, gateTime > 0 so the sustain phase actually lasts.
 
 ##### Back: [Making the change](55%20Making%20the%20change.md)
+
+##### Next: [Updating the interpreter](57%20Updating%20the%20interpreter.md)

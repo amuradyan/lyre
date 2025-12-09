@@ -40,4 +40,4 @@ function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {
 
 ##### Back: [Sustain and decay](54%20Sustain%20and%20decay.md)
 
-##### Next: [Exercises on envelopes](56%20Exercises%20on%20envelopes.md)
+##### Next: [Instruments](56%20Instruments.md)
