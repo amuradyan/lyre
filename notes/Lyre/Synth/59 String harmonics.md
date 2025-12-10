@@ -13,3 +13,5 @@ This is why plucked strings sound bright and rich rather than pure like a tuning
 Notice how as you add more harmonics, the waveform starts to look less like a smooth sine wave and more like a sawtooth - sharp rises followed by gradual falls. This sawtooth shape is characteristic of plucked and bowed string instruments.
 
 ##### Back: [Pluck and blow](58%20Pluck%20and%20blow.md)
+
+##### Next: [Building sawtooth](60%20Building%20sawtooth.md)

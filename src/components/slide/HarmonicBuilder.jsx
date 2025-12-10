@@ -152,7 +152,7 @@ export default function HarmonicBuilder() {
       ctx.stroke();
       ctx.setLineDash([]);
 
-      const drawAmplitude = (centerY, waveY, color) => {
+      const drawAmplitude = (centerY, waveY) => {
         ctx.strokeStyle = '#6b7280';
         ctx.lineWidth = 3;
         ctx.beginPath();
@@ -172,7 +172,7 @@ export default function HarmonicBuilder() {
           const amplitude = baseAmplitude / harmonicNumber;
           const waveY = amplitude * Math.sin(t);
 
-          drawAmplitude(centerY, waveY, '#9ca3af');
+          drawAmplitude(centerY, waveY);
           currentSection++;
         }
       });
@@ -191,7 +191,7 @@ export default function HarmonicBuilder() {
         }
       });
 
-      drawAmplitude(superpositionCenterY, sumY, '#374151');
+      drawAmplitude(superpositionCenterY, sumY);
     }
 
   }, [activeHarmonics, cursorX]);
