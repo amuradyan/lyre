@@ -4,7 +4,7 @@ This repository accompanies a course on implementing a programming language from
 
 For the looks and the mechanics of our language, we'll draw inspiration from an old and powerful family of programming languages - the LISPs, and we'll use JS to actually build and use the tool. We won't get into details with any of these languages, and, I hope, you'll be surprised to learn how far one can go in their experiments relying on a few fundamental ideas.
 
-Here'show one might write the "Twinkle Twinkle Little Star" song in Lyre:
+Here's how one might write the "Twinkle Twinkle Little Star" song in Lyre:
 
 ```lisp
 (sequence
@@ -35,3 +35,64 @@ Lyre is the tool, that we'll be working on through the course. It is a lisp-like
 ```
 
 To describe a sound, Lyre provides the `tone` function, which takes a pitch and a duration. Certain pitches have names and are known to Lyre, so we can use them directly, e.g. `C4`, `E4`, `A4`, etc. The `harmony` combines multiple sounds into one, and `sequence` puts them one after another. The `;` character is used to add comments.
+
+## Project Structure
+
+This is a monorepo containing two packages:
+
+- **`lang/`** - The `@lyre/core` library (language + synth engine)
+- **`course/`** - The interactive course/educational platform
+
+## Getting Started
+
+```bash
+# Install dependencies for all packages
+npm install
+
+# Run the development server
+npm run dev
+
+# Build the course
+npm run build
+```
+
+## Development
+
+### Working on the library (`lang/`)
+
+```bash
+cd lang
+# The library is pure ES modules with no build step
+# Tests can be run directly with Node
+```
+
+### Working on the course (`course/`)
+
+```bash
+cd course
+npm run dev     # Start Vite dev server
+npm run build   # Build for production
+npm run lint    # Run ESLint
+```
+
+## Packages
+
+### @lyre/core (lang/)
+
+The core Lyre language and synthesis engine. See [lang/README.md](lang/README.md) for API documentation.
+
+Features:
+- Lisp-like language with s-expressions
+- Generator-based audio synthesis
+- Oscillators (sine, sawtooth)
+- ADSR envelopes
+- Filters (low-pass, filter envelopes)
+- Composition functions (sequence, harmony, repeat)
+
+### Lyre Course (course/)
+
+An interactive educational platform for learning programming through building a musical Lisp. Built with React and Vite.
+
+## License
+
+MIT

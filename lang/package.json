@@ -1,0 +1,26 @@
+{
+  "name": "@lyre/core",
+  "version": "0.1.0",
+  "description": "Lyre - A musical Lisp with synthesis capabilities",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./synth": "./src/synth/index.js",
+    "./language": "./src/language/index.js"
+  },
+  "files": [
+    "src/**/*.js",
+    "README.md"
+  ],
+  "keywords": [
+    "lyre",
+    "lisp",
+    "synthesis",
+    "audio",
+    "music",
+    "education"
+  ],
+  "author": "",
+  "license": "MIT"
+}
