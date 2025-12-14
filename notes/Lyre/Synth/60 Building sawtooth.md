@@ -128,3 +128,5 @@ const play = function() {
 This works - we're generating a sawtooth from first principles using additive synthesis. Ten sine waves at the right frequencies and amplitudes sum to approximate a sawtooth. But we'll soon see this approach has limitations.
 
 ##### Back: [String harmonics](59%20String%20harmonics.md)
+
+##### Next: [Direct waveforms](61%20Direct%20waveforms.md)
