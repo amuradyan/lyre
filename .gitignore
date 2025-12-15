@@ -18,3 +18,5 @@ dist/
 CLAUDE.md
 *.pdf
 **/robot
+
+.claude/
