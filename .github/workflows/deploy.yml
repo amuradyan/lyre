@@ -31,4 +31,4 @@ jobs:
 
       - name: Deploy to Amazon Server
         run: |
-          scp -r -o StrictHostKeyChecking=no dist/* ${{ secrets.USERNAME }}@${{ secrets.REMOTE_HOST }}:/var/www/lyre/
+          scp -r -o StrictHostKeyChecking=no course/dist/* ${{ secrets.USERNAME }}@${{ secrets.REMOTE_HOST }}:/var/www/lyre/
