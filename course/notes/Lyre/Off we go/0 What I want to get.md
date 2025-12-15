@@ -12,13 +12,15 @@ The language would look something like this:
 
 ```lisp
 ; A comment on the piece, its' name perhaps
+(define twice 2)
+
 (define
   the-passage
   (play-in-sequence
     (play-together a-pitch a-passage a-pitch ...)
     (play-together another-pitch another-passage ... )))
 
-(repeat 3 the-passage)
+(repeat the-passage twice)
 ```
 
 It might do instrument sounds or allow writing filters, but we'll see when we get there. Either way, the notes should trace a walkable path to the latest state.
