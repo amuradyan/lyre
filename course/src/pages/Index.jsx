@@ -29,18 +29,14 @@ export default function Index() {
           {/* Language Reference Section */}
           <div className="mb-8 mt-28">
             <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Notes</h4>
-                  <p className="text-gray-600">Use standard note notation like C4, D#5, Fb3. Sharps /#/ and flats /b/ are supported.</p>
-                </div>
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Range</h4>
-                  <p className="text-gray-600">Notes range from C1 /lowest/ to C6 /highest/.</p>
+                  <h4 className="font-medium text-gray-900 mb-2">Frequencies</h4>
+                  <p className="text-gray-600">Specify pitches as frequencies in Hz. Examples: 261.63 /C4/, 440 /A4/, 523.25 /C5/.</p>
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">Time</h4>
-                  <p className="text-gray-600">All durations are in milliseconds. 1000ms = 1 second.</p>
+                  <p className="text-gray-600">All envelope parameters are in seconds. 0.5 = half second, 1.0 = one second.</p>
                 </div>
               </div>
             </div>
@@ -73,16 +69,16 @@ export default function Index() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Produce sounds</h3>
                     <ul className="space-y-2">
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(tone C4 500)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Generate a single pitch for a certain time</div>
+                        <code className="font-mono text-purple-600 text-xs">(tone 440)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">Generate infinite sine wave at given frequency in Hz</div>
                       </li>
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(silence 500)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Add silence/rest for specified duration</div>
+                        <code className="font-mono text-purple-600 text-xs">(envelope (tone 440) 0.01 0.5 0 0.01)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">Apply ADSR envelope to create finite sound. Parameters: attack\decay\sustain\release in seconds</div>
                       </li>
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(envelope (tone C4 500))</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Apply amplitude shaping /ADSR/ to any sound</div>
+                        <code className="font-mono text-purple-600 text-xs">(envelope (tone 0) 0.01 1.0 0 0.01)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">Create silence using 0Hz tone with envelope for duration</div>
                       </li>
                     </ul>
                   </div>
@@ -92,37 +88,12 @@ export default function Index() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Combine sounds</h3>
                     <ul className="space-y-2">
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(sequence (tone ...) (tone ...) ...)</code>
+                        <code className="font-mono text-purple-600 text-xs">(sequence (envelope ...) (envelope ...) ...)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">Play sounds one after another in order</div>
                       </li>
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(harmony (tone ...) (tone ...) ...)</code>
+                        <code className="font-mono text-purple-600 text-xs">(harmony (envelope ...) (envelope ...) ...)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">Play multiple sounds simultaneously</div>
-                      </li>
-                      <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(repeat 3 (sequence ...))</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Repeat any sound or phrase multiple times /trice in this case/.</div>
-                      </li>
-                    </ul>
-                  </div>
-
-                  {/* Name values */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Name values</h3>
-                    <ul className="space-y-2">
-                      <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(define baroqueA4 415.00)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">
-                          <p>Give names to values to refer to them later.</p>
-                          <p>You can also name note combinations to play later like so:</p>
-                          <pre className="font-mono text-purple-600 text-xs mt-2 whitespace-pre-wrap">{`(define c-major-chord
-  (harmony
-    (tone C4 500)
-    (tone E4 500)
-    (tone G4 500)))
-
-(c-major-chord)`}</pre>
-                        </div>
                       </li>
                     </ul>
                   </div>
