@@ -1,15 +1,30 @@
-; Beethoven's 5th Symphony
 (sequence
-    (silence 1000)
+  (envelope (tone 0) 0.01 1.0 0 0.01)
 
-    (harmony (tone G3 300) (tone Eb3 300))   ; da
-    (harmony (tone G3 300) (tone Eb3 300))   ; da
-    (harmony (tone G3 300) (tone Eb3 300))   ; da
-    (harmony (tone Eb3 1500) (tone G2 1500)) ; DUMMMM
+  (harmony
+    (envelope (tone 196.00) 0.01 0.3 0 0.01)
+    (envelope (tone 155.56) 0.01 0.3 0 0.01))
+  (harmony
+    (envelope (tone 196.00) 0.01 0.3 0 0.01)
+    (envelope (tone 155.56) 0.01 0.3 0 0.01))
+  (harmony
+    (envelope (tone 196.00) 0.01 0.3 0 0.01)
+    (envelope (tone 155.56) 0.01 0.3 0 0.01))
+  (harmony
+    (envelope (tone 155.56) 0.01 1.5 0 0.01)
+    (envelope (tone 98.00) 0.01 1.5 0 0.01))
 
-    (silence 600)
+  (envelope (tone 0) 0.01 0.6 0 0.01)
 
-    (harmony (tone F3 300) (tone B2 300))    ; da
-    (harmony (tone F3 300) (tone B2 300))    ; da
-    (harmony (tone F3 300) (tone B2 300))    ; da
-    (harmony (tone D3 1500) (tone G2 1500))) ; DUMMMM
+  (harmony
+    (envelope (tone 174.61) 0.01 0.3 0 0.01)
+    (envelope (tone 123.47) 0.01 0.3 0 0.01))
+  (harmony
+    (envelope (tone 174.61) 0.01 0.3 0 0.01)
+    (envelope (tone 123.47) 0.01 0.3 0 0.01))
+  (harmony
+    (envelope (tone 174.61) 0.01 0.3 0 0.01)
+    (envelope (tone 123.47) 0.01 0.3 0 0.01))
+  (harmony
+    (envelope (tone 146.83) 0.01 1.5 0 0.01)
+    (envelope (tone 98.00) 0.01 1.5 0 0.01)))

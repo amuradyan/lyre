@@ -1,29 +1,22 @@
-; Pachelbel's Canon in D
-
-; We can define the baroQue pitches
-(define qA5 830)
-(define qF#5 697.94)
-(define qG5 739.45)
-(define qA4 415)
-(define qB4 465.82)
-(define qC#5 522.87)
-(define qD5 553.96)
-(define qE5 621.80)
-(define qA2 103.75)
-(define qD3 184.86)
-
-; And play Pachelbels' Canon in D
 (sequence
   (harmony
-    (tone qD3 2000)
+    (envelope (tone 184.86) 0.01 1.97 0 0.01)
     (sequence
-      (tone qA5 500)
-      (tone qF#5 250) (tone qG5 250) (tone qA5 500)
-      (tone qF#5 250) (tone qG5 250)))
+      (envelope (tone 830) 0.01 0.48 0 0.01)
+      (envelope (tone 697.94) 0.01 0.23 0 0.01)
+      (envelope (tone 739.45) 0.01 0.23 0 0.01)
+      (envelope (tone 830) 0.01 0.48 0 0.01)
+      (envelope (tone 697.94) 0.01 0.23 0 0.01)
+      (envelope (tone 739.45) 0.01 0.23 0 0.01)))
 
   (harmony
-    (tone qA2 2000)
+    (envelope (tone 103.75) 0.01 1.97 0 0.01)
     (sequence
-      (tone qA5 250)  (tone qA4 250) (tone qB4 250)
-      (tone qC#5 250) (tone qD5 250) (tone qE5 250)
-      (tone qF#5 250) (tone qG5 250))))
+      (envelope (tone 830) 0.01 0.23 0 0.01)
+      (envelope (tone 415) 0.01 0.23 0 0.01)
+      (envelope (tone 465.82) 0.01 0.23 0 0.01)
+      (envelope (tone 522.87) 0.01 0.23 0 0.01)
+      (envelope (tone 553.96) 0.01 0.23 0 0.01)
+      (envelope (tone 621.80) 0.01 0.23 0 0.01)
+      (envelope (tone 697.94) 0.01 0.23 0 0.01)
+      (envelope (tone 739.45) 0.01 0.23 0 0.01))))

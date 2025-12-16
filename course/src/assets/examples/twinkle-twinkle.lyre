@@ -1,35 +1,51 @@
-; Twinkle Twinkle Little Star
-
 (sequence
-  (silence 500)
+  (envelope (tone 0) 0.01 0.5 0 0.01)
 
-  ;  Twin-            kle,          twin-         kle,
-  (tone C4 500) (tone C4 500) (tone G4 500) (tone G4 500)
-  ;  Lit-             tle           star
-  (tone A4 500) (tone A4 500) (tone G4 1000)
-  ;  How              I             won-          der
-  (tone F4 500) (tone F4 500) (tone E4 500) (tone E4 500)
-  ;  what             you           are
-  (tone D4 500) (tone D4 500) (tone C4 1000)
+  (envelope (tone 261.63) 0.01 0.5 0 0.01)
+  (envelope (tone 261.63) 0.01 0.5 0 0.01)
+  (envelope (tone 392.00) 0.01 0.5 0 0.01)
+  (envelope (tone 392.00) 0.01 0.5 0 0.01)
+  (envelope (tone 440.00) 0.01 0.5 0 0.01)
+  (envelope (tone 440.00) 0.01 0.5 0 0.01)
+  (envelope (tone 392.00) 0.01 1.0 0 0.01)
+  (envelope (tone 349.23) 0.01 0.5 0 0.01)
+  (envelope (tone 349.23) 0.01 0.5 0 0.01)
+  (envelope (tone 329.63) 0.01 0.5 0 0.01)
+  (envelope (tone 329.63) 0.01 0.5 0 0.01)
+  (envelope (tone 293.66) 0.01 0.5 0 0.01)
+  (envelope (tone 293.66) 0.01 0.5 0 0.01)
+  (envelope (tone 261.63) 0.01 1.0 0 0.01)
 
-  (silence 500)
+  (envelope (tone 0) 0.01 0.5 0 0.01)
 
-  ;  Up               a-            bove          the
-  (tone G4 500) (tone G4 500) (tone F4 500) (tone F4 500)
-  ;  world            so            high
-  (tone E4 500) (tone E4 500) (tone D4 1000)
-  ;  Like             a-            dia-          mond
-  (tone G4 500) (tone G4 500) (tone F4 500) (tone F4 500)
-  ;  in               the           sky
-  (tone E4 500) (tone E4 500) (tone D4 1000)
+  (envelope (tone 392.00) 0.01 0.5 0 0.01)
+  (envelope (tone 392.00) 0.01 0.5 0 0.01)
+  (envelope (tone 349.23) 0.01 0.5 0 0.01)
+  (envelope (tone 349.23) 0.01 0.5 0 0.01)
+  (envelope (tone 329.63) 0.01 0.5 0 0.01)
+  (envelope (tone 329.63) 0.01 0.5 0 0.01)
+  (envelope (tone 293.66) 0.01 1.0 0 0.01)
+  (envelope (tone 392.00) 0.01 0.5 0 0.01)
+  (envelope (tone 392.00) 0.01 0.5 0 0.01)
+  (envelope (tone 349.23) 0.01 0.5 0 0.01)
+  (envelope (tone 349.23) 0.01 0.5 0 0.01)
+  (envelope (tone 329.63) 0.01 0.5 0 0.01)
+  (envelope (tone 329.63) 0.01 0.5 0 0.01)
+  (envelope (tone 293.66) 0.01 1.0 0 0.01)
 
-  (silence 500)
+  (envelope (tone 0) 0.01 0.5 0 0.01)
 
-  ;  Twin-            kle,          twin-         kle,
-  (tone C4 500) (tone C4 500) (tone G4 500) (tone G4 500)
-  ;  Lit-             tle           star
-  (tone A4 500) (tone A4 500) (tone G4 1000)
-  ;  How              I             won-          der
-  (tone F4 500) (tone F4 500) (tone E4 500) (tone E4 500)
-  ;  what             you           are
-  (tone D4 500) (tone D4 500) (tone C4 1000))
+  (envelope (tone 261.63) 0.01 0.5 0 0.01)
+  (envelope (tone 261.63) 0.01 0.5 0 0.01)
+  (envelope (tone 392.00) 0.01 0.5 0 0.01)
+  (envelope (tone 392.00) 0.01 0.5 0 0.01)
+  (envelope (tone 440.00) 0.01 0.5 0 0.01)
+  (envelope (tone 440.00) 0.01 0.5 0 0.01)
+  (envelope (tone 392.00) 0.01 1.0 0 0.01)
+  (envelope (tone 349.23) 0.01 0.5 0 0.01)
+  (envelope (tone 349.23) 0.01 0.5 0 0.01)
+  (envelope (tone 329.63) 0.01 0.5 0 0.01)
+  (envelope (tone 329.63) 0.01 0.5 0 0.01)
+  (envelope (tone 293.66) 0.01 0.5 0 0.01)
+  (envelope (tone 293.66) 0.01 0.5 0 0.01)
+  (envelope (tone 261.63) 0.01 1.0 0 0.01))
