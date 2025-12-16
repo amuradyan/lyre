@@ -4,11 +4,11 @@ import Codeblock from './codeblock/Codeblock.jsx';
 import LyreCodeblock from './codeblock/LyreCodeblock.jsx';
 import PlayableJsCodeblock from './codeblock/PlayableJsCodeblock.jsx';
 import TabbedCodeblock from './codeblock/TabbedCodeblock.jsx';
-import { loadCodeBlock } from '../../toolbox/progressTracker.js';
-import { parseMarkdown } from '../../toolbox/slideParser.js';
+import { loadCodeBlock } from '../../toolbox/slides/progressTracker.js';
+import { parseMarkdown } from '../../toolbox/slides/slideParser.js';
 import SlideNavigator from './SlideNavigator.jsx';
 import InfoPlaque from './KeyboardShortcutsModal.jsx';
-import { SLIDES } from '../../config/slides.js';
+import { SLIDES } from '../../toolbox/slides/slides.js';
 import WaveSuperposition from './WaveSuperposition.jsx';
 import HarmonicBuilder from './HarmonicBuilder.jsx';
 

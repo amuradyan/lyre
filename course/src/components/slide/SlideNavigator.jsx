@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { SLIDES } from '../../config/slides.js';
+import { SLIDES } from '../../toolbox/slides/slides.js';
 
 export default function SlideNavigator({ currentIndex, onNavigate, onPreview, onClose, onHome, onEnd }) {
   const [expandedFolders, setExpandedFolders] = useState({});

@@ -4,7 +4,7 @@ import TestResults from './tests/TestResults.jsx';
 import { executeMarkdownTest } from '../../../toolbox/tests/TestRunner.js';
 import { bundleTabs } from '../../../toolbox/code/moduleBundler.js';
 import { createAudioContext } from '../../../toolbox/audioPlayer.js';
-import { saveCodeBlock, loadCodeBlock, saveHintState, loadHintState } from '../../../toolbox/progressTracker.js';
+import { saveCodeBlock, loadCodeBlock, saveHintState, loadHintState } from '../../../toolbox/slides/progressTracker.js';
 import { mergeHintsIntoEdited } from '../../../toolbox/code/hintMerger.js';
 
 function stripHints(code) {
