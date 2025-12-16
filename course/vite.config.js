@@ -20,9 +20,9 @@ export default defineConfig({
         return html;
       },
       configureServer(server) {
-        server.middlewares.use('/lyre', (req, res, next) => {
-          const filePath = resolve(__dirname, 'src/lyre', req.url.substring(1));
-          
+        server.middlewares.use('/lang', (req, res, next) => {
+          const filePath = resolve(__dirname, '../lang/src', req.url.substring(1));
+
           if (existsSync(filePath)) {
             try {
               const content = readFileSync(filePath, 'utf-8');
@@ -30,16 +30,16 @@ export default defineConfig({
               res.end(content);
               return;
             } catch (error) {
-              console.error('Error serving lyre file:', error);
+              console.error('Error serving lang file:', error);
             }
           }
-          
+
           next();
         });
       },
       closeBundle() {
         cpSync('notes', 'dist/notes', { recursive: true });
-        cpSync('src/lyre', 'dist/lyre', { recursive: true });
+        cpSync('../lang/src', 'dist/lang', { recursive: true });
         cpSync('src/assets', 'dist/assets', { recursive: true });
       }
     }
@@ -47,7 +47,7 @@ export default defineConfig({
   server: {
     port: 8000,
     fs: {
-      allow: [WORKSPACE_ROOT]
+      allow: [WORKSPACE_ROOT, resolve(__dirname, '..')]
     }
   },
   define: {

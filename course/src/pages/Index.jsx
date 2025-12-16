@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import LyreCodeblock from '../components/slide/codeblock/LyreCodeblock.jsx';
 import Playlist from '../components/Playlist.jsx';
-import pachelbelsCanonCode from '../assets/examples/pachelbels-canon-in-d.lyre?raw';
+import pachelbelsCanonCode from '../assets/examples/pachelbels-canon-core.lyre?raw';
 
 export default function Index() {
   const [code, setCode] = useState(pachelbelsCanonCode);
