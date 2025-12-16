@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import TestResults from './tests/TestResults.jsx';
-import { executeMarkdownTest } from './tests/runner/TestRunner.js';
-import { saveCodeBlock, saveHintState, loadHintState } from '../../../utils/slideStorage.js';
-import { mergeHintsIntoEdited } from '../../../utils/hintMerger.js';
+import { executeMarkdownTest } from '../../../toolbox/tests/TestRunner.js';
+import { saveCodeBlock, saveHintState, loadHintState } from '../../../toolbox/progressTracker.js';
+import { mergeHintsIntoEdited } from '../../../toolbox/code/hintMerger.js';
 
 function stripHints(code) {
   return code

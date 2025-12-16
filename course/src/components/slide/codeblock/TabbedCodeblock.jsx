@@ -1,11 +1,11 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import TestResults from './tests/TestResults.jsx';
-import { executeMarkdownTest } from './tests/runner/TestRunner.js';
-import { bundleTabs } from '../../../utils/moduleBundler.js';
-import { createAudioContext } from '../../../utils/audioPlayer.js';
-import { saveCodeBlock, loadCodeBlock, saveHintState, loadHintState } from '../../../utils/slideStorage.js';
-import { mergeHintsIntoEdited } from '../../../utils/hintMerger.js';
+import { executeMarkdownTest } from '../../../toolbox/tests/TestRunner.js';
+import { bundleTabs } from '../../../toolbox/code/moduleBundler.js';
+import { createAudioContext } from '../../../toolbox/audioPlayer.js';
+import { saveCodeBlock, loadCodeBlock, saveHintState, loadHintState } from '../../../toolbox/progressTracker.js';
+import { mergeHintsIntoEdited } from '../../../toolbox/code/hintMerger.js';
 
 function stripHints(code) {
   return code

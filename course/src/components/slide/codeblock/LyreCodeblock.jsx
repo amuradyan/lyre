@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import CodeEditor from './CodeEditor.jsx';
-import { createAudioContext } from '../../../utils/audioPlayer.js';
+import { createAudioContext } from '../../../toolbox/audioPlayer.js';
 
 export default function LyreCodeblock({
   code,
