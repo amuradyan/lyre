@@ -63,7 +63,6 @@ export default function SlideExperimental({ initialMarkdownPath }) {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [testStatuses, setTestStatuses] = useState({});
   const [slugToPathMap, setSlugToPathMap] = useState({});
   const [navigatorOpen, setNavigatorOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -167,38 +166,6 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     return slide?.chapter || null;
   }, [mdPath]);
 
-  const allTestsPassing = useMemo(() => {
-    const codeBlocksWithTests = parsed.content?.filter(block =>
-      (block.type === 'codeblock' && block.testComment) ||
-      (block.type === 'codeblock-group' && block.testComment)
-    ) || [];
-
-    if (codeBlocksWithTests.length === 0) {
-      return true;
-    }
-
-    const hasAllResults = codeBlocksWithTests.every((_, index) =>
-      testStatuses[index] !== undefined
-    );
-
-    if (!hasAllResults) {
-      return false;
-    }
-
-    return codeBlocksWithTests.every((_, index) => testStatuses[index] === true);
-  }, [parsed.content, testStatuses]);
-
-  const handleTestStatusChange = useCallback((blockIndex, isPassing) => {
-    setTestStatuses(prev => ({
-      ...prev,
-      [blockIndex]: isPassing
-    }));
-  }, []);
-
-  useEffect(() => {
-    setTestStatuses({});
-  }, [mdPath]);
-
   useEffect(() => {
     let cancelled = false;
     async function load() {
@@ -223,7 +190,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   const handleNext = () => {
     const { nextHref } = parsed;
-    if (!nextHref || !allTestsPassing) return;
+    if (!nextHref) return;
     const idx = mdPath.indexOf('/notes/');
     const repoRoot = idx >= 0 ? mdPath.slice(0, idx) : mdPath.substring(0, mdPath.lastIndexOf('/'));
     const mdDir = mdPath.substring(0, mdPath.lastIndexOf('/'));
@@ -435,9 +402,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
             </h1>
           )}
           <div className="space-y-6 text-left">
-            {(() => {
-              let testBlockCounter = 0;
-              return parsed.content.map((item, i) => {
+            {parsed.content.map((item, i) => {
                 if (item.type === 'paragraph') {
                   return <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: item.content }} />;
                 } else if (item.type === 'collapsible') {
@@ -490,7 +455,6 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                     />
                   );
                 } else if (item.type === 'codeblock-group') {
-                  const testBlockIndex = item.testComment ? testBlockCounter++ : -1;
                   const savedCodes = item.blocks.map(block =>
                     parsed.slideId ? loadCodeBlock(parsed.slideId, block.code) : null
                   );
@@ -503,7 +467,6 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                       slideId={parsed.slideId}
                       blockIndex={i}
                       testComment={item.testComment}
-                      onTestStatusChange={testBlockIndex >= 0 ? (isPassing) => handleTestStatusChange(testBlockIndex, isPassing) : undefined}
                     />
                   );
                 } else if (item.type === 'codeblock') {
@@ -526,7 +489,6 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                       />
                     );
                   } else {
-                    const testBlockIndex = item.testComment ? testBlockCounter++ : -1;
                     const savedCode = parsed.slideId ? loadCodeBlock(parsed.slideId, item.code) : null;
 
                     return (
@@ -538,14 +500,12 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                         blockIndex={i}
                         testComment={item.testComment}
                         hints={item.hints}
-                        onTestStatusChange={testBlockIndex >= 0 ? (isPassing) => handleTestStatusChange(testBlockIndex, isPassing) : undefined}
                       />
                     );
                   }
                 }
                 return null;
-              });
-            })()}
+              })}
           </div>
           {(parsed.backHref || parsed.nextHref || parsed.skipHref) && (
             <div className="flex justify-between items-center" style={{ marginTop: '48px' }}>
@@ -588,18 +548,16 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                 <div className="inline-flex">
                   <button
                     onClick={handleNext}
-                    disabled={!allTestsPassing}
-                    className={`inline-flex items-center font-semibold ${allTestsPassing ? 'nav-button' : ''}`}
+                    className="inline-flex items-center font-semibold nav-button"
                     style={{
                       gap: '8px',
                       padding: '12px 24px',
                       background: 'transparent',
-                      border: allTestsPassing ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid rgba(156, 163, 175, 0.3)',
-                      color: allTestsPassing ? '#6366f1' : '#9ca3af',
+                      border: '1px solid rgba(99, 102, 241, 0.3)',
+                      color: '#6366f1',
                       fontFamily: 'Nunito, sans-serif',
                       fontWeight: 600,
-                      cursor: allTestsPassing ? 'pointer' : 'not-allowed',
-                      textDecoration: allTestsPassing ? 'underline' : 'none'
+                      cursor: 'pointer'
                     }}
                   >
                     {parsed.nextText || 'Next'}
@@ -611,17 +569,16 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                     <div className="skip-tooltip-container">
                       <button
                         onClick={handleSkip}
-                        className={`inline-flex items-center font-semibold ${allTestsPassing ? 'nav-button' : ''}`}
+                        className="inline-flex items-center font-semibold nav-button"
                         style={{
                           padding: '12px',
                           background: 'transparent',
-                          border: allTestsPassing ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid rgba(156, 163, 175, 0.3)',
+                          border: '1px solid rgba(99, 102, 241, 0.3)',
                           borderLeft: 'none',
-                          color: allTestsPassing ? '#6366f1' : '#9ca3af',
+                          color: '#6366f1',
                           fontFamily: 'Nunito, sans-serif',
                           fontWeight: 600,
-                          cursor: allTestsPassing ? 'pointer' : 'not-allowed',
-                          textDecoration: allTestsPassing ? 'underline' : 'none'
+                          cursor: 'pointer'
                         }}
                       >
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '20px', height: '20px' }}>
