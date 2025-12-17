@@ -1,5 +1,11 @@
+const javascriptIdentifier = /[a-zA-Z_$][a-zA-Z0-9_$]*/g;
+const inlineHintComment = /\/\/\s*#!.*$/;
+const inlineHintCommentGlobal = /\/\/\s*#!.*$/gm;
+const inlineHintTextCapture = /\/\/\s*#!\s*(.+)$/;
+const blockHintComment = /\/\*\s*#![\s\S]*?\*\//g;
+
 function extractTokens(line) {
-  const tokens = line.match(/[a-zA-Z_$][a-zA-Z0-9_$]*/g) || [];
+  const tokens = line.match(javascriptIdentifier) || [];
   return tokens;
 }
 
@@ -13,19 +19,19 @@ function calculateSimilarity(originalTokens, editedTokens) {
 
 function stripHintsFromLine(line) {
   return line
-    .replace(/\/\/\s*#!.*$/, '')
+    .replace(inlineHintComment, '')
     .trimEnd();
 }
 
 function extractInlineHint(line) {
-  const match = line.match(/\/\/\s*#!\s*(.+)$/);
+  const match = line.match(inlineHintTextCapture);
   return match ? match[1].trim() : null;
 }
 
 function stripHintsFull(code) {
   return code
-    .replace(/\/\/\s*#!.*$/gm, '')
-    .replace(/\/\*\s*#![\s\S]*?\*\//g, '')
+    .replace(inlineHintCommentGlobal, '')
+    .replace(blockHintComment, '')
     .split('\n')
     .map(line => line.trimEnd())
     .join('\n');

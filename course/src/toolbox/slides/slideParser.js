@@ -1,18 +1,51 @@
+const inlineCodeBackticks = /`([^`]+)`/g;
+const boldDoubleAsterisks = /\*\*([^*]+)\*\*/g;
+const boldDoubleUnderscores = /__([^_]+)__/g;
+const italicSingleAsterisk = /\*([^*]+)\*/g;
+const italicSingleUnderscore = /_([^_]+)_/g;
+const markdownLink = /\[([^\]]+)\]\(([^)]+)\)/g;
+
+const titleHeader = /^#\s+(.+)$/;
+const anyHeader = /^(#+)\s+(.+)$/;
+const slideIdComment = /<!--\s*slide-id:\s*([a-f0-9-]+)\s*-->/i;
+const inlineNavigation = /^#####\s+(Next|Back|Skip):\s+\[([^\]]+)\]\(([^)]+)\)/i;
+
+const startsWithHash = /^#/;
+const bulletPoint = /^[*+-]\s+/;
+const fourOrMoreSpaces = /^\s{4,}/;
+const twoOrMoreTabs = /^\t{2,}/;
+const collapsibleMarker = /^>\+\s+/;
+const blockquoteMarker = /^\s*>\s+/;
+const horizontalRule = /^-{4,}\s*$/;
+const imageMarkdown = /^!\[([^\]]*)\]\(([^)]*)\)\s*$/;
+
+const bulletContentCapture = /^\s*[*+-]\s+(.+)$/;
+const blockquoteContentCapture = /^\s*>\s+(.+)$/;
+const fourSpaces = /^\s{4}/;
+const twoTabs = /^\t{2}/;
+const oneTab = /^\t/;
+
+const blockHintStart = /\/\*\s*#!\s*(.*)/;
+const blockHintEndInline = /(.*)?\*\//;
+const blockHintEndMultiline = /^(.*?)?\*\//;
+const blockHintContinuation = /^\s*(?:\*\s*)?(.*)$/;
+const inlineHint = /\/\/\s*#!\s*(.+)$/;
+
 const processInlineCode = (text) => {
   const CODE_PLACEHOLDER = '\u0000CODE\u0000';
   const codeBlocks = [];
 
-  let result = text.replace(/`([^`]+)`/g, (match, code) => {
+  let result = text.replace(inlineCodeBackticks, (match, code) => {
     codeBlocks.push(`<code class="inline-code">${code}</code>`);
     return CODE_PLACEHOLDER + (codeBlocks.length - 1) + CODE_PLACEHOLDER;
   });
 
   result = result
-    .replace(/\*\*([^*]+)\*\*/g, (_, bold) => `<strong>${bold}</strong>`)
-    .replace(/__([^_]+)__/g, (_, bold) => `<strong>${bold}</strong>`)
-    .replace(/\*([^*]+)\*/g, (_, italic) => `<em>${italic}</em>`)
-    .replace(/_([^_]+)_/g, (_, italic) => `<em>${italic}</em>`)
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline filter drop-shadow-sm">${text}</a>`);
+    .replace(boldDoubleAsterisks, (_, bold) => `<strong>${bold}</strong>`)
+    .replace(boldDoubleUnderscores, (_, bold) => `<strong>${bold}</strong>`)
+    .replace(italicSingleAsterisk, (_, italic) => `<em>${italic}</em>`)
+    .replace(italicSingleUnderscore, (_, italic) => `<em>${italic}</em>`)
+    .replace(markdownLink, (_, text, url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline filter drop-shadow-sm">${text}</a>`);
 
   result = result.replace(new RegExp(CODE_PLACEHOLDER + '(\\d+)' + CODE_PLACEHOLDER, 'g'), (_, index) => {
     return codeBlocks[parseInt(index)];
@@ -22,33 +55,33 @@ const processInlineCode = (text) => {
 };
 
 const extractTitle = (line) => {
-  const match = line.match(/^#\s+(.+)$/);
+  const match = line.match(titleHeader);
   return match ? match[1].trim() : null;
 };
 
 const extractHeader = (line) => {
-  const match = line.match(/^(#+)\s+(.+)$/);
+  const match = line.match(anyHeader);
   return match ? { level: match[1].length, text: match[2].trim() } : null;
 };
 
 const extractSlideId = (line) => {
-  const match = line.match(/<!--\s*slide-id:\s*([a-f0-9-]+)\s*-->/i);
+  const match = line.match(slideIdComment);
   return match ? match[1].trim() : null;
 };
 
 const extractInlineNavigation = (line) => {
-  const match = line.match(/^#####\s+(Next|Back|Skip):\s+\[([^\]]+)\]\(([^)]+)\)/i);
+  const match = line.match(inlineNavigation);
   return match ? { type: match[1].toLowerCase(), text: match[2].trim(), href: match[3].trim() } : null;
 };
 const isCodeFence = (line) => line.startsWith('```');
-const isHeader = (line) => /^#/.test(line);
+const isHeader = (line) => startsWithHash.test(line);
 const isEmpty = (line) => line.trim() === '';
-const isBulletPoint = (line) => /^[*+-]\s+/.test(line.trim()) && !/^\s{4,}/.test(line) && !/^\t{2,}/.test(line);
-const isCollapsible = (line) => /^>\+\s+/.test(line.trim());
-const isBlockquote = (line) => /^\s*>\s+/.test(line) && !isCollapsible(line);
-const isIndentedContent = (line) => /^\s{4,}/.test(line) || /^\t{2,}/.test(line);
-const isHorizontalRule = (line) => /^-{4,}\s*$/.test(line.trim());
-const isImage = (line) => /^!\[([^\]]*)\]\(([^)]*)\)\s*$/.test(line.trim());
+const isBulletPoint = (line) => bulletPoint.test(line.trim()) && !fourOrMoreSpaces.test(line) && !twoOrMoreTabs.test(line);
+const isCollapsible = (line) => collapsibleMarker.test(line.trim());
+const isBlockquote = (line) => blockquoteMarker.test(line) && !isCollapsible(line);
+const isIndentedContent = (line) => fourOrMoreSpaces.test(line) || twoOrMoreTabs.test(line);
+const isHorizontalRule = (line) => horizontalRule.test(line.trim());
+const isImage = (line) => imageMarkdown.test(line.trim());
 
 const createParagraph = (lines) => {
   if (!lines.length) return null;
@@ -66,7 +99,7 @@ const createList = (items) =>
   } : null;
 
 const extractBulletContent = (line) => {
-  const match = line.match(/^\s*[*+-]\s+(.+)$/);
+  const match = line.match(bulletContentCapture);
   return match ? match[1].trim() : '';
 };
 
@@ -85,7 +118,7 @@ const createIndentedContent = (lines) =>
 const createCollapsible = (lines) => {
   if (!lines.length) return null;
   const firstLine = lines[0].trim();
-  const strippedFirstLine = firstLine.replace(/^>\+\s+/, '');
+  const strippedFirstLine = firstLine.replace(collapsibleMarker, '');
   const allLines = [strippedFirstLine, ...lines.slice(1)];
   return {
     type: 'collapsible',
@@ -94,16 +127,16 @@ const createCollapsible = (lines) => {
 };
 
 const extractBlockquoteContent = (line) => {
-  const match = line.match(/^\s*>\s+(.+)$/);
+  const match = line.match(blockquoteContentCapture);
   return match ? match[1].trim() : '';
 };
 
 const extractIndentedContent = (line) => {
-  return line.replace(/^\s{4}/, '').replace(/^\t{2}/, '\t').replace(/^\t/, '');
+  return line.replace(fourSpaces, '').replace(twoTabs, '\t').replace(oneTab, '');
 };
 
 const extractImage = (line) => {
-  const match = line.trim().match(/^!\[([^\]]*)\]\(([^)]*)\)$/);
+  const match = line.trim().match(imageMarkdown);
   if (!match) return null;
 
   const alt = match[1];
@@ -135,18 +168,18 @@ const extractHints = (code) => {
   const hints = [];
   let inBlockHint = false;
   let blockHintLines = [];
-  let blockHintStart = -1;
+  let blockHintStartLine = -1;
 
   lines.forEach((line, index) => {
     if (!inBlockHint) {
-      const blockHintMatch = line.match(/\/\*\s*#!\s*(.*)/);
+      const blockHintMatch = line.match(blockHintStart);
       if (blockHintMatch) {
         inBlockHint = true;
-        blockHintStart = index;
+        blockHintStartLine = index;
         blockHintLines = [blockHintMatch[1]];
 
         if (line.includes('*/')) {
-          const endMatch = line.match(/(.*)?\*\//);
+          const endMatch = line.match(blockHintEndInline);
           if (endMatch && endMatch[1]) {
             blockHintLines[0] = endMatch[1].trim();
           }
@@ -160,17 +193,17 @@ const extractHints = (code) => {
             type: 'block',
             text: blockHintLines.join('\n').trim(),
             anchorLine: anchorLine < lines.length ? anchorLine : index + 1,
-            startLine: blockHintStart
+            startLine: blockHintStartLine
           });
 
           inBlockHint = false;
           blockHintLines = [];
-          blockHintStart = -1;
+          blockHintStartLine = -1;
         }
         return;
       }
 
-      const inlineHintMatch = line.match(/\/\/\s*#!\s*(.+)$/);
+      const inlineHintMatch = line.match(inlineHint);
       if (inlineHintMatch) {
         hints.push({
           type: 'inline',
@@ -180,7 +213,7 @@ const extractHints = (code) => {
       }
     } else {
       if (line.includes('*/')) {
-        const endMatch = line.match(/^(.*?)?\*\//);
+        const endMatch = line.match(blockHintEndMultiline);
         if (endMatch && endMatch[1] && endMatch[1].trim()) {
           blockHintLines.push(endMatch[1].trim());
         }
@@ -194,14 +227,14 @@ const extractHints = (code) => {
           type: 'block',
           text: blockHintLines.join('\n').trim(),
           anchorLine: anchorLine < lines.length ? anchorLine : index + 1,
-          startLine: blockHintStart
+          startLine: blockHintStartLine
         });
 
         inBlockHint = false;
         blockHintLines = [];
-        blockHintStart = -1;
+        blockHintStartLine = -1;
       } else {
-        const continuationMatch = line.match(/^\s*(?:\*\s*)?(.*)$/);
+        const continuationMatch = line.match(blockHintContinuation);
         if (continuationMatch && continuationMatch[1].trim()) {
           blockHintLines.push(continuationMatch[1].trim());
         }
