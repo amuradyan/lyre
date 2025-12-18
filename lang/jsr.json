@@ -1,6 +1,14 @@
 {
   "name": "@dekanat/lyre",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
-  "exports": "./mod.js"
+  "exports": "./mod.js",
+  "publish": {
+    "include": [
+      "src/**/*.js",
+      "mod.js",
+      "README.md",
+      "jsr.json"
+    ]
+  }
 }

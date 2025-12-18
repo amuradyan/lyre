@@ -1,5 +1,19 @@
+/**
+ * Audio sampling rate in Hz
+ * @type {number}
+ */
 export const samplingRate = 44100;
 
+/**
+ * Generates an infinite sine wave at the given frequency.
+ * @param {number} frequency - Frequency in Hz
+ * @yields {number} Audio samples between -1 and 1
+ * @example
+ * const wave = oscillate(440); // A4
+ * for (const sample of wave) {
+ *   // yields: 0, 0.062, 0.123, ...
+ * }
+ */
 export function* oscillate(frequency) {
   let phase = 0;
   const phaseIncrement = (2 * Math.PI * frequency) / samplingRate;
@@ -10,6 +24,16 @@ export function* oscillate(frequency) {
   }
 }
 
+/**
+ * Generates an infinite sine wave tone at the given frequency.
+ * @param {number} frequency - Frequency in Hz
+ * @yields {number} Audio samples between -1 and 1
+ * @example
+ * const c4 = tone(261.63); // Middle C
+ * for (const sample of c4) {
+ *   // yields continuous sine wave samples
+ * }
+ */
 export function* tone(frequency) {
   const osc = oscillate(frequency);
 
@@ -19,6 +43,17 @@ export function* tone(frequency) {
   }
 }
 
+/**
+ * Generates an infinite sawtooth wave at the given frequency.
+ * A sawtooth wave is richer in harmonics than a sine wave.
+ * @param {number} frequency - Frequency in Hz
+ * @yields {number} Audio samples between -1 and 1
+ * @example
+ * const saw = sawtooth(220);
+ * for (const sample of saw) {
+ *   // yields sawtooth wave samples
+ * }
+ */
 export function* sawtooth(frequency) {
   let phase = 0;
   const phaseIncrement = (2 * Math.PI * frequency) / samplingRate;

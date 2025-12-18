@@ -2,6 +2,17 @@ import { tone } from '../synth/oscillators.js';
 import { envelope } from '../synth/envelopes.js';
 import { sequence, harmony } from '../synth/composition.js';
 
+/**
+ * Interprets a tokenized Lyre expression and returns a generator function.
+ * @param {string|Array} expression - A tokenized expression (from tokenize) or a string number
+ * @returns {Generator|number} A generator that yields audio samples, or a number if the expression is a string
+ * @example
+ * const tokens = tokenize("(tone 440)");
+ * const generator = interpret(tokens);
+ * for (const sample of generator) {
+ *   // process audio sample
+ * }
+ */
 export function interpret(expression) {
   if (typeof expression === 'string') {
     return parseFloat(expression);

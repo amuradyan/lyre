@@ -26,6 +26,14 @@ function process(symbol, token, expressions) {
   }
 }
 
+/**
+ * Tokenizes Lyre code into nested arrays representing the expression tree.
+ * @param {string} input - The Lyre code to parse
+ * @returns {Array} Nested array where the first element is the operator and remaining elements are operands
+ * @example
+ * tokenize("(tone 440)") // returns ["tone", "440"]
+ * tokenize("(envelope (tone 440) 0.05 0.1 0.9 0.1)") // returns nested array structure
+ */
 export function tokenize(input) {
   let token = "";
   let expressions = [[]];
