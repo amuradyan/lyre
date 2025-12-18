@@ -21,6 +21,15 @@
     "music",
     "education"
   ],
-  "author": "",
-  "license": "MIT"
+  "author": "Andranik Muradyan <andranik@amuradyan.am>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amuradyan/lyre.git",
+    "directory": "lang"
+  },
+  "homepage": "https://lyre.amuradyan.am",
+  "bugs": {
+    "url": "https://github.com/amuradyan/lyre/issues"
+  }
 }
