@@ -1,2 +1,2 @@
-export { tokenize } from './tokenizer.js';
-export { interpret } from './evaluator.js';
+export { tokenize } from './tokenizer.d.ts';
+export { interpret } from './evaluator.d.ts';
