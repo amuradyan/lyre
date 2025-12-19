@@ -1,12 +1,15 @@
 {
   "name": "@dekanat/lyre",
-  "version": "0.1.1",
+  "version": "0.1.2",
+  "description": "A musical Lisp with audio synthesis - build sound from composable generators",
   "license": "MIT",
   "exports": "./mod.js",
   "publish": {
     "include": [
       "src/**/*.js",
+      "src/**/*.d.ts",
       "mod.js",
+      "mod.d.ts",
       "README.md",
       "jsr.json"
     ]
