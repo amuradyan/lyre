@@ -1,5 +1,12 @@
 import { samplingRate } from './oscillators.js';
 
+/**
+ * Calculates the amplitude multiplier for a given sample position in an ADSR envelope.
+ * @param {number} n - Current sample position
+ * @param {number} totalSamples - Total number of samples in the envelope
+ * @param {number[]} adsr - Array of [attackTime, decayTime, sustainLevel, releaseTime]
+ * @returns {number} Amplitude multiplier (0-1)
+ */
 export function adjustAmplitude(n, totalSamples, adsr) {
   const [attackTime, decayTime, sustainLevel, releaseTime] = adsr;
   const attackSamples = attackTime * samplingRate;
