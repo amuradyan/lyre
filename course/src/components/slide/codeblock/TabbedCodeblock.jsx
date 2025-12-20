@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import TestResults from './tests/TestResults.jsx';
-import { executeMarkdownTest } from '../../../toolbox/tests/TestRunner.js';
+import { executeMarkdownTest } from '../../../toolbox/tests/testRunner.js';
 import { bundleTabs } from '../../../toolbox/code/moduleBundler.js';
 import { createAudioContext } from '../../../toolbox/audioPlayer.js';
 import { saveCodeBlock, loadCodeBlock, saveHintState, loadHintState } from '../../../toolbox/slides/progressTracker.js';
