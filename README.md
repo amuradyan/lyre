@@ -1,5 +1,7 @@
 # Lyre 🪉
 
+[![Tests](https://github.com/amuradyan/lyre/actions/workflows/test.yml/badge.svg)](https://github.com/amuradyan/lyre/actions/workflows/test.yml)
+
 This repository accompanies a course on implementing a programming language from scratch. The idea is to explore how programming languages work by building a simple language to write music step by step.
 
 For the looks and the mechanics of our language, we'll draw inspiration from an old and powerful family of programming languages - the LISPs, and we'll use JS to actually build and use the tool. We won't get into details with any of these languages, and, I hope, you'll be surprised to learn how far one can go in their experiments relying on a few fundamental ideas.

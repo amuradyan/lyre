@@ -9,6 +9,9 @@
     "./synth": "./src/synth/index.js",
     "./language": "./src/language/index.js"
   },
+  "scripts": {
+    "test": "for file in $(find src -name '*.test.js' 2>/dev/null); do echo \"Running $file\"; node \"$file\"; done || echo 'No tests found'"
+  },
   "files": [
     "src/**/*.js",
     "README.md"
