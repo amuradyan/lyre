@@ -75,7 +75,7 @@ function* sawtooth(frequency) {
   const phaseIncrement = (2 * Math.PI * frequency) / samplingRate;
 
   while (true) {
-    const value = -1 + 2 * (phase / (2 * Math.PI));
+    const value = ???;
 
     yield value;
     phase = phase + phaseIncrement;
@@ -87,7 +87,7 @@ function* sawtooth(frequency) {
 }
 ```
 
-```js:TestSawtooth
+```js:PlaySawtooth
 const {sawtooth, envelope} = Synth;
 
 const play = function() {
