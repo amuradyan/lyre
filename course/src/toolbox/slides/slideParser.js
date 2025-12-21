@@ -150,6 +150,10 @@ const extractImage = (line) => {
     return { type: 'harmonic-builder' };
   }
 
+  if (alt === 'spectrum-analyzer') {
+    return { type: 'spectrum-analyzer' };
+  }
+
   return { type: 'image', alt, src };
 };
 

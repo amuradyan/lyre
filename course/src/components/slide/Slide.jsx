@@ -11,6 +11,7 @@ import InfoPlaque from './KeyboardShortcutsModal.jsx';
 import { SLIDES } from '../../toolbox/slides/slides.js';
 import WaveSuperposition from './WaveSuperposition.jsx';
 import HarmonicBuilder from './HarmonicBuilder.jsx';
+import SpectrumAnalyzer from './SpectrumAnalyzer.jsx';
 
 function CollapsibleParagraph({ content }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -439,6 +440,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                   return <WaveSuperposition key={i} />;
                 } else if (item.type === 'harmonic-builder') {
                   return <HarmonicBuilder key={i} />;
+                } else if (item.type === 'spectrum-analyzer') {
+                  return <SpectrumAnalyzer key={i} />;
                 } else if (item.type === 'image') {
                   const resolveImagePath = (src) => {
                     if (src.startsWith('http://') || src.startsWith('https://')) {
