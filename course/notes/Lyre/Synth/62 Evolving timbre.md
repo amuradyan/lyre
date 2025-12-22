@@ -8,6 +8,8 @@ Listen to a real plucked string on a lyre. When you first pluck it, the sound is
 
 ![spectrum-analyzer]()
 
+![synthesis-diagram]()
+
 Our current sawtooth maintains all its harmonics at constant ratios throughout the sound. The amplitude envelope controls how loud it is, but not how bright it is. The timbre stays frozen.
 
 We need a way to remove high frequencies and control that removal over time. This is what filters do. A low-pass filter lets low frequencies pass through while blocking high frequencies. By controlling the filter's cutoff frequency over time with a filter envelope, we can make our synthetic string start bright and become dull - just like a real one.

@@ -154,6 +154,10 @@ const extractImage = (line) => {
     return { type: 'spectrum-analyzer' };
   }
 
+  if (alt === 'synthesis-diagram') {
+    return { type: 'synthesis-diagram' };
+  }
+
   return { type: 'image', alt, src };
 };
 
