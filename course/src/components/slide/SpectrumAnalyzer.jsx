@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import spectrumData from '../../assets/a-sharp-3-spectrum.txt?raw';
 
-const A_SHARP_3 = 233.08;
-
 const getNoteFromFreq = (freq) => {
   const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
   const a4 = 440;
@@ -13,17 +11,43 @@ const getNoteFromFreq = (freq) => {
   return `${note}${octave}`;
 };
 
+const interpolateData = (data, pointsPerInterval = 3) => {
+  const interpolated = [];
+
+  for (let i = 0; i < data.length - 1; i++) {
+    const p1 = data[i];
+    const p2 = data[i + 1];
+
+    interpolated.push(p1);
+
+    for (let j = 1; j <= pointsPerInterval; j++) {
+      const t = j / (pointsPerInterval + 1);
+      const freq = p1.freq + (p2.freq - p1.freq) * t;
+      const level = p1.level + (p2.level - p1.level) * t;
+      interpolated.push({ freq, level });
+    }
+  }
+
+  interpolated.push(data[data.length - 1]);
+  return interpolated;
+};
+
 export default function SpectrumAnalyzer() {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [threshold, setThreshold] = useState(-45);
   const [maxFreq, setMaxFreq] = useState(8000);
   const [cursorX, setCursorX] = useState(null);
+  const [frozenGroups, setFrozenGroups] = useState([]);
 
-  const data = spectrumData.split('\n').map(line => {
-    const [freq, level] = line.split('\t').map(Number);
-    return { freq, level };
-  });
+  const rawData = spectrumData.split('\n')
+    .map(line => {
+      const [freq, level] = line.split('\t').map(Number);
+      return { freq, level };
+    })
+    .filter(d => !isNaN(d.freq) && !isNaN(d.level) && d.freq !== undefined && d.level !== undefined);
+
+  const data = interpolateData(rawData, 10);
 
   const filteredData = data.filter(d => d.freq <= maxFreq);
 
@@ -37,6 +61,40 @@ export default function SpectrumAnalyzer() {
 
   const handleMouseLeave = () => {
     setCursorX(null);
+  };
+
+  const getNearestPoint = () => {
+    if (cursorX === null || !canvasRef.current) return null;
+    const canvas = canvasRef.current;
+    const width = canvas.width;
+    const padding = { left: 60, right: 40 };
+    const chartWidth = width - padding.left - padding.right;
+
+    if (cursorX < padding.left || cursorX > width - padding.right) return null;
+    if (filteredData.length === 0) return null;
+
+    const freq = ((cursorX - padding.left) / chartWidth) * maxFreq;
+    return filteredData.reduce((nearest, point) => {
+      const currDist = Math.abs(point.freq - freq);
+      const nearestDist = Math.abs(nearest.freq - freq);
+      return currDist < nearestDist ? point : nearest;
+    }, filteredData[0]);
+  };
+
+  const handleClick = () => {
+    const nearestPoint = getNearestPoint();
+    if (nearestPoint) {
+      const existingIndex = frozenGroups.findIndex(g => Math.abs(g.freq - nearestPoint.freq) < 10);
+      if (existingIndex >= 0) {
+        setFrozenGroups(frozenGroups.filter((_, i) => i !== existingIndex));
+      } else {
+        setFrozenGroups([...frozenGroups, nearestPoint]);
+      }
+    }
+  };
+
+  const handleClearAll = () => {
+    setFrozenGroups([]);
   };
 
   useEffect(() => {
@@ -65,7 +123,7 @@ export default function SpectrumAnalyzer() {
     ctx.clearRect(0, 0, width, height);
 
     ctx.strokeStyle = '#e5e7eb';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 0.5;
     for (let level = levelMin; level <= levelMax; level += 10) {
       const y = yScale(level);
       ctx.beginPath();
@@ -92,21 +150,6 @@ export default function SpectrumAnalyzer() {
       ctx.fillText(`${freq / 1000}k`, x, height - padding.bottom + 20);
     }
 
-    for (let i = 1; i <= 10; i++) {
-      const harmonicFreq = A_SHARP_3 * i;
-      if (harmonicFreq <= maxFreq) {
-        const x = xScale(harmonicFreq);
-        ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 1;
-        ctx.setLineDash([3, 3]);
-        ctx.beginPath();
-        ctx.moveTo(x, padding.top);
-        ctx.lineTo(x, height - padding.bottom);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-    }
-
     const thresholdY = yScale(threshold);
     ctx.strokeStyle = '#ef4444';
     ctx.lineWidth = 1;
@@ -118,7 +161,7 @@ export default function SpectrumAnalyzer() {
     ctx.setLineDash([]);
 
     ctx.strokeStyle = '#6366f1';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     ctx.beginPath();
     for (let i = 0; i < filteredData.length; i++) {
       const x = xScale(filteredData[i].freq);
@@ -131,20 +174,79 @@ export default function SpectrumAnalyzer() {
     }
     ctx.stroke();
 
-    for (let i = 1; i < filteredData.length - 1; i++) {
-      const curr = filteredData[i];
-      const prev = filteredData[i - 1];
-      const next = filteredData[i + 1];
+    const groupColors = [
+      '#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#a855f7',
+      '#06b6d4', '#84cc16', '#ec4899', '#10b981', '#f97316'
+    ];
 
-      if (curr.level > prev.level && curr.level > next.level && curr.level > threshold) {
-        const x = xScale(curr.freq);
-        const y = yScale(curr.level);
-        ctx.fillStyle = '#ef4444';
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fill();
+    const drawHarmonics = (point, groupColor, isFrozen, showLabels) => {
+      const fundamentalFreq = point.freq;
+      const x = xScale(point.freq);
+      const y = yScale(point.level);
+
+      ctx.fillStyle = groupColor || 'rgba(99, 102, 241, 0.5)';
+      ctx.beginPath();
+      ctx.arc(x, y, isFrozen ? 6 : 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (isFrozen && showLabels) {
+        ctx.fillStyle = groupColor;
+        ctx.font = 'bold 11px Nunito, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(getNoteFromFreq(fundamentalFreq), x, padding.top - 5);
       }
-    }
+
+      for (let octave = 1; octave <= 15; octave++) {
+        const harmonicFreq = fundamentalFreq * Math.pow(2, octave);
+        if (harmonicFreq > maxFreq) break;
+
+        const hx = xScale(harmonicFreq);
+        const lineHeight = 30;
+        ctx.strokeStyle = groupColor || 'rgba(156, 163, 175, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(hx, padding.top);
+        ctx.lineTo(hx, padding.top + lineHeight);
+        ctx.stroke();
+
+        if (isFrozen && showLabels) {
+          const note = getNoteFromFreq(harmonicFreq);
+          ctx.fillStyle = groupColor;
+          ctx.font = 'bold 11px Nunito, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(note, hx, padding.top - 5);
+        }
+      }
+    };
+
+    const cursorFreq = cursorX !== null && cursorX >= padding.left && cursorX <= width - padding.right
+      ? ((cursorX - padding.left) / chartWidth) * freqMax
+      : null;
+
+    frozenGroups.forEach((group, index) => {
+      if (group.freq <= maxFreq) {
+        const color = groupColors[index % groupColors.length];
+
+        let showLabels = false;
+        if (cursorFreq !== null) {
+          if (Math.abs(group.freq - cursorFreq) < 5) {
+            showLabels = true;
+          } else {
+            for (let octave = 1; octave <= 15; octave++) {
+              const harmonicFreq = group.freq * Math.pow(2, octave);
+              if (harmonicFreq > maxFreq) break;
+              if (Math.abs(harmonicFreq - cursorFreq) < 5) {
+                showLabels = true;
+                break;
+              }
+            }
+          }
+        }
+
+        drawHarmonics(group, color, true, showLabels);
+      }
+    });
 
     if (cursorX !== null && cursorX >= padding.left && cursorX <= width - padding.right) {
       ctx.setLineDash([3, 3]);
@@ -164,38 +266,13 @@ export default function SpectrumAnalyzer() {
       }, filteredData[0]);
 
       if (nearestPoint) {
-        const x = xScale(nearestPoint.freq);
-        const y = yScale(nearestPoint.level);
-        ctx.fillStyle = '#6366f1';
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, Math.PI * 2);
-        ctx.fill();
+        const isFrozen = frozenGroups.some(g => Math.abs(g.freq - nearestPoint.freq) < 10);
+        if (!isFrozen) {
+          drawHarmonics(nearestPoint, 'rgba(156, 163, 175, 0.6)', false, false);
+        }
       }
     }
-
-    ctx.fillStyle = '#6b7280';
-    ctx.font = '14px Nunito, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText('Frequency Spectrum - A#3 Lyre Harp', padding.left, 15);
-
-  }, [threshold, maxFreq, cursorX, filteredData]);
-
-  const getNearestPoint = () => {
-    if (cursorX === null || !canvasRef.current) return null;
-    const canvas = canvasRef.current;
-    const width = canvas.width;
-    const padding = { left: 60, right: 40 };
-    const chartWidth = width - padding.left - padding.right;
-
-    if (cursorX < padding.left || cursorX > width - padding.right) return null;
-
-    const freq = ((cursorX - padding.left) / chartWidth) * maxFreq;
-    return filteredData.reduce((nearest, point) => {
-      const currDist = Math.abs(point.freq - freq);
-      const nearestDist = Math.abs(nearest.freq - freq);
-      return currDist < nearestDist ? point : nearest;
-    }, filteredData[0]);
-  };
+  }, [threshold, maxFreq, cursorX, filteredData, frozenGroups]);
 
   const nearestPoint = getNearestPoint();
 
@@ -234,20 +311,31 @@ export default function SpectrumAnalyzer() {
             />
             <span className="text-sm text-gray-600 w-16">{(maxFreq / 1000).toFixed(0)}kHz</span>
           </div>
+          {frozenGroups.length > 0 && (
+            <button
+              onClick={handleClearAll}
+              className="text-xs px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
+            >
+              Clear All
+            </button>
+          )}
         </div>
-        {nearestPoint && cursorX !== null && (
-          <div className="text-sm text-gray-600">
-            {getNoteFromFreq(nearestPoint.freq)} @ {nearestPoint.freq.toFixed(1)}Hz | {nearestPoint.level.toFixed(1)}dB
-          </div>
-        )}
+        <div className="flex items-center gap-4">
+          {nearestPoint && cursorX !== null && nearestPoint.freq !== undefined && nearestPoint.level !== undefined && (
+            <div className="text-sm text-gray-600">
+              {getNoteFromFreq(nearestPoint.freq)} @ {nearestPoint.freq.toFixed(1)}Hz | {nearestPoint.level.toFixed(1)}dB
+            </div>
+          )}
+        </div>
       </div>
       <canvas
         ref={canvasRef}
         height={300}
-        className="w-full bg-transparent"
+        className="w-full bg-transparent cursor-pointer"
         style={{ height: '300px' }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
       />
     </div>
   );
