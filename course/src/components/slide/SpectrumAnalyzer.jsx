@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import spectrumData from '../../assets/a-sharp-3-spectrum.txt?raw';
 
 const getNoteFromFreq = (freq) => {
   const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -39,17 +38,25 @@ export default function SpectrumAnalyzer() {
   const [maxFreq, setMaxFreq] = useState(8000);
   const [cursorX, setCursorX] = useState(null);
   const [frozenGroups, setFrozenGroups] = useState([]);
+  const [spectrumData, setSpectrumData] = useState('');
 
-  const rawData = spectrumData.split('\n')
+  useEffect(() => {
+    fetch('/a-sharp-3-spectrum.txt')
+      .then(response => response.text())
+      .then(data => setSpectrumData(data))
+      .catch(error => console.error('Error loading spectrum data:', error));
+  }, []);
+
+  const rawData = !spectrumData ? [] : spectrumData.split('\n')
     .map(line => {
       const [freq, level] = line.split('\t').map(Number);
       return { freq, level };
     })
     .filter(d => !isNaN(d.freq) && !isNaN(d.level) && d.freq !== undefined && d.level !== undefined);
 
-  const data = interpolateData(rawData, 10);
+  const data = rawData.length > 0 ? interpolateData(rawData, 10) : [];
 
-  const filteredData = data.filter(d => d.freq <= maxFreq);
+  const filteredData = data.filter(d => d && d.freq <= maxFreq);
 
   const handleMouseMove = (e) => {
     const canvas = canvasRef.current;

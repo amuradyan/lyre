@@ -1,4 +1,4 @@
-import { evaluateCode, parseTestComment, runMarkdownTest, executeMarkdownTest } from './TestRunner.js';
+import { evaluateCode, parseTestComment, runMarkdownTest, executeMarkdownTest } from './testRunner.js';
 
 function test(name, fn) {
   try {
