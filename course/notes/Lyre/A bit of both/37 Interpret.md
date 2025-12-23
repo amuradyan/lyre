@@ -80,6 +80,8 @@ function* envelope(source, adsr) {
 }
 ```
 
+>+ We pick the [0.01, 0.1, 0.7, 0.2] values for the plucked envelope because they look reasonable for a pluck. When you play it however, you will hear that it's quite far from a real plucked string. We'll improve it later, when we analyze as sample of an A#3 plucked on a lyre. You'll be surprised to see how complex and surprising the whole sound is!
+
 ##### Back: [On to interpreting](36%20On%20to%20interpreting.md)
 
 ##### Next: [Plucking](38%20Plucking.md)
