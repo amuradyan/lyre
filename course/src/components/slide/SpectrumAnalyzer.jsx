@@ -37,6 +37,7 @@ export default function SpectrumAnalyzer() {
   const [threshold, setThreshold] = useState(-45);
   const [maxFreq, setMaxFreq] = useState(8000);
   const [cursorX, setCursorX] = useState(null);
+  const [cursorY, setCursorY] = useState(null);
   const [frozenGroups, setFrozenGroups] = useState([]);
   const [spectrumData, setSpectrumData] = useState('');
 
@@ -63,11 +64,14 @@ export default function SpectrumAnalyzer() {
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     setCursorX(x);
+    setCursorY(y);
   };
 
   const handleMouseLeave = () => {
     setCursorX(null);
+    setCursorY(null);
   };
 
   const getNearestPoint = () => {
@@ -88,14 +92,47 @@ export default function SpectrumAnalyzer() {
     }, filteredData[0]);
   };
 
+  const groupColors = [
+    '#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#a855f7',
+    '#06b6d4', '#84cc16', '#ec4899', '#10b981', '#f97316'
+  ];
+
   const handleClick = () => {
-    const nearestPoint = getNearestPoint();
-    if (nearestPoint) {
-      const existingIndex = frozenGroups.findIndex(g => Math.abs(g.freq - nearestPoint.freq) < 10);
-      if (existingIndex >= 0) {
-        setFrozenGroups(frozenGroups.filter((_, i) => i !== existingIndex));
-      } else {
-        setFrozenGroups([...frozenGroups, nearestPoint]);
+    if (cursorX === null || cursorY === null || !canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const width = canvas.width;
+    const height = canvas.height;
+    const padding = { top: 20, right: 40, bottom: 40, left: 60 };
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
+
+    const levelMin = -70;
+    const levelMax = -20;
+    const xScale = (freq) => padding.left + (freq / maxFreq) * chartWidth;
+    const yScale = (level) => padding.top + chartHeight - ((level - levelMin) / (levelMax - levelMin)) * chartHeight;
+
+    let clickedGroupIndex = -1;
+    for (let i = 0; i < frozenGroups.length; i++) {
+      const group = frozenGroups[i];
+      const dotX = xScale(group.freq);
+      const dotY = yScale(group.level);
+      const distance = Math.sqrt(Math.pow(cursorX - dotX, 2) + Math.pow(cursorY - dotY, 2));
+
+      if (distance <= 8) {
+        clickedGroupIndex = i;
+        break;
+      }
+    }
+
+    if (clickedGroupIndex >= 0) {
+      setFrozenGroups(frozenGroups.filter((_, i) => i !== clickedGroupIndex));
+    } else {
+      const nearestPoint = getNearestPoint();
+      if (nearestPoint) {
+        const usedColors = new Set(frozenGroups.map(g => g.color));
+        const availableColor = groupColors.find(c => !usedColors.has(c)) || groupColors[frozenGroups.length % groupColors.length];
+        setFrozenGroups([...frozenGroups, { ...nearestPoint, color: availableColor }]);
       }
     }
   };
@@ -181,11 +218,6 @@ export default function SpectrumAnalyzer() {
     }
     ctx.stroke();
 
-    const groupColors = [
-      '#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#a855f7',
-      '#06b6d4', '#84cc16', '#ec4899', '#10b981', '#f97316'
-    ];
-
     const drawHarmonics = (point, groupColor, isFrozen, showLabels) => {
       const fundamentalFreq = point.freq;
       const x = xScale(point.freq);
@@ -193,7 +225,7 @@ export default function SpectrumAnalyzer() {
 
       ctx.fillStyle = groupColor || 'rgba(99, 102, 241, 0.5)';
       ctx.beginPath();
-      ctx.arc(x, y, isFrozen ? 6 : 4, 0, Math.PI * 2);
+      ctx.arc(x, y, isFrozen ? 4 : 3, 0, Math.PI * 2);
       ctx.fill();
 
       if (isFrozen && showLabels) {
@@ -231,27 +263,20 @@ export default function SpectrumAnalyzer() {
       ? ((cursorX - padding.left) / chartWidth) * freqMax
       : null;
 
-    frozenGroups.forEach((group, index) => {
+    frozenGroups.forEach((group) => {
       if (group.freq <= maxFreq) {
-        const color = groupColors[index % groupColors.length];
-
         let showLabels = false;
-        if (cursorFreq !== null) {
-          if (Math.abs(group.freq - cursorFreq) < 5) {
+        if (cursorX !== null && cursorY !== null) {
+          const dotX = xScale(group.freq);
+          const dotY = yScale(group.level);
+          const distance = Math.sqrt(Math.pow(cursorX - dotX, 2) + Math.pow(cursorY - dotY, 2));
+
+          if (distance <= 8) {
             showLabels = true;
-          } else {
-            for (let octave = 1; octave <= 15; octave++) {
-              const harmonicFreq = group.freq * Math.pow(2, octave);
-              if (harmonicFreq > maxFreq) break;
-              if (Math.abs(harmonicFreq - cursorFreq) < 5) {
-                showLabels = true;
-                break;
-              }
-            }
           }
         }
 
-        drawHarmonics(group, color, true, showLabels);
+        drawHarmonics(group, group.color, true, showLabels);
       }
     });
 
@@ -279,7 +304,7 @@ export default function SpectrumAnalyzer() {
         }
       }
     }
-  }, [threshold, maxFreq, cursorX, filteredData, frozenGroups]);
+  }, [threshold, maxFreq, cursorX, cursorY, filteredData, frozenGroups]);
 
   const nearestPoint = getNearestPoint();
 
