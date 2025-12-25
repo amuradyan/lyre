@@ -346,9 +346,10 @@ export default function SpectrumAnalyzer() {
           {frozenGroups.length > 0 && (
             <button
               onClick={handleClearAll}
-              className="text-xs px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
+              className="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-base"
+              title="Clear all markers"
             >
-              Clear All
+              🧹
             </button>
           )}
         </div>

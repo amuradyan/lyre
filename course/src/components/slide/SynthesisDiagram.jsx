@@ -57,6 +57,7 @@ export default function SynthesisDiagram() {
                 </div>
               ))}
             </div>
+            <div className="text-[9px] text-gray-500 mt-1 text-center">...</div>
           </div>
           <div className="text-[9px] text-gray-500 mt-2 text-center">Pure sine waves</div>
         </div>
@@ -142,7 +143,7 @@ export default function SynthesisDiagram() {
               <div className="text-[8px] text-gray-500 mb-1 text-center">A#3 on a lyre</div>
               <button
                 onClick={handlePlayPause}
-                className="flex items-center justify-center w-12 h-12 rounded-full text-white transition-all duration-200 hover:opacity-90"
+                className="flex items-center justify-center w-10 h-10 rounded text-white transition-all duration-200 hover:opacity-90"
                 style={{ backgroundColor: '#B187D8' }}
               >
                 {isPlaying ? (
