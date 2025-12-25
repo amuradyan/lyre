@@ -1,3 +1,5 @@
+import { useState, useRef } from 'react';
+
 const oscillators = [
   { harm: 1, freq: '233 Hz', amp: '100%', db: '0 dB', note: 'A#3' },
   { harm: 2, freq: '466 Hz', amp: '50%', db: '-6 dB', note: 'A#4' },
@@ -7,6 +9,32 @@ const oscillators = [
 ];
 
 export default function SynthesisDiagram() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const handlePlayPause = () => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio('/lyre-As3.wav');
+      audioRef.current.onended = () => setIsPlaying(false);
+      audioRef.current.onerror = (e) => {
+        console.error('Audio loading error:', e);
+        setIsPlaying(false);
+      };
+    }
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play().catch(err => {
+        console.error('Audio playback error:', err);
+        setIsPlaying(false);
+      });
+      setIsPlaying(true);
+    }
+  };
+
   return (
     <div className="my-6 overflow-x-auto">
       <div className="flex gap-3 min-w-max bg-white border border-gray-200 rounded p-4">
@@ -110,8 +138,23 @@ export default function SynthesisDiagram() {
         <div className="flex-shrink-0 w-28 flex flex-col">
           <div className="text-xs font-bold text-gray-600 mb-2 text-center">OUTPUT</div>
           <div className="flex-1 flex flex-col justify-center">
-            <div className="border border-gray-300 rounded p-3 bg-gray-50 flex flex-col justify-center items-center">
-              <div className="text-3xl">🪉</div>
+            <div className="border border-gray-300 rounded p-3 bg-gray-50 flex flex-col justify-center items-center relative">
+              <div className="text-[8px] text-gray-500 mb-1 text-center">A#3 on a lyre</div>
+              <button
+                onClick={handlePlayPause}
+                className="flex items-center justify-center w-12 h-12 rounded-full text-white transition-all duration-200 hover:opacity-90"
+                style={{ backgroundColor: '#B187D8' }}
+              >
+                {isPlaying ? (
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
           <div className="text-[9px] text-gray-500 mt-2 text-center">Final sound of a lyre</div>
