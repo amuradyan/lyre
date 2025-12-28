@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+import { stream } from '../src/language/runner.js';
+
+const filePath = process.argv[2];
+const generator = stream(filePath);
+
+const buffer = Buffer.allocUnsafe(4);
+for (const sample of generator) {
+  buffer.writeFloatLE(sample, 0);
+  process.stdout.write(Buffer.from(buffer));
+}

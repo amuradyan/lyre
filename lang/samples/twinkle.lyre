@@ -1,0 +1,8 @@
+(sequence
+  (envelope (tone 261.63) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 261.63) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 392.00) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 392.00) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 440.00) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 440.00) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 392.00) 0.01 0.1 0.7 0.2 0.85))
