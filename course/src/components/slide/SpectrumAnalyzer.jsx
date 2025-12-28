@@ -273,6 +273,16 @@ export default function SpectrumAnalyzer() {
 
           if (distance <= 8) {
             showLabels = true;
+          } else {
+            for (let octave = 1; octave <= 15; octave++) {
+              const harmonicFreq = group.freq * Math.pow(2, octave);
+              if (harmonicFreq > maxFreq) break;
+              const harmonicX = xScale(harmonicFreq);
+              if (Math.abs(cursorX - harmonicX) <= 5) {
+                showLabels = true;
+                break;
+              }
+            }
           }
         }
 
