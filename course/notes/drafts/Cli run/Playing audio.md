@@ -20,12 +20,10 @@ Assuming we have a sample of the _Twinkle Twinkle Little Star_ melody in `sample
 , the full command line will look like:
 
 ```bash
-./lyre.js samples/twinkle.lyre | ffplay -f f32le -ar 44100 -autoexit -
+./lyre samples/twinkle.lyre | ffplay -f f32le -ar 44100 -autoexit -
 ```
 
 >+ `-autoexit` tells `ffplay` to quit when the audio finishes instead of waiting for more input indefinitely.
-
-This is the Unix philosophy: small tools that do one thing, connected with pipes. Our CLI generates samples. `ffplay` plays them. Neither needs to know the other's internals.
 
 Running the command should play the beginning of "Twinkle Twinkle Little Star", and we're done!
 

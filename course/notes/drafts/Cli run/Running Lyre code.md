@@ -25,7 +25,7 @@ Make the file executable, so we can run it directly:
 
 ```bash
 chmod +x lyre.js
-./lyre.js samples/twinkle.lyre
+./lyre samples/twinkle.lyre
 ```
 
 Let's figure out what to do with the samples next.
