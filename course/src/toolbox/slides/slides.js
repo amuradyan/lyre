@@ -1,4 +1,4 @@
-const slideModules = import.meta.glob('../../../notes/Lyre/**/*.md', {
+const slideModules = import.meta.glob(['../../../notes/Lyre/**/*.md', '../../../notes/drafts/**/*.md'], {
   query: '?raw',
   import: 'default',
   eager: true
@@ -31,7 +31,7 @@ const extractTags = (content) => {
 
 export const SLIDES = Object.entries(slideModules)
   .map(([path, content]) => ({
-    path: path.replace('../../../notes/Lyre/', './notes/Lyre/'),
+    path: path.replace('../../../notes/', './notes/'),
     title: extractTitle(content),
     chapter: extractChapter(path),
     tags: extractTags(content),

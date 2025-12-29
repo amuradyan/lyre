@@ -125,8 +125,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   useEffect(() => {
     window.addEventListener('popstate', handleBrowserNavigation);
+    window.addEventListener('hashchange', handleBrowserNavigation);
     return () => {
       window.removeEventListener('popstate', handleBrowserNavigation);
+      window.removeEventListener('hashchange', handleBrowserNavigation);
     };
   }, [handleBrowserNavigation]);
 
