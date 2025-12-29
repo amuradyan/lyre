@@ -23,7 +23,7 @@ for (const sample of generator) {
 
 >+ `Buffer.allocUnsafe(4)` creates a 4-byte buffer without zeroing the memory - faster since we're about to overwrite it. `writeFloatLE(sample, 0)` writes the float at position 0 in little-endian format, effectively overwriting the entire buffer with the new sample and `Buffer.from(buffer)` creates a copy. Without it, all queued writes would reference the same buffer, which gets overwritten before the writes execute. `process.stdout.write()` writes binary data to stdout.
 
-This gets us to a place where `./bin/lyre.js sample.lyre` produces the raw PCM data and that's all we need to go from a Lyre file to sound.
+This gets us to a place where `./lyre sample.lyre` produces the raw PCM data and that's all we need to go from a Lyre file to sound.
 
 ##### Back: [Running Lyre code](Running Lyre code.md)
 

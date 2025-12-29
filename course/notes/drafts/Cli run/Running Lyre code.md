@@ -4,7 +4,7 @@
 
 Now let us tend to the command-line interface (CLI) for Lyre. I'd like to something like this:
 
-> ./lyre.js sample.lyre | ffplay ... -
+> ./lyre sample.lyre | player ... -
 
 Node.js can run JavaScript files from the command line, and we can make it a script witht  a `#!` at the top. To access the command-line arguments, we'll use `process.argv`, an array where the first two elements are the Node.js executable and the script path, and the rest are the arguments we pass. We'll take the third element as the path to a `.lyre` file and `stream()` it to get audio samples. Then we flush them into the standard output - more on this next.
 
@@ -14,6 +14,7 @@ import { stream } from '../src/language/runner.js';
 
 const filePath = process.argv[2];
 const generator = stream(filePath);
+
 for (const sample of generator) {
   // What do we do with samples?
 }
