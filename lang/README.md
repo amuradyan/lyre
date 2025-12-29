@@ -120,6 +120,27 @@ Lyre is a minimal Lisp. Parentheses group expressions, the first element names t
 
 Note that in Lyre syntax, the gate time parameter for envelope uses milliseconds, while the JavaScript API uses seconds. The interpreter handles the conversion.
 
+## Command line
+
+The `lyre` command reads a `.lyre` file and streams raw PCM audio to stdout. Pipe the output to an audio player:
+
+```bash
+lyre sample.lyre | ffplay -f f32le -ar 44100 -autoexit -
+```
+
+The `-f f32le` flag tells ffplay to expect 32-bit little-endian floats, `-ar 44100` sets the sample rate, and `-autoexit` quits when the audio finishes.
+
+For programmatic use, the `stream(filePath)` function reads a file and yields samples:
+
+```js
+import { stream } from '@lyre/core';
+
+const generator = stream('melody.lyre');
+for (const sample of generator) {
+  // process sample
+}
+```
+
 ## Reference
 
 **Generating waves.** The foundation is `oscillate(frequency)`, which yields an infinite sine wave at the given frequency. `tone(frequency)` wraps this in a convenient generator that you can pass to other functions. `sawtooth(frequency)` generates a richer waveform - a rising ramp from -1 to 1 - that contains more harmonics than a sine wave.
