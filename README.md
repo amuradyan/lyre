@@ -84,6 +84,7 @@ npm run lint    # Run ESLint
 The core Lyre language and synthesis engine. See [lang/README.md](lang/README.md) for API documentation.
 
 Features:
+
 - Lisp-like language with s-expressions
 - Generator-based audio synthesis
 - Oscillators (sine, sawtooth)
