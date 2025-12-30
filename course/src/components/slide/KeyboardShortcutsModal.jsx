@@ -106,19 +106,6 @@ export default function InfoPlaque({ onClose }) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div
-          style={{
-            padding: '20px',
-            borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
-            fontFamily: 'Nunito, sans-serif',
-            fontSize: '18px',
-            fontWeight: 700,
-            color: '#374151'
-          }}
-        >
-          Info
-        </div>
-
         <div style={{ padding: '20px', borderBottom: '1px solid rgba(0, 0, 0, 0.1)' }}>
           <div
             style={{
@@ -263,7 +250,7 @@ export default function InfoPlaque({ onClose }) {
             Interactive Elements
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
             <div className="element-row">
               <div className="element-icon">
                 <svg viewBox="0 0 24 24" fill="#6366f1" style={{ width: '20px', height: '20px' }}>
@@ -308,9 +295,27 @@ export default function InfoPlaque({ onClose }) {
 
             <div className="element-row">
               <div className="element-icon">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                  <svg width="18" height="22" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                    <path d="M2 2l7.586 7.586"/>
+                  </svg>
+                  <span style={{ color: '#9ca3af', fontSize: '12px', fontWeight: 600 }}>/</span>
+                  <svg width="18" height="22" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="element-desc">Switch curriculum</div>
+            </div>
+
+            <div className="element-row">
+              <div className="element-icon">
                 <span style={{ fontFamily: 'Nunito, sans-serif', fontSize: '18px', fontWeight: 600, color: '#6366f1' }}>.</span>
               </div>
-              <div className="element-desc">Help button</div>
+              <div className="element-desc">This plaque</div>
             </div>
           </div>
         </div>
