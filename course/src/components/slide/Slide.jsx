@@ -166,6 +166,13 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }
   }, [mdPath]);
 
+  useEffect(() => {
+    if (!mdPath) return;
+    const curriculum = getCurriculumFromPath(mdPath);
+    if (!curriculum) return;
+    localStorage.setItem(`lyre-last-slide-${curriculum}`, mdPath);
+  }, [mdPath]);
+
   const parsed = useMemo(() => parseMarkdown(content || ''), [content]);
 
   const slideIndex = useMemo(() => {
@@ -311,10 +318,17 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   const handleCurriculumSwitch = () => {
     const currentCurriculum = getCurriculumFromPath(mdPath);
-    if (currentCurriculum === 'Lyre') {
-      window.location.hash = '#drafts';
+    const targetCurriculum = currentCurriculum === 'Lyre' ? 'drafts' : 'Lyre';
+
+    const lastVisitedSlide = localStorage.getItem(`lyre-last-slide-${targetCurriculum}`);
+
+    if (lastVisitedSlide) {
+      setMdPath(lastVisitedSlide);
+      setDisplayPath(lastVisitedSlide);
+      updateUrl(lastVisitedSlide);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      const targetSlides = getSlidesForCurriculum('Lyre');
+      const targetSlides = getSlidesForCurriculum(targetCurriculum);
       if (targetSlides.length === 0) return;
       const firstSlide = targetSlides[0].path;
       setMdPath(firstSlide);
