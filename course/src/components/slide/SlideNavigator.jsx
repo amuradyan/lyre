@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { SLIDES } from '../../toolbox/slides/slides.js';
 
-export default function SlideNavigator({ currentIndex, onNavigate, onPreview, onClose, onHome, onEnd }) {
+export default function SlideNavigator({ currentIndex, currentCurriculum, onNavigate, onPreview, onClose, onHome, onEnd }) {
   const [expandedFolders, setExpandedFolders] = useState({});
   const [focusedIndex, setFocusedIndex] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,7 +24,11 @@ export default function SlideNavigator({ currentIndex, onNavigate, onPreview, on
     return searchIdx === searchLower.length;
   };
 
-  const slidesWithIndex = SLIDES.map((slide, idx) => ({ ...slide, index: idx + 1 }));
+  const curriculumSlides = currentCurriculum
+    ? SLIDES.filter(slide => slide.path.includes(`/${currentCurriculum}/`))
+    : SLIDES;
+
+  const slidesWithIndex = curriculumSlides.map((slide, idx) => ({ ...slide, index: idx + 1 }));
 
   const filteredSlides = searchQuery
     ? slidesWithIndex.filter(slide =>
@@ -58,7 +62,7 @@ export default function SlideNavigator({ currentIndex, onNavigate, onPreview, on
   useEffect(() => {
     // Store the original slide when navigator opens
     if (originalSlideRef.current === null) {
-      originalSlideRef.current = SLIDES[currentIndex - 1]?.path;
+      originalSlideRef.current = curriculumSlides[currentIndex - 1]?.path;
     }
 
     const handleKeyboard = (e) => {
@@ -260,8 +264,8 @@ export default function SlideNavigator({ currentIndex, onNavigate, onPreview, on
   };
 
   const handleFirst = () => {
-    if (SLIDES.length === 0) return;
-    const firstSlide = SLIDES[0];
+    if (curriculumSlides.length === 0) return;
+    const firstSlide = curriculumSlides[0];
     const firstSlideIndex = 1;
 
     // Find and expand the folder containing the first slide
@@ -281,10 +285,9 @@ export default function SlideNavigator({ currentIndex, onNavigate, onPreview, on
   };
 
   const handleLast = () => {
-    if (SLIDES.length === 0) return;
-    const lyreSlides = SLIDES.filter(slide => slide.path.includes('/Lyre/'));
-    const lastSlide = lyreSlides.length > 0 ? lyreSlides[lyreSlides.length - 1] : SLIDES[SLIDES.length - 1];
-    const lastSlideIndex = SLIDES.findIndex(slide => slide.path === lastSlide.path) + 1;
+    if (curriculumSlides.length === 0) return;
+    const lastSlide = curriculumSlides[curriculumSlides.length - 1];
+    const lastSlideIndex = curriculumSlides.length;
 
     // Find and expand the folder containing the last slide
     const pathParts = lastSlide.path.split('/');

@@ -96,6 +96,17 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     return SLIDES.find(slide => pathToSlug(slide.path) === slug)?.path;
   };
 
+  const getCurriculumFromPath = (path) => {
+    if (path.includes('/Lyre/')) return 'Lyre';
+    if (path.includes('/drafts/')) return 'drafts';
+    return null;
+  };
+
+  const getSlidesForCurriculum = (curriculum) => {
+    if (!curriculum) return SLIDES;
+    return SLIDES.filter(slide => slide.path.includes(`/${curriculum}/`));
+  };
+
   const updateUrl = (path) => {
     const slug = pathToSlug(path);
     setSlugToPathMap(prev => ({ ...prev, [slug]: path }));
@@ -161,8 +172,9 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     if (!mdPath) return null;
     const currentIndex = extractSlideIndex(mdPath);
     if (currentIndex === null) return null;
-    const lyreSlides = SLIDES.filter(slide => slide.path.includes('/Lyre/'));
-    return { current: currentIndex, total: lyreSlides.length };
+    const curriculum = getCurriculumFromPath(mdPath);
+    const curriculumSlides = getSlidesForCurriculum(curriculum);
+    return { current: currentIndex, total: curriculumSlides.length };
   }, [mdPath]);
 
   const currentChapter = useMemo(() => {
@@ -211,6 +223,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       nextAbs = `${mdDir}/${target}`;
     }
 
+    const currentCurriculum = getCurriculumFromPath(mdPath);
+    const nextCurriculum = getCurriculumFromPath(nextAbs);
+    if (currentCurriculum !== nextCurriculum) return;
+
     setMdPath(nextAbs);
     setDisplayPath(nextAbs);
     updateUrl(nextAbs);
@@ -234,6 +250,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     } else {
       backAbs = `${mdDir}/${target}`;
     }
+
+    const currentCurriculum = getCurriculumFromPath(mdPath);
+    const backCurriculum = getCurriculumFromPath(backAbs);
+    if (currentCurriculum !== backCurriculum) return;
 
     setMdPath(backAbs);
     setDisplayPath(backAbs);
@@ -267,7 +287,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   const handleHome = () => {
     if (SLIDES.length === 0) return;
-    const firstSlide = SLIDES[0].path;
+    const curriculum = getCurriculumFromPath(mdPath);
+    const curriculumSlides = getSlidesForCurriculum(curriculum);
+    if (curriculumSlides.length === 0) return;
+    const firstSlide = curriculumSlides[0].path;
     setMdPath(firstSlide);
     setDisplayPath(firstSlide);
     updateUrl(firstSlide);
@@ -276,12 +299,29 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   const handleEnd = () => {
     if (SLIDES.length === 0) return;
-    const lyreSlides = SLIDES.filter(slide => slide.path.includes('/Lyre/'));
-    const lastSlide = lyreSlides.length > 0 ? lyreSlides[lyreSlides.length - 1].path : SLIDES[SLIDES.length - 1].path;
+    const curriculum = getCurriculumFromPath(mdPath);
+    const curriculumSlides = getSlidesForCurriculum(curriculum);
+    if (curriculumSlides.length === 0) return;
+    const lastSlide = curriculumSlides[curriculumSlides.length - 1].path;
     setMdPath(lastSlide);
     setDisplayPath(lastSlide);
     updateUrl(lastSlide);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCurriculumSwitch = () => {
+    const currentCurriculum = getCurriculumFromPath(mdPath);
+    if (currentCurriculum === 'Lyre') {
+      window.location.hash = '#drafts';
+    } else {
+      const targetSlides = getSlidesForCurriculum('Lyre');
+      if (targetSlides.length === 0) return;
+      const firstSlide = targetSlides[0].path;
+      setMdPath(firstSlide);
+      setDisplayPath(firstSlide);
+      updateUrl(firstSlide);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
@@ -370,6 +410,27 @@ export default function SlideExperimental({ initialMarkdownPath }) {
           color: #6366f1;
         }
       `}</style>
+      {/* Curriculum Switcher */}
+      {getCurriculumFromPath(mdPath) && (
+        <div
+          className="absolute -top-2 right-20 bg-white/80 backdrop-blur px-3 py-2 shadow-sm cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={handleCurriculumSwitch}
+        >
+          {getCurriculumFromPath(mdPath) === 'Lyre' ? (
+            <svg width="18" height="22" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+              <path d="M2 2l7.586 7.586"/>
+            </svg>
+          ) : (
+            <svg width="18" height="22" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+          )}
+        </div>
+      )}
+
       {/* Help Tab */}
       <div
         className="absolute bottom-8 -right-2 bg-white/80 backdrop-blur px-3 py-2 shadow-sm cursor-pointer hover:opacity-80 transition-opacity flex items-center"
@@ -608,6 +669,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
       {navigatorOpen && createPortal(
         <SlideNavigator
           currentIndex={slideIndex?.current}
+          currentCurriculum={getCurriculumFromPath(mdPath)}
           onNavigate={(path) => {
             setMdPath(path);
             setDisplayPath(path);
