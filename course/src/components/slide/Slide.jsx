@@ -161,7 +161,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     if (!mdPath) return null;
     const currentIndex = extractSlideIndex(mdPath);
     if (currentIndex === null) return null;
-    return { current: currentIndex, total: SLIDES.length };
+    const lyreSlides = SLIDES.filter(slide => slide.path.includes('/Lyre/'));
+    return { current: currentIndex, total: lyreSlides.length };
   }, [mdPath]);
 
   const currentChapter = useMemo(() => {
@@ -275,7 +276,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
   const handleEnd = () => {
     if (SLIDES.length === 0) return;
-    const lastSlide = SLIDES[SLIDES.length - 1].path;
+    const lyreSlides = SLIDES.filter(slide => slide.path.includes('/Lyre/'));
+    const lastSlide = lyreSlides.length > 0 ? lyreSlides[lyreSlides.length - 1].path : SLIDES[SLIDES.length - 1].path;
     setMdPath(lastSlide);
     setDisplayPath(lastSlide);
     updateUrl(lastSlide);

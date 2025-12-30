@@ -282,8 +282,9 @@ export default function SlideNavigator({ currentIndex, onNavigate, onPreview, on
 
   const handleLast = () => {
     if (SLIDES.length === 0) return;
-    const lastSlide = SLIDES[SLIDES.length - 1];
-    const lastSlideIndex = SLIDES.length;
+    const lyreSlides = SLIDES.filter(slide => slide.path.includes('/Lyre/'));
+    const lastSlide = lyreSlides.length > 0 ? lyreSlides[lyreSlides.length - 1] : SLIDES[SLIDES.length - 1];
+    const lastSlideIndex = SLIDES.findIndex(slide => slide.path === lastSlide.path) + 1;
 
     // Find and expand the folder containing the last slide
     const pathParts = lastSlide.path.split('/');
