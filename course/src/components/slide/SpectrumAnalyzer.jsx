@@ -204,6 +204,11 @@ export default function SpectrumAnalyzer() {
     ctx.stroke();
     ctx.setLineDash([]);
 
+    ctx.fillStyle = '#ef4444';
+    ctx.font = '12px Nunito, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${threshold}dB`, width - padding.right + 5, thresholdY + 4);
+
     ctx.strokeStyle = '#6366f1';
     ctx.lineWidth = 1;
     ctx.beginPath();
