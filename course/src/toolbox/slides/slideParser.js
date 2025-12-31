@@ -162,6 +162,10 @@ const extractImage = (line) => {
     return { type: 'synthesis-diagram' };
   }
 
+  if (alt === 'sine-wave-visualizer') {
+    return { type: 'sine-wave-visualizer' };
+  }
+
   return { type: 'image', alt, src };
 };
 

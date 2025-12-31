@@ -13,6 +13,7 @@ import WaveSuperposition from './WaveSuperposition.jsx';
 import HarmonicBuilder from './HarmonicBuilder.jsx';
 import SpectrumAnalyzer from './SpectrumAnalyzer.jsx';
 import SynthesisDiagram from './SynthesisDiagram.jsx';
+import SineWaveVisualizer from './SineWaveVisualizer.jsx';
 
 function CollapsibleParagraph({ content }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -524,6 +525,8 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                   return <SpectrumAnalyzer key={i} />;
                 } else if (item.type === 'synthesis-diagram') {
                   return <div key={i} className="flex justify-center"><SynthesisDiagram /></div>;
+                } else if (item.type === 'sine-wave-visualizer') {
+                  return <SineWaveVisualizer key={i} />;
                 } else if (item.type === 'image') {
                   const resolveImagePath = (src) => {
                     if (src.startsWith('http://') || src.startsWith('https://')) {

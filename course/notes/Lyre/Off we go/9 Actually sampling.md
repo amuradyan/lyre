@@ -8,7 +8,7 @@ Looking back at slide [3](#sounds-and-computers), we defined tone to be a functi
 
 Again we will assume a _sampling rate_ of 4 samples and with _amplitude_ and _frequency_ set to 1 for simplicity, like so:
 
-![A sine wave oscillating between -1 and 1](/src/assets/sine-wave.gif)
+![sine-wave-visualizer]()
 
 ```js
 function tone(frequency, duration) {
