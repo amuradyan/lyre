@@ -319,6 +319,23 @@ export default function SpectrumAnalyzer() {
         }
       }
     }
+
+    if (cursorY !== null && cursorY >= padding.top && cursorY <= height - padding.bottom) {
+      ctx.setLineDash([3, 3]);
+      ctx.strokeStyle = '#9ca3af';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padding.left, cursorY);
+      ctx.lineTo(width - padding.right, cursorY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const cursorLevel = levelMin + ((padding.top + chartHeight - cursorY) / chartHeight) * (levelMax - levelMin);
+      ctx.fillStyle = '#9ca3af';
+      ctx.font = '12px Nunito, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`${Math.round(cursorLevel)}dB`, width - padding.right + 5, cursorY + 4);
+    }
   }, [threshold, maxFreq, cursorX, cursorY, filteredData, frozenGroups]);
 
   const nearestPoint = getNearestPoint();
