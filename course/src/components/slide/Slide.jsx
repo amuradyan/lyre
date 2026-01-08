@@ -14,6 +14,61 @@ import HarmonicBuilder from './HarmonicBuilder.jsx';
 import SpectrumAnalyzer from './SpectrumAnalyzer.jsx';
 import SynthesisDiagram from './SynthesisDiagram.jsx';
 import SineWaveVisualizer from './SineWaveVisualizer.jsx';
+import InlineAudioPlayer from './InlineAudioPlayer.jsx';
+
+function resolveAudioPath(src) {
+  if (src.startsWith('http://') || src.startsWith('https://')) {
+    return src;
+  }
+
+  const isDev = import.meta.env.DEV;
+  if (isDev) {
+    if (src.startsWith('/')) {
+      return encodeURI(`/@fs${src}`);
+    }
+    const cleanPath = src.replace(/^course\//, '').replace(/^(\.\.\/)+/, '');
+    const absolutePath = `${__WORKSPACE_ROOT__}/${cleanPath}`;
+    return encodeURI(`/@fs${absolutePath}`);
+  } else {
+    if (src.includes('/public/')) {
+      const publicIndex = src.indexOf('/public/');
+      return encodeURI(src.substring(publicIndex + '/public'.length));
+    }
+    return encodeURI(src);
+  }
+}
+
+function processContentWithAudio(htmlContent, keyPrefix = '') {
+  const audioPlayerRegex = /<audio-player data-src="([^"]+)"><\/audio-player>/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let audioIndex = 0;
+
+  while ((match = audioPlayerRegex.exec(htmlContent)) !== null) {
+    if (match.index > lastIndex) {
+      const htmlPart = htmlContent.substring(lastIndex, match.index);
+      parts.push(
+        <span key={`${keyPrefix}text-${lastIndex}`} dangerouslySetInnerHTML={{ __html: htmlPart }} />
+      );
+    }
+
+    const audioSrc = match[1];
+    const resolvedSrc = resolveAudioPath(audioSrc);
+    parts.push(<InlineAudioPlayer key={`${keyPrefix}audio-${audioIndex}`} src={resolvedSrc} />);
+    audioIndex++;
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < htmlContent.length) {
+    const htmlPart = htmlContent.substring(lastIndex);
+    parts.push(
+      <span key={`${keyPrefix}text-${lastIndex}`} dangerouslySetInnerHTML={{ __html: htmlPart }} />
+    );
+  }
+
+  return parts.length > 0 ? parts : <span dangerouslySetInnerHTML={{ __html: htmlContent }} />;
+}
 
 function CollapsibleParagraph({ content }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -27,7 +82,7 @@ function CollapsibleParagraph({ content }) {
         {isExpanded ? '−' : '+'}
       </span>
       {isExpanded ? (
-        <span dangerouslySetInnerHTML={{ __html: content }} />
+        <span>{processContentWithAudio(content, 'collapsible-expanded')}</span>
       ) : (
         <span className="text-gray-500">
           <span dangerouslySetInnerHTML={{ __html: content.split(' ').slice(0, 10).join(' ') }} />
@@ -486,27 +541,27 @@ export default function SlideExperimental({ initialMarkdownPath }) {
           <div className="space-y-6 text-left">
             {parsed.content.map((item, i) => {
                 if (item.type === 'paragraph') {
-                  return <p key={i} className="text-gray-700 text-left" dangerouslySetInnerHTML={{ __html: item.content }} />;
+                  return <p key={i} className="text-gray-700 text-left">{processContentWithAudio(item.content, `p-${i}`)}</p>;
                 } else if (item.type === 'collapsible') {
                   return <CollapsibleParagraph key={i} content={item.content} />;
                 } else if (item.type === 'list') {
                   return (
                     <ul key={i} className="text-gray-700 text-left list-disc list-inside space-y-1 ml-8">
                       {item.items.map((listItem, j) => (
-                        <li key={j} dangerouslySetInnerHTML={{ __html: listItem }} />
+                        <li key={j}>{processContentWithAudio(listItem, `li-${i}-${j}`)}</li>
                       ))}
                     </ul>
                   );
                 } else if (item.type === 'blockquote') {
                   return (
                     <blockquote key={i} className="border-l-4 border-gray-300 pl-4 italic text-gray-600 text-left">
-                      <p dangerouslySetInnerHTML={{ __html: item.content }} />
+                      <p>{processContentWithAudio(item.content, `bq-${i}`)}</p>
                     </blockquote>
                   );
                 } else if (item.type === 'indented') {
                   return (
                     <div key={i} className="ml-8 text-gray-700 text-left whitespace-pre-line">
-                      <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                      <div>{processContentWithAudio(item.content, `ind-${i}`)}</div>
                     </div>
                   );
                 } else if (item.type === 'header') {
@@ -514,7 +569,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                   const headerClass = item.level === 2 ? "text-xl font-semibold text-gray-800 mt-6 mb-4" :
                     item.level === 3 ? "text-lg font-medium text-gray-700 mt-4 mb-3" :
                       "text-base font-medium text-gray-600 mt-3 mb-2";
-                  return <HeaderTag key={i} className={headerClass} dangerouslySetInnerHTML={{ __html: item.text }} />;
+                  return <HeaderTag key={i} className={headerClass}>{processContentWithAudio(item.text, `h-${i}`)}</HeaderTag>;
                 } else if (item.type === 'hr') {
                   return <hr key={i} className="border-gray-300 my-6" />;
                 } else if (item.type === 'wave-superposition') {

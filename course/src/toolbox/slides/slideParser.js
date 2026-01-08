@@ -46,6 +46,10 @@ const processInlineCode = (text) => {
     .replace(italicSingleAsterisk, (_, italic) => `<em>${italic}</em>`)
     .replace(italicSingleUnderscore, (_, italic) => `<em>${italic}</em>`)
     .replace(markdownLink, (_, text, url) => {
+      const isWavFile = url.endsWith('.wav');
+      if (isWavFile) {
+        return `<audio-player data-src="${url}"></audio-player>`;
+      }
       const isHashLink = url.startsWith('#');
       const target = isHashLink ? '' : ' target="_blank" rel="noopener noreferrer"';
       return `<a href="${url}"${target} class="text-indigo-600 hover:underline filter drop-shadow-sm">${text}</a>`;
