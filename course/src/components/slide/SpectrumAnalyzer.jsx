@@ -1,4 +1,59 @@
 import { useEffect, useRef, useState } from 'react';
+import PlayIcon from '../icons/PlayIcon.jsx';
+import PauseIcon from '../icons/PauseIcon.jsx';
+import EraserIcon from '../icons/EraserIcon.jsx';
+
+function AudioPlayerButton({ src }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const togglePlay = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  const handleEnded = () => {
+    setIsPlaying(false);
+  };
+
+  if (!src) return null;
+
+  return (
+    <>
+      {isPlaying ? (
+        <PauseIcon
+          color="rgb(192, 132, 252)"
+          size={28}
+          className="cursor-pointer hover:opacity-70 transition-opacity"
+          onClick={togglePlay}
+          title="Pause audio"
+        />
+      ) : (
+        <PlayIcon
+          color="rgb(192, 132, 252)"
+          size={28}
+          className="cursor-pointer hover:opacity-70 transition-opacity"
+          onClick={togglePlay}
+          title="Play audio"
+        />
+      )}
+      <audio
+        ref={audioRef}
+        src={src}
+        onEnded={handleEnded}
+        preload="auto"
+      />
+    </>
+  );
+}
 
 const getNoteFromFreq = (freq) => {
   const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -31,7 +86,7 @@ const interpolateData = (data, pointsPerInterval = 3) => {
   return interpolated;
 };
 
-export default function SpectrumAnalyzer() {
+export default function SpectrumAnalyzer({ audioSrc }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [threshold, setThreshold] = useState(-45);
@@ -375,15 +430,16 @@ export default function SpectrumAnalyzer() {
             />
             <span className="text-sm text-gray-600 w-16">{(maxFreq / 1000).toFixed(0)}kHz</span>
           </div>
-          {frozenGroups.length > 0 && (
-            <button
+          <div className="flex items-center gap-2">
+            <AudioPlayerButton src={audioSrc} />
+            <EraserIcon
+              color={frozenGroups.length === 0 ? '#9ca3af' : 'rgb(192, 132, 252)'}
+              size={28}
               onClick={handleClearAll}
-              className="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-base"
+              className={frozenGroups.length === 0 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:opacity-70 transition-opacity'}
               title="Clear all markers"
-            >
-              🧹
-            </button>
-          )}
+            />
+          </div>
         </div>
         <div className="flex items-center gap-4">
           {nearestPoint && cursorX !== null && nearestPoint.freq !== undefined && nearestPoint.level !== undefined && (

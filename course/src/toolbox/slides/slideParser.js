@@ -159,7 +159,7 @@ const extractImage = (line) => {
   }
 
   if (alt === 'spectrum-analyzer') {
-    return { type: 'spectrum-analyzer' };
+    return { type: 'spectrum-analyzer', audioSrc: src };
   }
 
   if (alt === 'synthesis-diagram') {
