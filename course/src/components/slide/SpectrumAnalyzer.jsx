@@ -31,7 +31,7 @@ function AudioPlayerButton({ src }) {
       {isPlaying ? (
         <PauseIcon
           color="rgb(192, 132, 252)"
-          size={28}
+          size={20}
           className="cursor-pointer hover:opacity-70 transition-opacity"
           onClick={togglePlay}
           title="Pause audio"
@@ -39,7 +39,7 @@ function AudioPlayerButton({ src }) {
       ) : (
         <PlayIcon
           color="rgb(192, 132, 252)"
-          size={28}
+          size={20}
           className="cursor-pointer hover:opacity-70 transition-opacity"
           onClick={togglePlay}
           title="Play audio"
@@ -97,6 +97,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
   const [frozenGroups, setFrozenGroups] = useState([]);
   const [spectrumData, setSpectrumData] = useState('');
   const [tooltip, setTooltip] = useState(null);
+  const [hoveredMarkerIndex, setHoveredMarkerIndex] = useState(null);
   const tooltipTimeoutRef = useRef(null);
 
   const minFreq = scrollPos;
@@ -254,7 +255,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     ctx.clearRect(0, 0, width, height);
 
     ctx.strokeStyle = '#e5e7eb';
-    ctx.lineWidth = 0.5;
+    ctx.lineWidth = 1;
     for (let level = levelMin; level <= levelMax; level += 10) {
       const y = yScale(level);
       ctx.beginPath();
@@ -354,10 +355,12 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       }
     };
 
-    frozenGroups.forEach((group) => {
+    frozenGroups.forEach((group, index) => {
       if (group.freq >= minFreq && group.freq <= maxFreq) {
         let showLabels = false;
-        if (cursorX !== null && cursorY !== null) {
+        if (hoveredMarkerIndex === index) {
+          showLabels = true;
+        } else if (cursorX !== null && cursorY !== null) {
           const dotX = xScale(group.freq);
           const dotY = yScale(group.level);
           const distance = Math.sqrt(Math.pow(cursorX - dotX, 2) + Math.pow(cursorY - dotY, 2));
@@ -408,7 +411,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     }
 
     if (cursorY !== null && cursorY >= padding.top && cursorY <= height - padding.bottom) {
-      const tickStart = width - padding.right - (chartWidth * 0.025);
+      const tickStart = width - padding.right - (chartWidth * 0.02);
       ctx.setLineDash([3, 3]);
       ctx.strokeStyle = '#9ca3af';
       ctx.lineWidth = 1;
@@ -424,7 +427,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       ctx.textAlign = 'left';
       ctx.fillText(`${Math.round(cursorLevel)}dB`, width - padding.right + 5, cursorY + 4);
     }
-  }, [threshold, rangeWidth, scrollPos, cursorX, cursorY, filteredData, frozenGroups, minFreq, maxFreq]);
+  }, [threshold, rangeWidth, scrollPos, cursorX, cursorY, filteredData, frozenGroups, minFreq, maxFreq, hoveredMarkerIndex]);
 
   const nearestPoint = getNearestPoint();
 
@@ -436,7 +439,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
           -webkit-appearance: none;
           appearance: none;
           width: 120px;
-          height: 2px;
+          height: 1px;
           background: #d1d5db;
           outline: none;
           border-radius: 1px;
@@ -444,14 +447,14 @@ export default function SpectrumAnalyzer({ audioSrc }) {
         .threshold-slider::-webkit-slider-track,
         .range-slider::-webkit-slider-track {
           width: 100%;
-          height: 2px;
+          height: 1px;
           background: #d1d5db;
           border: none;
         }
         .threshold-slider::-moz-range-track,
         .range-slider::-moz-range-track {
           width: 100%;
-          height: 2px;
+          height: 1px;
           background: #d1d5db;
           border: none;
         }
@@ -460,7 +463,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
           -webkit-appearance: none;
           appearance: none;
           width: 24px;
-          height: 16px;
+          height: 12px;
           background: rgb(192, 132, 252);
           cursor: pointer;
           border-radius: 2px;
@@ -468,7 +471,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
         .threshold-slider::-moz-range-thumb,
         .range-slider::-moz-range-thumb {
           width: 24px;
-          height: 16px;
+          height: 12px;
           background: rgb(192, 132, 252);
           cursor: pointer;
           border-radius: 2px;
@@ -515,21 +518,40 @@ export default function SpectrumAnalyzer({ audioSrc }) {
             <span className="text-sm text-gray-600 w-16">{(rangeWidth / 1000).toFixed(0)}kHz</span>
           </div>
         </div>
+        <div className="flex gap-2 min-h-8" style={{ alignItems: 'center' }}>
+          {frozenGroups.map((marker, index) => (
+            <div
+              key={index}
+              onClick={() => {
+                setFrozenGroups(frozenGroups.filter((_, i) => i !== index));
+              }}
+              onMouseEnter={() => setHoveredMarkerIndex(index)}
+              onMouseLeave={() => setHoveredMarkerIndex(null)}
+              className="px-2 py-1 text-xs rounded cursor-pointer hover:opacity-70 transition-opacity"
+              style={{ color: marker.color }}
+              title={`${getNoteFromFreq(marker.freq)} - Click to remove`}
+            >
+              {getNoteFromFreq(marker.freq)}
+            </div>
+          ))}
+          {frozenGroups.length > 0 && (
+            <div className="py-1">
+              <EraserIcon
+                color="rgb(192, 132, 252)"
+                size={20}
+                onClick={handleClearAll}
+                className="cursor-pointer hover:opacity-70 transition-opacity"
+                title="Clear all markers"
+              />
+            </div>
+          )}
+        </div>
       </div>
       <div className="relative" onWheel={handleWheel}>
         <div className="absolute flex items-center gap-2 z-10" style={{ top: '30px', right: '50px' }}>
           <div onMouseEnter={() => showTooltip('Play/Pause audio')} onMouseLeave={hideTooltip}>
             <AudioPlayerButton src={audioSrc} />
           </div>
-          <EraserIcon
-            color={frozenGroups.length === 0 ? '#9ca3af' : 'rgb(192, 132, 252)'}
-            size={28}
-            onClick={handleClearAll}
-            className={frozenGroups.length === 0 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:opacity-70 transition-opacity'}
-            title="Clear all markers"
-            onMouseEnter={() => showTooltip('Clear all markers')}
-            onMouseLeave={hideTooltip}
-          />
         </div>
         {tooltip && (
           <div
