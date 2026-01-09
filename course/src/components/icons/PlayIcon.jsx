@@ -1,4 +1,4 @@
-export default function PlayIcon({ color = 'currentColor', size = 16, className = '', onClick, title }) {
+export default function PlayIcon({ color = 'currentColor', size = 16, className = '', onClick, title, onMouseEnter, onMouseLeave }) {
   return (
     <svg
       width={size}
@@ -9,6 +9,8 @@ export default function PlayIcon({ color = 'currentColor', size = 16, className 
       className={className}
       onClick={onClick}
       title={title}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <path
         d="M4 2.5 L4 13.5 L13 8 Z"

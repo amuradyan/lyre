@@ -1,4 +1,4 @@
-export default function EraserIcon({ color = 'currentColor', size = 16, className = '', onClick, title }) {
+export default function EraserIcon({ color = 'currentColor', size = 16, className = '', onClick, title, onMouseEnter, onMouseLeave }) {
   return (
     <svg
       width={size}
@@ -9,6 +9,8 @@ export default function EraserIcon({ color = 'currentColor', size = 16, classNam
       className={className}
       onClick={onClick}
       title={title}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <path d="M8 5L14 5" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.25" />
       <path d="M10 8L15 8" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.35" />

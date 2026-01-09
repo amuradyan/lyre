@@ -96,6 +96,8 @@ export default function SpectrumAnalyzer({ audioSrc }) {
   const [cursorY, setCursorY] = useState(null);
   const [frozenGroups, setFrozenGroups] = useState([]);
   const [spectrumData, setSpectrumData] = useState('');
+  const [tooltip, setTooltip] = useState(null);
+  const tooltipTimeoutRef = useRef(null);
 
   const minFreq = scrollPos;
   const maxFreq = scrollPos + rangeWidth;
@@ -210,6 +212,22 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     setScrollPos(newPos);
   };
 
+  const showTooltip = (text) => {
+    if (tooltipTimeoutRef.current) {
+      clearTimeout(tooltipTimeoutRef.current);
+    }
+    tooltipTimeoutRef.current = setTimeout(() => {
+      setTooltip(text);
+    }, 1000);
+  };
+
+  const hideTooltip = () => {
+    if (tooltipTimeoutRef.current) {
+      clearTimeout(tooltipTimeoutRef.current);
+    }
+    setTooltip(null);
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -319,7 +337,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
         const hx = xScale(harmonicFreq);
         const lineHeight = 30;
         ctx.strokeStyle = groupColor || 'rgba(156, 163, 175, 0.4)';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
         ctx.setLineDash([]);
         ctx.beginPath();
         ctx.moveTo(hx, padding.top);
@@ -495,16 +513,6 @@ export default function SpectrumAnalyzer({ audioSrc }) {
             />
             <span className="text-sm text-gray-600 w-16">{(rangeWidth / 1000).toFixed(0)}kHz</span>
           </div>
-          <div className="flex items-center gap-2">
-            <AudioPlayerButton src={audioSrc} />
-            <EraserIcon
-              color={frozenGroups.length === 0 ? '#9ca3af' : 'rgb(192, 132, 252)'}
-              size={28}
-              onClick={handleClearAll}
-              className={frozenGroups.length === 0 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:opacity-70 transition-opacity'}
-              title="Clear all markers"
-            />
-          </div>
         </div>
         <div className="flex items-center gap-4">
           {nearestPoint && cursorX !== null && nearestPoint.freq !== undefined && nearestPoint.level !== undefined && (
@@ -515,6 +523,28 @@ export default function SpectrumAnalyzer({ audioSrc }) {
         </div>
       </div>
       <div className="relative" onWheel={handleWheel}>
+        <div className="absolute flex items-center gap-2 z-10" style={{ top: '30px', right: '50px' }}>
+          <div onMouseEnter={() => showTooltip('Play/Pause audio')} onMouseLeave={hideTooltip}>
+            <AudioPlayerButton src={audioSrc} />
+          </div>
+          <EraserIcon
+            color={frozenGroups.length === 0 ? '#9ca3af' : 'rgb(192, 132, 252)'}
+            size={28}
+            onClick={handleClearAll}
+            className={frozenGroups.length === 0 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:opacity-70 transition-opacity'}
+            title="Clear all markers"
+            onMouseEnter={() => showTooltip('Clear all markers')}
+            onMouseLeave={hideTooltip}
+          />
+        </div>
+        {tooltip && (
+          <div
+            className="absolute z-20 px-2 py-1 text-xs text-white bg-gray-800 rounded shadow-lg pointer-events-none"
+            style={{ top: '65px', right: '50px' }}
+          >
+            {tooltip}
+          </div>
+        )}
         <canvas
           ref={canvasRef}
           height={300}
