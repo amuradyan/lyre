@@ -15,9 +15,9 @@ The core of Lyre - tokenization, evaluation, sample generation - is still univer
 What we need to do is basically this:
 
 ```
-Browser:     editor → tokenize → evaluate → generate → play /via AudioAPI/
-                      ↓            ↓          ↓
-CLI:    file → read → tokenize → evaluate → generate → stdout /e.g. | ffplay -/
+Browser:     editor → tokenize → evaluate → generate → play   /via AudioAPI/
+                         ↓          ↓          ↓
+CLI:          file  → tokenize → evaluate → generate → stdout /e.g. | ffplay -/
 ```
 
 Same core, different endpoints.
