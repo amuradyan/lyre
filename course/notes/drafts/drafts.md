@@ -9,3 +9,7 @@ Experimental content and explorations.
 - [Running Lyre code](#running-lyre-code)
 - [Streaming samples](#streaming-samples)
 - [Playing audio](#playing-audio)
+
+## Pluck analysis
+
+- [A♯3](#a3)
