@@ -90,11 +90,15 @@ export default function SpectrumAnalyzer({ audioSrc }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [threshold, setThreshold] = useState(-45);
-  const [maxFreq, setMaxFreq] = useState(8000);
+  const [rangeWidth, setRangeWidth] = useState(8000);
+  const [scrollPos, setScrollPos] = useState(0);
   const [cursorX, setCursorX] = useState(null);
   const [cursorY, setCursorY] = useState(null);
   const [frozenGroups, setFrozenGroups] = useState([]);
   const [spectrumData, setSpectrumData] = useState('');
+
+  const minFreq = scrollPos;
+  const maxFreq = scrollPos + rangeWidth;
 
   useEffect(() => {
     fetch('/a-sharp-3-spectrum.txt')
@@ -112,7 +116,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
 
   const data = rawData.length > 0 ? interpolateData(rawData, 10) : [];
 
-  const filteredData = data.filter(d => d && d.freq <= maxFreq);
+  const filteredData = data.filter(d => d && d.freq >= minFreq && d.freq <= maxFreq);
 
   const handleMouseMove = (e) => {
     const canvas = canvasRef.current;
@@ -139,7 +143,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     if (cursorX < padding.left || cursorX > width - padding.right) return null;
     if (filteredData.length === 0) return null;
 
-    const freq = ((cursorX - padding.left) / chartWidth) * maxFreq;
+    const freq = minFreq + ((cursorX - padding.left) / chartWidth) * (maxFreq - minFreq);
     return filteredData.reduce((nearest, point) => {
       const currDist = Math.abs(point.freq - freq);
       const nearestDist = Math.abs(nearest.freq - freq);
@@ -164,7 +168,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
 
     const levelMin = -70;
     const levelMax = -20;
-    const xScale = (freq) => padding.left + (freq / maxFreq) * chartWidth;
+    const xScale = (freq) => padding.left + ((freq - minFreq) / (maxFreq - minFreq)) * chartWidth;
     const yScale = (level) => padding.top + chartHeight - ((level - levelMin) / (levelMax - levelMin)) * chartHeight;
 
     let clickedGroupIndex = -1;
@@ -196,6 +200,16 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     setFrozenGroups([]);
   };
 
+  const handleWheel = (e) => {
+    if (rangeWidth >= 20000) return;
+
+    e.preventDefault();
+    const delta = e.deltaY || e.deltaX;
+    const step = 100;
+    const newPos = Math.max(0, Math.min(20000 - rangeWidth, scrollPos + (delta > 0 ? step : -step)));
+    setScrollPos(newPos);
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -211,12 +225,12 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     const chartWidth = width - padding.left - padding.right;
     const chartHeight = height - padding.top - padding.bottom;
 
-    const freqMin = 0;
+    const freqMin = minFreq;
     const freqMax = maxFreq;
     const levelMin = -70;
     const levelMax = -20;
 
-    const xScale = (freq) => padding.left + (freq / freqMax) * chartWidth;
+    const xScale = (freq) => padding.left + ((freq - freqMin) / (freqMax - freqMin)) * chartWidth;
     const yScale = (level) => padding.top + chartHeight - ((level - levelMin) / (levelMax - levelMin)) * chartHeight;
 
     ctx.clearRect(0, 0, width, height);
@@ -236,7 +250,9 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       ctx.fillText(`${level}dB`, padding.left - 10, y + 4);
     }
 
-    for (let freq = 0; freq <= freqMax; freq += 1000) {
+    const freqStep = (freqMax - freqMin) > 10000 ? 2000 : (freqMax - freqMin) > 4000 ? 1000 : 500;
+    const startFreq = Math.ceil(freqMin / freqStep) * freqStep;
+    for (let freq = startFreq; freq <= freqMax; freq += freqStep) {
       const x = xScale(freq);
       ctx.beginPath();
       ctx.moveTo(x, padding.top);
@@ -298,6 +314,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       for (let octave = 1; octave <= 15; octave++) {
         const harmonicFreq = fundamentalFreq * Math.pow(2, octave);
         if (harmonicFreq > maxFreq) break;
+        if (harmonicFreq < minFreq) continue;
 
         const hx = xScale(harmonicFreq);
         const lineHeight = 30;
@@ -319,12 +336,8 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       }
     };
 
-    const cursorFreq = cursorX !== null && cursorX >= padding.left && cursorX <= width - padding.right
-      ? ((cursorX - padding.left) / chartWidth) * freqMax
-      : null;
-
     frozenGroups.forEach((group) => {
-      if (group.freq <= maxFreq) {
+      if (group.freq >= minFreq && group.freq <= maxFreq) {
         let showLabels = false;
         if (cursorX !== null && cursorY !== null) {
           const dotX = xScale(group.freq);
@@ -337,6 +350,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
             for (let octave = 1; octave <= 15; octave++) {
               const harmonicFreq = group.freq * Math.pow(2, octave);
               if (harmonicFreq > maxFreq) break;
+              if (harmonicFreq < minFreq) continue;
               const harmonicX = xScale(harmonicFreq);
               if (Math.abs(cursorX - harmonicX) <= 5) {
                 showLabels = true;
@@ -360,7 +374,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       ctx.stroke();
       ctx.setLineDash([]);
 
-      const freq = ((cursorX - padding.left) / chartWidth) * freqMax;
+      const freq = freqMin + ((cursorX - padding.left) / chartWidth) * (freqMax - freqMin);
       const nearestPoint = filteredData.reduce((nearest, point) => {
         const currDist = Math.abs(point.freq - freq);
         const nearestDist = Math.abs(nearest.freq - freq);
@@ -391,12 +405,57 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       ctx.textAlign = 'left';
       ctx.fillText(`${Math.round(cursorLevel)}dB`, width - padding.right + 5, cursorY + 4);
     }
-  }, [threshold, maxFreq, cursorX, cursorY, filteredData, frozenGroups]);
+  }, [threshold, rangeWidth, scrollPos, cursorX, cursorY, filteredData, frozenGroups, minFreq, maxFreq]);
 
   const nearestPoint = getNearestPoint();
 
   return (
     <div ref={containerRef} className="my-6 w-full">
+      <style jsx>{`
+        .threshold-slider,
+        .range-slider {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 120px;
+          height: 2px;
+          background: #d1d5db;
+          outline: none;
+          border-radius: 1px;
+        }
+        .threshold-slider::-webkit-slider-track,
+        .range-slider::-webkit-slider-track {
+          width: 100%;
+          height: 2px;
+          background: #d1d5db;
+          border: none;
+        }
+        .threshold-slider::-moz-range-track,
+        .range-slider::-moz-range-track {
+          width: 100%;
+          height: 2px;
+          background: #d1d5db;
+          border: none;
+        }
+        .threshold-slider::-webkit-slider-thumb,
+        .range-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 24px;
+          height: 16px;
+          background: rgb(192, 132, 252);
+          cursor: pointer;
+          border-radius: 2px;
+        }
+        .threshold-slider::-moz-range-thumb,
+        .range-slider::-moz-range-thumb {
+          width: 24px;
+          height: 16px;
+          background: rgb(192, 132, 252);
+          cursor: pointer;
+          border-radius: 2px;
+          border: none;
+        }
+      `}</style>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
@@ -410,25 +469,31 @@ export default function SpectrumAnalyzer({ audioSrc }) {
               max="-20"
               value={threshold}
               onChange={(e) => setThreshold(Number(e.target.value))}
-              style={{ width: '120px' }}
+              className="threshold-slider"
             />
             <span className="text-sm text-gray-600 w-12">{threshold}dB</span>
           </div>
           <div className="flex items-center gap-2">
-            <label htmlFor="maxfreq-slider" className="text-sm text-gray-700 whitespace-nowrap">
-              Max Freq:
+            <label htmlFor="range-slider" className="text-sm text-gray-700 whitespace-nowrap">
+              Range:
             </label>
             <input
-              id="maxfreq-slider"
+              id="range-slider"
               type="range"
               min="2000"
               max="20000"
               step="1000"
-              value={maxFreq}
-              onChange={(e) => setMaxFreq(Number(e.target.value))}
-              style={{ width: '120px' }}
+              value={rangeWidth}
+              onChange={(e) => {
+                const newRange = Number(e.target.value);
+                setRangeWidth(newRange);
+                if (scrollPos + newRange > 20000) {
+                  setScrollPos(Math.max(0, 20000 - newRange));
+                }
+              }}
+              className="range-slider"
             />
-            <span className="text-sm text-gray-600 w-16">{(maxFreq / 1000).toFixed(0)}kHz</span>
+            <span className="text-sm text-gray-600 w-16">{(rangeWidth / 1000).toFixed(0)}kHz</span>
           </div>
           <div className="flex items-center gap-2">
             <AudioPlayerButton src={audioSrc} />
@@ -449,15 +514,65 @@ export default function SpectrumAnalyzer({ audioSrc }) {
           )}
         </div>
       </div>
-      <canvas
-        ref={canvasRef}
-        height={300}
-        className="w-full bg-transparent cursor-pointer"
-        style={{ height: '300px' }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
-      />
+      <div className="relative" onWheel={handleWheel}>
+        <canvas
+          ref={canvasRef}
+          height={300}
+          className="w-full bg-transparent cursor-pointer"
+          style={{ height: '300px' }}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleClick}
+        />
+        {rangeWidth < 20000 && (
+          <div
+            className="absolute"
+            style={{
+              left: '60px',
+              right: '40px',
+              bottom: '45px',
+              height: '8px'
+            }}
+          >
+            <input
+              type="range"
+              min="0"
+              max={20000 - rangeWidth}
+              step="50"
+              value={scrollPos}
+              onChange={(e) => setScrollPos(Number(e.target.value))}
+              className="scrollbar-slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              style={{
+                WebkitAppearance: 'none',
+                appearance: 'none',
+                height: '6px',
+                outline: 'none',
+                opacity: 0.8
+              }}
+              title={`Viewing ${(minFreq / 1000).toFixed(1)}-${(maxFreq / 1000).toFixed(1)}kHz`}
+            />
+            <style jsx>{`
+              .scrollbar-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 120px;
+                height: 6px;
+                background: rgb(192, 132, 252);
+                cursor: pointer;
+                border-radius: 3px;
+              }
+              .scrollbar-slider::-moz-range-thumb {
+                width: 120px;
+                height: 6px;
+                background: rgb(192, 132, 252);
+                cursor: pointer;
+                border-radius: 3px;
+                border: none;
+              }
+            `}</style>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
