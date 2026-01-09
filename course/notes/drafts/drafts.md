@@ -10,6 +10,7 @@ Experimental content and explorations.
 - [Streaming samples](#streaming-samples)
 - [Playing audio](#playing-audio)
 
-## Pluck analysis
+## Synth
 
+- [What we have](#what-we-have)
 - [A♯3](#a3)
