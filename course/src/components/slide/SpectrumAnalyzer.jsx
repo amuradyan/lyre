@@ -169,7 +169,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     const chartWidth = width - padding.left - padding.right;
     const chartHeight = height - padding.top - padding.bottom;
 
-    const levelMin = -70;
+    const levelMin = -75;
     const levelMax = -20;
     const xScale = (freq) => padding.left + ((freq - minFreq) / (maxFreq - minFreq)) * chartWidth;
     const yScale = (level) => padding.top + chartHeight - ((level - levelMin) / (levelMax - levelMin)) * chartHeight;
@@ -246,7 +246,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
 
     const freqMin = minFreq;
     const freqMax = maxFreq;
-    const levelMin = -70;
+    const levelMin = -75;
     const levelMax = -20;
 
     const xScale = (freq) => padding.left + ((freq - freqMin) / (freqMax - freqMin)) * chartWidth;
@@ -299,6 +299,11 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     ctx.textAlign = 'left';
     ctx.fillText(`${threshold}dB`, width - padding.right + 5, thresholdY + 4);
 
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(padding.left, padding.top, chartWidth, chartHeight);
+    ctx.clip();
+
     ctx.strokeStyle = '#6366f1';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -312,6 +317,8 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       }
     }
     ctx.stroke();
+
+    ctx.restore();
 
     const drawHarmonics = (point, groupColor, isFrozen, showLabels) => {
       const fundamentalFreq = point.freq;
@@ -487,7 +494,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
             <input
               id="threshold-slider"
               type="range"
-              min="-70"
+              min="-75"
               max="-20"
               value={threshold}
               onChange={(e) => setThreshold(Number(e.target.value))}
