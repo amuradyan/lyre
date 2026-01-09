@@ -408,11 +408,12 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     }
 
     if (cursorY !== null && cursorY >= padding.top && cursorY <= height - padding.bottom) {
+      const tickStart = width - padding.right - (chartWidth * 0.025);
       ctx.setLineDash([3, 3]);
       ctx.strokeStyle = '#9ca3af';
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(padding.left, cursorY);
+      ctx.moveTo(tickStart, cursorY);
       ctx.lineTo(width - padding.right, cursorY);
       ctx.stroke();
       ctx.setLineDash([]);
@@ -514,13 +515,6 @@ export default function SpectrumAnalyzer({ audioSrc }) {
             <span className="text-sm text-gray-600 w-16">{(rangeWidth / 1000).toFixed(0)}kHz</span>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          {nearestPoint && cursorX !== null && nearestPoint.freq !== undefined && nearestPoint.level !== undefined && (
-            <div className="text-sm text-gray-600">
-              {getNoteFromFreq(nearestPoint.freq)} @ {nearestPoint.freq.toFixed(1)}Hz | {nearestPoint.level.toFixed(1)}dB
-            </div>
-          )}
-        </div>
       </div>
       <div className="relative" onWheel={handleWheel}>
         <div className="absolute flex items-center gap-2 z-10" style={{ top: '30px', right: '50px' }}>
@@ -545,6 +539,48 @@ export default function SpectrumAnalyzer({ audioSrc }) {
             {tooltip}
           </div>
         )}
+        {nearestPoint && cursorX !== null && cursorY !== null && nearestPoint.freq !== undefined && nearestPoint.level !== undefined && (() => {
+          const canvas = canvasRef.current;
+          if (!canvas) return null;
+
+          const padding = { left: 60, right: 40, top: 20, bottom: 40 };
+          const offset = 10;
+          const bubbleWidth = 150;
+          const bubbleHeight = 25;
+
+          let bubbleX = cursorX + offset;
+          let bubbleY = cursorY + offset;
+
+          if (bubbleX + bubbleWidth > canvas.width - padding.right) {
+            bubbleX = cursorX - bubbleWidth - offset;
+          }
+
+          if (bubbleY + bubbleHeight > 300 - padding.bottom) {
+            bubbleY = cursorY - bubbleHeight - offset;
+          }
+
+          if (bubbleX < padding.left) {
+            bubbleX = padding.left;
+          }
+
+          if (bubbleY < padding.top) {
+            bubbleY = padding.top;
+          }
+
+          return (
+            <div
+              className="absolute z-20 px-1.5 py-0.5 text-white rounded pointer-events-none"
+              style={{
+                left: `${bubbleX}px`,
+                top: `${bubbleY}px`,
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                fontSize: '10px'
+              }}
+            >
+              {getNoteFromFreq(nearestPoint.freq)} @ {nearestPoint.freq.toFixed(1)}Hz | {nearestPoint.level.toFixed(1)}dB
+            </div>
+          );
+        })()}
         <canvas
           ref={canvasRef}
           height={300}
