@@ -12,5 +12,6 @@ Experimental content and explorations.
 
 ## Synth
 
-- [What we have](#what-we-have)
+- [A deep breath](#a-deep-breath)
 - [A♯3](#a3)
+- [dBFS](#dbfs)
