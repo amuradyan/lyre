@@ -14,6 +14,6 @@ Note how the lawnmover is only 30 db quitere than a rock concert but in terms of
 
 Why do the sound start at -25db? because we have the mixing control.
 
-##### Back: [A♯3](../../drafts/Synth/50%20A♯3.md)
+##### Back: [A♯3](50%20A♯3.md)
 
 ##### Next: [Drafts](../drafts.md)

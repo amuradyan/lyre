@@ -378,7 +378,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
 
     const lastVisitedSlide = localStorage.getItem(`lyre-last-slide-${targetCurriculum}`);
 
-    if (lastVisitedSlide) {
+    if (lastVisitedSlide && SLIDES.some(slide => slide.path === lastVisitedSlide)) {
       setMdPath(lastVisitedSlide);
       setDisplayPath(lastVisitedSlide);
       updateUrl(lastVisitedSlide);
