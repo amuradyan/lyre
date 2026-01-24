@@ -159,18 +159,23 @@ export default function InfoPlaque({ onClose }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
             <div className="shortcut-row">
-              <div className="shortcut-key">Home / End</div>
-              <div className="shortcut-desc">Jump to first/last</div>
+              <div className="shortcut-key">↑ ↓</div>
+              <div className="shortcut-desc">Navigate items</div>
             </div>
 
             <div className="shortcut-row">
-              <div className="shortcut-key">↑ ↓</div>
-              <div className="shortcut-desc">Navigate filtered slides</div>
+              <div className="shortcut-key">← →</div>
+              <div className="shortcut-desc">Collapse / Expand chapter</div>
             </div>
 
             <div className="shortcut-row">
               <div className="shortcut-key">Enter</div>
-              <div className="shortcut-desc">Go to selected slide</div>
+              <div className="shortcut-desc">Select item</div>
+            </div>
+
+            <div className="shortcut-row">
+              <div className="shortcut-key">Home / End</div>
+              <div className="shortcut-desc">Jump to first/last</div>
             </div>
 
             <div className="shortcut-row">
@@ -179,13 +184,8 @@ export default function InfoPlaque({ onClose }) {
             </div>
 
             <div className="shortcut-row">
-              <div className="shortcut-key">Type</div>
+              <div className="shortcut-key">Start typing</div>
               <div className="shortcut-desc">Search with fuzzy matching</div>
-            </div>
-
-            <div className="shortcut-row">
-              <div className="shortcut-key">Click</div>
-              <div className="shortcut-desc">Select slide</div>
             </div>
           </div>
 

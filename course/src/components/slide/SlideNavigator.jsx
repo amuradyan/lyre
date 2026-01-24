@@ -7,6 +7,7 @@ export default function SlideNavigator({ currentIndex, currentCurriculum, onNavi
   const [searchQuery, setSearchQuery] = useState('');
   const currentSlideRef = useRef(null);
   const slideRefs = useRef({});
+  const folderRefs = useRef({});
   const hoverTimerRef = useRef(null);
   const originalSlideRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -59,6 +60,17 @@ export default function SlideNavigator({ currentIndex, currentCurriculum, onNavi
     return visible;
   };
 
+  const getNavigableItems = () => {
+    const items = [];
+    Object.entries(groupedSlides).forEach(([folder, slides]) => {
+      items.push({ type: 'folder', name: folder, slides });
+      if (expandedFolders[folder]) {
+        slides.forEach(slide => items.push({ type: 'slide', ...slide }));
+      }
+    });
+    return items;
+  };
+
   useEffect(() => {
     // Store the original slide when navigator opens
     if (originalSlideRef.current === null) {
@@ -94,103 +106,41 @@ export default function SlideNavigator({ currentIndex, currentCurriculum, onNavi
         return;
       }
 
-      const visibleSlides = getVisibleSlides();
+      const navigableItems = getNavigableItems();
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
+        if (navigableItems.length === 0) return;
 
-        if (filteredSlides.length === 0) return;
-
-        let targetSlide;
-
-        if (focusedIndex === null) {
-          targetSlide = filteredSlides.find(s => s.index === currentIndex) || filteredSlides[0];
-        } else {
-          const visibleSlides = getVisibleSlides();
-          const currentFocused = visibleSlides[focusedIndex];
-
-          if (!currentFocused) return;
-
-          const globalIdx = filteredSlides.findIndex(s => s.index === currentFocused.index);
-
-          if (globalIdx < filteredSlides.length - 1) {
-            targetSlide = filteredSlides[globalIdx + 1];
-          } else {
-            return;
-          }
-        }
-
-        const pathParts = targetSlide.path.split('/');
-        const targetFolder = pathParts.length > 3 ? pathParts[pathParts.length - 2] : 'Other';
-
-        setExpandedFolders(prev => {
-          const newExpanded = { ...prev, [targetFolder]: true };
-
-          const newVisibleSlides = [];
-          Object.entries(groupedSlides).forEach(([folder, slides]) => {
-            if (newExpanded[folder]) {
-              slides.forEach(slide => newVisibleSlides.push(slide));
-            }
-          });
-
-          const newIdx = newVisibleSlides.findIndex(s => s.index === targetSlide.index);
-          if (newIdx >= 0) {
-            setFocusedIndex(newIdx);
-          }
-
-          return newExpanded;
-        });
+        const newIndex = focusedIndex === null ? 0 : Math.min(focusedIndex + 1, navigableItems.length - 1);
+        setFocusedIndex(newIndex);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
+        if (navigableItems.length === 0) return;
 
-        if (filteredSlides.length === 0) return;
-
-        let targetSlide;
-
-        if (focusedIndex === null) {
-          targetSlide = filteredSlides.find(s => s.index === currentIndex) || filteredSlides[filteredSlides.length - 1];
-        } else {
-          const visibleSlides = getVisibleSlides();
-          const currentFocused = visibleSlides[focusedIndex];
-
-          if (!currentFocused) return;
-
-          const globalIdx = filteredSlides.findIndex(s => s.index === currentFocused.index);
-
-          if (globalIdx > 0) {
-            targetSlide = filteredSlides[globalIdx - 1];
-          } else {
-            return;
-          }
+        const newIndex = focusedIndex === null ? navigableItems.length - 1 : Math.max(focusedIndex - 1, 0);
+        setFocusedIndex(newIndex);
+      } else if (e.key === 'ArrowRight' && focusedIndex !== null) {
+        e.preventDefault();
+        const item = navigableItems[focusedIndex];
+        if (item?.type === 'folder') {
+          setExpandedFolders(prev => ({ ...prev, [item.name]: true }));
         }
-
-        const pathParts = targetSlide.path.split('/');
-        const targetFolder = pathParts.length > 3 ? pathParts[pathParts.length - 2] : 'Other';
-
-        setExpandedFolders(prev => {
-          const newExpanded = { ...prev, [targetFolder]: true };
-
-          const newVisibleSlides = [];
-          Object.entries(groupedSlides).forEach(([folder, slides]) => {
-            if (newExpanded[folder]) {
-              slides.forEach(slide => newVisibleSlides.push(slide));
-            }
-          });
-
-          const newIdx = newVisibleSlides.findIndex(s => s.index === targetSlide.index);
-          if (newIdx >= 0) {
-            setFocusedIndex(newIdx);
-          }
-
-          return newExpanded;
-        });
+      } else if (e.key === 'ArrowLeft' && focusedIndex !== null) {
+        e.preventDefault();
+        const item = navigableItems[focusedIndex];
+        if (item?.type === 'folder') {
+          setExpandedFolders(prev => ({ ...prev, [item.name]: false }));
+        }
       } else if (e.key === 'Enter' && focusedIndex !== null) {
         e.preventDefault();
-        const focusedSlide = visibleSlides[focusedIndex];
-        if (focusedSlide) {
+        const item = navigableItems[focusedIndex];
+        if (item?.type === 'slide') {
           originalSlideRef.current = null;
-          onNavigate(focusedSlide.path);
+          onNavigate(item.path);
           onClose();
+        } else if (item?.type === 'folder') {
+          toggleFolder(item.name);
         }
       }
     };
@@ -325,16 +275,21 @@ export default function SlideNavigator({ currentIndex, currentCurriculum, onNavi
 
   useEffect(() => {
     if (focusedIndex !== null) {
-      const visibleSlides = getVisibleSlides();
-      const focusedSlide = visibleSlides[focusedIndex];
-      if (focusedSlide && slideRefs.current[focusedSlide.index]) {
-        slideRefs.current[focusedSlide.index].scrollIntoView({
+      const navigableItems = getNavigableItems();
+      const item = navigableItems[focusedIndex];
+      if (item?.type === 'slide' && slideRefs.current[item.index]) {
+        slideRefs.current[item.index].scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      } else if (item?.type === 'folder' && folderRefs.current[item.name]) {
+        folderRefs.current[item.name].scrollIntoView({
           behavior: 'smooth',
           block: 'center'
         });
       }
     }
-  }, [focusedIndex]);
+  }, [focusedIndex, expandedFolders]);
 
   const toggleFolder = (folder) => {
     setExpandedFolders(prev => ({
@@ -576,36 +531,45 @@ export default function SlideNavigator({ currentIndex, currentCurriculum, onNavi
               No slides found
             </div>
           ) : (
-            Object.entries(groupedSlides).map(([folder, slides]) => (
-            <div key={folder}>
-              <div
-                onClick={() => toggleFolder(folder)}
-                style={{
-                  padding: '8px 16px',
-                  fontFamily: 'Nunito, sans-serif',
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  color: '#6366f1',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                  marginTop: '8px',
-                  marginBottom: '4px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'background-color 0.2s'
-                }}
-              >
-                <span style={{ fontSize: '10px', transition: 'transform 0.2s', display: 'inline-block', transform: expandedFolders[folder] ? 'rotate(90deg)' : 'rotate(0deg)' }}>
-                  ▶
-                </span>
-                {folder} / {slides.length}
-              </div>
-              {expandedFolders[folder] && slides.map((slide) => {
-                const isCurrent = slide.index === currentIndex;
-                const visibleSlides = getVisibleSlides();
-                const isFocused = focusedIndex !== null && visibleSlides[focusedIndex]?.index === slide.index;
+            Object.entries(groupedSlides).map(([folder, slides], folderIdx) => {
+              const navigableItems = getNavigableItems();
+              const folderItemIndex = navigableItems.findIndex(item => item.type === 'folder' && item.name === folder);
+              const isFolderFocused = focusedIndex === folderItemIndex;
+
+              return (
+                <div key={folder}>
+                  <div
+                    ref={(el) => { folderRefs.current[folder] = el; }}
+                    onClick={() => toggleFolder(folder)}
+                    style={{
+                      padding: '8px 16px',
+                      fontFamily: 'Nunito, sans-serif',
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      color: '#6366f1',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      marginTop: '8px',
+                      marginBottom: '4px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'background-color 0.2s',
+                      backgroundColor: isFolderFocused ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                      outline: isFolderFocused ? '2px solid rgba(99, 102, 241, 0.5)' : 'none',
+                      outlineOffset: '-2px'
+                    }}
+                  >
+                    <span style={{ fontSize: '10px', transition: 'transform 0.2s', display: 'inline-block', transform: expandedFolders[folder] ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                      ▶
+                    </span>
+                    {folder} / {slides.length}
+                  </div>
+                  {expandedFolders[folder] && slides.map((slide) => {
+                    const isCurrent = slide.index === currentIndex;
+                    const slideItemIndex = navigableItems.findIndex(item => item.type === 'slide' && item.index === slide.index);
+                    const isFocused = focusedIndex === slideItemIndex;
 
                 return (
                   <div
@@ -661,7 +625,8 @@ export default function SlideNavigator({ currentIndex, currentCurriculum, onNavi
                 );
               })}
             </div>
-          ))
+              );
+            })
           )}
         </div>
       </div>
