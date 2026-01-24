@@ -98,9 +98,10 @@ export default function SpectrumAnalyzer({ audioSrc }) {
   const [spectrumData, setSpectrumData] = useState('');
   const [tooltip, setTooltip] = useState(null);
   const [hoveredMarkerIndex, setHoveredMarkerIndex] = useState(null);
+  const [isLogScale, setIsLogScale] = useState(false);
   const tooltipTimeoutRef = useRef(null);
 
-  const minFreq = scrollPos;
+  const minFreq = Math.max(scrollPos, isLogScale ? 43 : 0);
   const maxFreq = scrollPos + rangeWidth;
 
   useEffect(() => {
@@ -146,7 +147,11 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     if (cursorX < padding.left || cursorX > width - padding.right) return null;
     if (filteredData.length === 0) return null;
 
-    const freq = minFreq + ((cursorX - padding.left) / chartWidth) * (maxFreq - minFreq);
+    const t = (cursorX - padding.left) / chartWidth;
+    const freq = isLogScale
+      ? minFreq * Math.pow(maxFreq / minFreq, t)
+      : minFreq + t * (maxFreq - minFreq);
+
     return filteredData.reduce((nearest, point) => {
       const currDist = Math.abs(point.freq - freq);
       const nearestDist = Math.abs(nearest.freq - freq);
@@ -171,7 +176,9 @@ export default function SpectrumAnalyzer({ audioSrc }) {
 
     const levelMin = -75;
     const levelMax = -20;
-    const xScale = (freq) => padding.left + ((freq - minFreq) / (maxFreq - minFreq)) * chartWidth;
+    const xScale = (freq) => isLogScale
+      ? padding.left + (Math.log10(freq / minFreq) / Math.log10(maxFreq / minFreq)) * chartWidth
+      : padding.left + ((freq - minFreq) / (maxFreq - minFreq)) * chartWidth;
     const yScale = (level) => padding.top + chartHeight - ((level - levelMin) / (levelMax - levelMin)) * chartHeight;
 
     let clickedGroupIndex = -1;
@@ -249,7 +256,9 @@ export default function SpectrumAnalyzer({ audioSrc }) {
     const levelMin = -75;
     const levelMax = -20;
 
-    const xScale = (freq) => padding.left + ((freq - freqMin) / (freqMax - freqMin)) * chartWidth;
+    const xScale = (freq) => isLogScale
+      ? padding.left + (Math.log10(freq / freqMin) / Math.log10(freqMax / freqMin)) * chartWidth
+      : padding.left + ((freq - freqMin) / (freqMax - freqMin)) * chartWidth;
     const yScale = (level) => padding.top + chartHeight - ((level - levelMin) / (levelMax - levelMin)) * chartHeight;
 
     ctx.clearRect(0, 0, width, height);
@@ -269,19 +278,37 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       ctx.fillText(`${level}dB`, padding.left - 10, y + 4);
     }
 
-    const freqStep = (freqMax - freqMin) > 10000 ? 2000 : (freqMax - freqMin) > 4000 ? 1000 : 500;
-    const startFreq = Math.ceil(freqMin / freqStep) * freqStep;
-    for (let freq = startFreq; freq <= freqMax; freq += freqStep) {
-      const x = xScale(freq);
-      ctx.beginPath();
-      ctx.moveTo(x, padding.top);
-      ctx.lineTo(x, height - padding.bottom);
-      ctx.stroke();
+    if (isLogScale) {
+      const logFreqs = [50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
+      for (const freq of logFreqs) {
+        if (freq < freqMin || freq > freqMax) continue;
+        const x = xScale(freq);
+        ctx.beginPath();
+        ctx.moveTo(x, padding.top);
+        ctx.lineTo(x, height - padding.bottom);
+        ctx.stroke();
 
-      ctx.fillStyle = '#9ca3af';
-      ctx.font = '12px Nunito, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(`${freq / 1000}k`, x, height - padding.bottom + 20);
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = '12px Nunito, sans-serif';
+        ctx.textAlign = 'center';
+        const label = freq >= 1000 ? `${freq / 1000}k` : `${freq}`;
+        ctx.fillText(label, x, height - padding.bottom + 20);
+      }
+    } else {
+      const freqStep = (freqMax - freqMin) > 10000 ? 2000 : (freqMax - freqMin) > 4000 ? 1000 : 500;
+      const startFreq = Math.ceil(freqMin / freqStep) * freqStep;
+      for (let freq = startFreq; freq <= freqMax; freq += freqStep) {
+        const x = xScale(freq);
+        ctx.beginPath();
+        ctx.moveTo(x, padding.top);
+        ctx.lineTo(x, height - padding.bottom);
+        ctx.stroke();
+
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = '12px Nunito, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${freq / 1000}k`, x, height - padding.bottom + 20);
+      }
     }
 
     const thresholdY = yScale(threshold);
@@ -402,7 +429,10 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       ctx.stroke();
       ctx.setLineDash([]);
 
-      const freq = freqMin + ((cursorX - padding.left) / chartWidth) * (freqMax - freqMin);
+      const t = (cursorX - padding.left) / chartWidth;
+      const freq = isLogScale
+        ? freqMin * Math.pow(freqMax / freqMin, t)
+        : freqMin + t * (freqMax - freqMin);
       const nearestPoint = filteredData.reduce((nearest, point) => {
         const currDist = Math.abs(point.freq - freq);
         const nearestDist = Math.abs(nearest.freq - freq);
@@ -434,7 +464,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       ctx.textAlign = 'left';
       ctx.fillText(`${Math.round(cursorLevel)}dB`, width - padding.right + 5, cursorY + 4);
     }
-  }, [threshold, rangeWidth, scrollPos, cursorX, cursorY, filteredData, frozenGroups, minFreq, maxFreq, hoveredMarkerIndex]);
+  }, [threshold, rangeWidth, scrollPos, cursorX, cursorY, filteredData, frozenGroups, minFreq, maxFreq, hoveredMarkerIndex, isLogScale]);
 
   const nearestPoint = getNearestPoint();
 
@@ -523,6 +553,18 @@ export default function SpectrumAnalyzer({ audioSrc }) {
               className="range-slider"
             />
             <span className="text-sm text-gray-600 w-16">{(rangeWidth / 1000).toFixed(0)}kHz</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              id="log-scale-checkbox"
+              type="checkbox"
+              checked={isLogScale}
+              onChange={(e) => setIsLogScale(e.target.checked)}
+              className="cursor-pointer"
+            />
+            <label htmlFor="log-scale-checkbox" className="text-sm text-gray-700 whitespace-nowrap cursor-pointer">
+              Log scale
+            </label>
           </div>
         </div>
         <div className="flex gap-2 min-h-8" style={{ alignItems: 'center' }}>
