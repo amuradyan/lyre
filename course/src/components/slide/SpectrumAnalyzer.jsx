@@ -86,7 +86,12 @@ const interpolateData = (data, pointsPerInterval = 3) => {
   return interpolated;
 };
 
-export default function SpectrumAnalyzer({ audioSrc }) {
+const groupColors = [
+  '#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#a855f7',
+  '#06b6d4', '#84cc16', '#ec4899', '#10b981', '#f97316'
+];
+
+export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [threshold, setThreshold] = useState(-45);
@@ -100,6 +105,7 @@ export default function SpectrumAnalyzer({ audioSrc }) {
   const [hoveredMarkerIndex, setHoveredMarkerIndex] = useState(null);
   const [isLogScale, setIsLogScale] = useState(false);
   const tooltipTimeoutRef = useRef(null);
+  const presetsInitialized = useRef(false);
 
   const minFreq = Math.max(scrollPos, isLogScale ? 43 : 0);
   const maxFreq = scrollPos + rangeWidth;
@@ -121,6 +127,22 @@ export default function SpectrumAnalyzer({ audioSrc }) {
   const data = rawData.length > 0 ? interpolateData(rawData, 10) : [];
 
   const filteredData = data.filter(d => d && d.freq >= minFreq && d.freq <= maxFreq);
+
+  useEffect(() => {
+    if (presetMarkers && data.length > 0 && !presetsInitialized.current) {
+      presetsInitialized.current = true;
+      const markers = presetMarkers.map((targetFreq, index) => {
+        const nearest = data.reduce((prev, curr) => {
+          return Math.abs(curr.freq - targetFreq) < Math.abs(prev.freq - targetFreq) ? curr : prev;
+        });
+        return {
+          ...nearest,
+          color: groupColors[index % groupColors.length]
+        };
+      });
+      setFrozenGroups(markers);
+    }
+  }, [presetMarkers, data]);
 
   const handleMouseMove = (e) => {
     const canvas = canvasRef.current;
@@ -158,11 +180,6 @@ export default function SpectrumAnalyzer({ audioSrc }) {
       return currDist < nearestDist ? point : nearest;
     }, filteredData[0]);
   };
-
-  const groupColors = [
-    '#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#a855f7',
-    '#06b6d4', '#84cc16', '#ec4899', '#10b981', '#f97316'
-  ];
 
   const handleClick = () => {
     if (cursorX === null || cursorY === null || !canvasRef.current) return;

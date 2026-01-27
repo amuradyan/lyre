@@ -159,7 +159,12 @@ const extractImage = (line) => {
   }
 
   if (alt === 'spectrum-analyzer') {
-    return { type: 'spectrum-analyzer', audioSrc: src };
+    const parts = src.split('|');
+    const audioSrc = parts[0];
+    const presetMarkers = parts[1]
+      ? parts[1].split(',').map(f => parseFloat(f.trim())).filter(f => !isNaN(f))
+      : null;
+    return { type: 'spectrum-analyzer', audioSrc, presetMarkers };
   }
 
   if (alt === 'synthesis-diagram') {

@@ -14,4 +14,8 @@ Experimental content and explorations.
 
 - [A deep breath](#a-deep-breath)
 - [A♯3](#a3)
-- [dBFS](#dbfs)
+- [Harmonics](#harmonics)
+- [Frequencies](#frequencies)
+- [Synthesis](#synthesis)
+- [Volume](#volume)
+- [Amplitude](#amplitude)

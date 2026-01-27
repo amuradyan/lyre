@@ -578,7 +578,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                   return <HarmonicBuilder key={i} />;
                 } else if (item.type === 'spectrum-analyzer') {
                   const audioSrc = item.audioSrc ? resolveAudioPath(item.audioSrc) : null;
-                  return <SpectrumAnalyzer key={i} audioSrc={audioSrc} />;
+                  return <SpectrumAnalyzer key={i} audioSrc={audioSrc} presetMarkers={item.presetMarkers} />;
                 } else if (item.type === 'synthesis-diagram') {
                   return <div key={i} className="flex justify-center"><SynthesisDiagram /></div>;
                 } else if (item.type === 'sine-wave-visualizer') {
