@@ -1,0 +1,8 @@
+(harmony
+  (envelope (tone 233) 0.01 1 0 0 0)
+  (envelope (tone 466) 0.01 1 0 0 0)
+  (envelope (tone 932) 0.01 1 0 0 0)
+  (envelope (tone 1864) 0.01 1 0 0 0)
+  (envelope (tone 4186) 0.01 1 0 0 0)
+  (envelope (tone 9654) 0.01 1 0 0 0)
+)
