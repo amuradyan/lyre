@@ -191,7 +191,7 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
     const chartWidth = width - padding.left - padding.right;
     const chartHeight = height - padding.top - padding.bottom;
 
-    const levelMin = -75;
+    const levelMin = -85;
     const levelMax = -20;
     const xScale = (freq) => isLogScale
       ? padding.left + (Math.log10(freq / minFreq) / Math.log10(maxFreq / minFreq)) * chartWidth
@@ -270,7 +270,7 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
 
     const freqMin = minFreq;
     const freqMax = maxFreq;
-    const levelMin = -75;
+    const levelMin = -85;
     const levelMax = -20;
 
     const xScale = (freq) => isLogScale
@@ -541,7 +541,7 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
             <input
               id="threshold-slider"
               type="range"
-              min="-75"
+              min="-85"
               max="-20"
               value={threshold}
               onChange={(e) => setThreshold(Number(e.target.value))}
