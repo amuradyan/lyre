@@ -1,5 +1,5 @@
 import { tone } from '../synth/oscillators.js';
-import { envelope } from '../synth/envelopes.js';
+import { envelope, gain } from '../synth/envelopes.js';
 import { sequence, harmony } from '../synth/composition.js';
 
 /**
@@ -39,6 +39,11 @@ export function interpret(expression) {
         return sequence(...evaluated);
       case "harmony":
         return harmony(...evaluated);
+      case "gain":
+        const [signal, level] = evaluated;
+        return gain(signal, level);
+      default:
+        throw new Error(`Unknown operator: ${operator}`);
     }
   }
 }

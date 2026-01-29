@@ -55,3 +55,17 @@ export function*
     n = n + 1;
   }
 }
+
+/**
+ * Adjusts the volume of a source generator by a given level.
+ * @param {Generator} source - Source audio generator
+ * @param {number} level - Gain level (0-1)
+ * @yields {Array} Tuples of [sample, n, totalSamples] with sample scaled by level
+ * @example
+ * const quietTone = gain(tone(440), 0.5); // Half volume tone at 440Hz
+ */
+export function* gain(source, level) {
+  for (const [sample, n, totalSamples] of source) {
+    yield [sample * level, n, totalSamples];
+  }
+}
