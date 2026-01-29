@@ -17,5 +17,6 @@ Experimental content and explorations.
 - [Harmonics](#harmonics)
 - [Frequencies](#frequencies)
 - [Synthesis](#synthesis)
-- [Volume](#volume)
+- [Levels](#levels)
+- [... no gain](#no-gain)
 - [Amplitude](#amplitude)

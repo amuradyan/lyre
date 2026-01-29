@@ -6,7 +6,7 @@ Let's say we want to take all the frequencies that are louder than -35dB. I thin
 
 ![spectrum-analyzer](course/public/lyre-As3.wav|237,473,926,1873,4220,9646)
 
-We can see that the second frequency peaks at a lower level than the first, the third and the fourth. This is typical for real instruments - higher harmonics tend to be quieter. We'll handle that later though. Let us just capture these frequencies as they are.
+Notice that for `A#3` being the fundamental it's not a clean slope. 473Hz is quieter than 9646Hz, and 1873Hz is louder than 926Hz. Real instruments are messy like that. The fundamental is loudest, but the harmonics don't just fade uniformly upward. We'll handle that later though. Let us just capture these frequencies as they are.
 
 We can write a Lyre program that plays just these frequencies together.
 
