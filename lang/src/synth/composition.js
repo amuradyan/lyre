@@ -19,7 +19,7 @@ export function* sequence(...generators) {
  * Mixes generators in parallel by summing their samples.
  * Stops when all generators finish.
  * @param {...Generator} generators - Audio generators to mix
- * @yields {number} Sum of all generator samples at each step
+ * @yields {Array} Tuples of [sample, n, maxTotalSamples] where sample is the sum
  * @example
  * const chord = harmony(
  *   envelope(tone(261.63), 0.01, 1.0, 0, 0.5), // C
@@ -28,6 +28,9 @@ export function* sequence(...generators) {
  * );
  */
 export function* harmony(...generators) {
+  let n = 0;
+  let maxTotalSamples = 0;
+
   while (true) {
     let sum = 0;
     let allDone = true;
@@ -35,7 +38,11 @@ export function* harmony(...generators) {
     for (const gen of generators) {
       const { value, done } = gen.next();
       if (!done) {
-        sum = sum + value;
+        const [sample, _, totalSamples] = value;
+        sum = sum + sample;
+        if (totalSamples > maxTotalSamples) {
+          maxTotalSamples = totalSamples;
+        }
         allDone = false;
       }
     }
@@ -44,7 +51,8 @@ export function* harmony(...generators) {
       return;
     }
 
-    yield sum;
+    yield [sum, n, maxTotalSamples];
+    n = n + 1;
   }
 }
 

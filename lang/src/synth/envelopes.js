@@ -39,18 +39,19 @@ export function adjustAmplitude(n, totalSamples, adsr) {
  * const pluck = envelope(tone(261.63), 0.01, 1.0, 0, 0.5);
  * // Quick attack, 1s decay, no sustain, 500ms release
  */
-export function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime, gateTime = 0) {
+export function*
+  envelope(source, attackTime, decayTime, sustainLevel, releaseTime, gateTime = 0) {
   const totalTime = attackTime + decayTime + gateTime + releaseTime;
   const totalSamples = totalTime * samplingRate;
   const adsr = [attackTime, decayTime, sustainLevel, releaseTime];
 
   let n = 0;
-  for (const sample of source) {
+  for (const [sample] of source) {
     if (n >= totalSamples) {
       return;
     }
     const amplitude = adjustAmplitude(n, totalSamples, adsr);
-    yield sample * amplitude;
+    yield [sample * amplitude, n, totalSamples];
     n = n + 1;
   }
 }

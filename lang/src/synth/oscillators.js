@@ -27,19 +27,21 @@ export function* oscillate(frequency) {
 /**
  * Generates an infinite sine wave tone at the given frequency.
  * @param {number} frequency - Frequency in Hz
- * @yields {number} Audio samples between -1 and 1
+ * @yields {Array} Tuples of [sample, n, totalSamples] where totalSamples is Infinity
  * @example
  * const c4 = tone(261.63); // Middle C
- * for (const sample of c4) {
- *   // yields continuous sine wave samples
+ * for (const [sample, n, totalSamples] of c4) {
+ *   // yields: [0, 0, Infinity], [0.062, 1, Infinity], ...
  * }
  */
 export function* tone(frequency) {
   const osc = oscillate(frequency);
+  let n = 0;
 
   while (true) {
     const sample = osc.next().value;
-    yield sample;
+    yield [sample, n, Infinity];
+    n = n + 1;
   }
 }
 
