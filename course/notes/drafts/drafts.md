@@ -19,4 +19,4 @@ Experimental content and explorations.
 - [Synthesis](#synthesis)
 - [Levels](#levels)
 - [... no gain](#no-gain)
-- [Amplitude](#amplitude)
+- [Gain](#gain)
