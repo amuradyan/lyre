@@ -65,6 +65,19 @@ const getNoteFromFreq = (freq) => {
   return `${note}${octave}`;
 };
 
+const getNoteRange = (freq) => {
+  const a4 = 440;
+  const semitones = 12 * Math.log2(freq / a4);
+  const noteIndex = Math.round(semitones) + 9;
+
+  const freqFromNoteIndex = (idx) => a4 * Math.pow(2, (idx - 9) / 12);
+
+  const lowerBound = freqFromNoteIndex(noteIndex - 0.5);
+  const upperBound = freqFromNoteIndex(noteIndex + 0.5);
+
+  return { lowerBound, upperBound };
+};
+
 const interpolateData = (data, pointsPerInterval = 3) => {
   const interpolated = [];
 
@@ -381,28 +394,113 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
         ctx.fillText(getNoteFromFreq(fundamentalFreq), x, padding.top - 5);
       }
 
+      const harmonicPoints = [];
+      harmonicPoints.push({ freq: fundamentalFreq, x, y, level: point.level });
+
       for (let octave = 1; octave <= 15; octave++) {
         const harmonicFreq = fundamentalFreq * Math.pow(2, octave);
         if (harmonicFreq > maxFreq) break;
         if (harmonicFreq < minFreq) continue;
 
-        const hx = xScale(harmonicFreq);
-        const lineHeight = 30;
-        ctx.strokeStyle = groupColor || 'rgba(156, 163, 175, 0.4)';
-        ctx.lineWidth = 1;
-        ctx.setLineDash([]);
-        ctx.beginPath();
-        ctx.moveTo(hx, padding.top);
-        ctx.lineTo(hx, padding.top + lineHeight);
-        ctx.stroke();
+        let peakData = null;
+        if (isFrozen && data.length > 0) {
+          const { lowerBound, upperBound } = getNoteRange(harmonicFreq);
+          const windowData = data.filter(d =>
+            d.freq >= lowerBound && d.freq <= upperBound
+          );
 
-        if (isFrozen && showLabels) {
-          const note = getNoteFromFreq(harmonicFreq);
-          ctx.fillStyle = groupColor;
-          ctx.font = 'bold 11px Nunito, sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText(note, hx, padding.top - 5);
+          if (windowData.length > 0) {
+            peakData = windowData.reduce((max, d) =>
+              d.level > max.level ? d : max
+            , windowData[0]);
+          } else {
+            peakData = data.reduce((nearest, d) => {
+              const currDist = Math.abs(d.freq - harmonicFreq);
+              const nearestDist = Math.abs(nearest.freq - harmonicFreq);
+              return currDist < nearestDist ? d : nearest;
+            }, data[0]);
+          }
+
+          const peakX = xScale(peakData.freq);
+          const hy = yScale(peakData.level);
+          harmonicPoints.push({ freq: peakData.freq, x: peakX, y: hy, level: peakData.level });
+
+          const lineHeight = 15;
+          ctx.strokeStyle = groupColor || 'rgba(156, 163, 175, 0.4)';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.moveTo(peakX, padding.top);
+          ctx.lineTo(peakX, padding.top + lineHeight);
+          ctx.stroke();
+
+          if (showLabels) {
+            const note = getNoteFromFreq(peakData.freq);
+            ctx.fillStyle = groupColor;
+            ctx.font = 'bold 11px Nunito, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(note, peakX, padding.top - 5);
+          }
+        } else {
+          const hx = xScale(harmonicFreq);
+          const lineHeight = 15;
+          ctx.strokeStyle = groupColor || 'rgba(156, 163, 175, 0.4)';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.moveTo(hx, padding.top);
+          ctx.lineTo(hx, padding.top + lineHeight);
+          ctx.stroke();
         }
+      }
+
+      if (isFrozen && harmonicPoints.length > 1) {
+        const lastHarmonic = harmonicPoints[harmonicPoints.length - 1];
+        const secondLastHarmonic = harmonicPoints[harmonicPoints.length - 2];
+
+        const freqRatio = lastHarmonic.freq / secondLastHarmonic.freq;
+        const levelDecay = lastHarmonic.level - secondLastHarmonic.level;
+
+        const extrapolatedPoints = [];
+        let currentFreq = lastHarmonic.freq;
+        let currentLevel = lastHarmonic.level;
+
+        while (currentFreq < maxFreq) {
+          currentFreq *= freqRatio;
+          currentLevel += levelDecay;
+
+          if (currentFreq > maxFreq) {
+            const finalX = xScale(maxFreq);
+            const finalY = yScale(currentLevel);
+            extrapolatedPoints.push({ x: finalX, y: finalY });
+            break;
+          }
+
+          const extrapolatedX = xScale(currentFreq);
+          const extrapolatedY = yScale(currentLevel);
+          extrapolatedPoints.push({ x: extrapolatedX, y: extrapolatedY });
+        }
+
+        ctx.strokeStyle = groupColor;
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.6;
+        ctx.setLineDash([5, 3]);
+        ctx.beginPath();
+        for (let i = 0; i < harmonicPoints.length; i++) {
+          if (i === 0) {
+            ctx.moveTo(harmonicPoints[i].x, harmonicPoints[i].y);
+          } else {
+            ctx.lineTo(harmonicPoints[i].x, harmonicPoints[i].y);
+          }
+        }
+
+        for (let i = 0; i < extrapolatedPoints.length; i++) {
+          ctx.lineTo(extrapolatedPoints[i].x, extrapolatedPoints[i].y);
+        }
+
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.globalAlpha = 1.0;
       }
     };
 
