@@ -50,7 +50,8 @@ class LyreStreamingProcessor extends AudioWorkletProcessor {
           this.port.postMessage({ type: 'ended' });
           break;
         } else {
-          outputChannel[i] = next.value || 0;
+          const [sample] = next.value;
+          outputChannel[i] = sample || 0;
         }
       }
     } catch (error) {
