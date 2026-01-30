@@ -23,6 +23,6 @@ This is how chords and overtones should work. A C major chord is C + E + G - thr
 
 So combining sounds comes down to addition at each sample point - this we can do.
 
-##### Back: [What we have](49%20What%20we%20have.md)
+##### Back: [Frequencies](52%20Frequencies.md)
 
-##### Next: [The plan](51%20The%20plan.md)
+##### Next: [The plan](54%20The%20plan.md)

@@ -16,13 +16,15 @@ const play = function(code) {
 };
 
 const A_sharp_3 = `
-  (harmony
-    (envelope (gain (tone 237) 0.26) 0.01 0 1 1 0)
-    (envelope (gain (tone 473) 0.08) 0.01 0 1 1 0)
-    (envelope (gain (tone 926) 0.17) 0.01 0 1 1 0)
-    (envelope (gain (tone 1873) 0.20) 0.01 0 1 1 0)
-    (envelope (gain (tone 4220) 0.14) 0.01 0 1 1 0)
-    (envelope (gain (tone 9646) 0.15) 0.01 0 1 1 0))`;
+  (envelope
+    (harmony
+      (gain (tone 237) 0.26)
+      (gain (tone 473) 0.08)
+      (gain (tone 926) 0.17)
+      (gain (tone 1873) 0.20)
+      (gain (tone 4220) 0.14)
+      (gain (tone 9646) 0.15))
+    0.01 0 1 1 0)`;
 
 (function* () {
   yield* play(A_sharp_3);
@@ -208,6 +210,6 @@ function tokenize(input) {
 }
 ```
 
-##### Back: [... no gain](55%20...%20no%20gain.md)
+##### Back: [... no gain](57%20...%20no%20gain.md)
 
 ##### Next: [Drafts](../drafts.md)

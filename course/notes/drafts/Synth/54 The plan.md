@@ -20,8 +20,8 @@ It takes multiple generators and yields from all of them simultaneously, adding 
 
 ```js
 switch (operator) {
-  case "tone":
-    ...
+  case "tone": ...
+  case "envelope": ...
   // match the "harmony" case
 }
 ```
@@ -30,8 +30,8 @@ So the pattern is the same as when we added `sequence`:
 
 - Write the synth function `harmony` that combines generators by adding samples
 - Add the interpreter case `"harmony"` that calls it
-- Test it with Lyre code like `(harmony (tone 261.63 500) (tone 329.63 500))`
+- Test it with Lyre code like `(harmony (tone 261.63) (tone 329.63))`
 
-##### Back: [Waves](50%20Waves.md)
+##### Back: [Waves](53%20Waves.md)
 
-##### Next: [Cmaj7](52%20Cmaj7.md)
+##### Next: [A♯3](55%20A♯3.md)

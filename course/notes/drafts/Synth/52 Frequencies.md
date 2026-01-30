@@ -12,4 +12,4 @@ We can write a Lyre program that plays just these frequencies together.
 
 ##### Back: [Harmonics](51%20Harmonics.md)
 
-##### Next: [Synthesis](53%20Synthesis.md)
+##### Next: [Waves](53%20Waves.md)
