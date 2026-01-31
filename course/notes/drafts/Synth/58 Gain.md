@@ -212,4 +212,4 @@ function tokenize(input) {
 
 ##### Back: [... no gain](57%20...%20no%20gain.md)
 
-##### Next: [Drafts](../drafts.md)
+##### Next: [A bit closer](59%20A%20bit%20closer.md)
