@@ -1,4 +1,4 @@
-import { samplingRate } from './oscillators.js';
+const getSampleRate = () => globalThis.SAMPLE_RATE || 48000;
 
 /**
  * Applies a low-pass filter to smooth the signal and remove high frequencies.
@@ -10,6 +10,7 @@ import { samplingRate } from './oscillators.js';
  * // Smooths the sawtooth wave, removing frequencies above 1000 Hz
  */
 export function* filter(source, cutoff) {
+  const samplingRate = getSampleRate();
   const alpha = cutoff / samplingRate;
   let y = 0;
 
@@ -32,6 +33,7 @@ export function* filter(source, cutoff) {
  * // Filter sweeps from 2000Hz to 500Hz over 2 seconds
  */
 export function* filterEnvelope(source, startCutoff, endCutoff, decayTime) {
+  const samplingRate = getSampleRate();
   const decaySamples = decayTime * samplingRate;
   let y = 0;
   let n = 0;

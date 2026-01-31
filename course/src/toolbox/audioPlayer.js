@@ -6,7 +6,7 @@ export const loadAndConvertSamples = async (audioContext) => {
   const response = await fetch('/samples.json');
   const samples = await response.json();
 
-  const sampleRate = 44100;
+  const sampleRate = audioContext.sampleRate;
   const audioBuffer = audioContext.createBuffer(1, samples.length, sampleRate);
   const channelData = audioBuffer.getChannelData(0);
 

@@ -1,8 +1,15 @@
 /**
  * Audio sampling rate in Hz
+ * Uses the global SAMPLE_RATE set by AudioWorklet, falls back to 48000
  * @type {number}
  */
-export const samplingRate = 44100;
+const getSampleRate = () => globalThis.SAMPLE_RATE || 48000;
+
+/**
+ * Exported for backward compatibility
+ * @deprecated Use getSampleRate() for dynamic sample rate
+ */
+export const samplingRate = getSampleRate();
 
 /**
  * Generates an infinite sine wave at the given frequency.
@@ -16,7 +23,7 @@ export const samplingRate = 44100;
  */
 export function* oscillate(frequency) {
   let phase = 0;
-  const phaseIncrement = (2 * Math.PI * frequency) / samplingRate;
+  const phaseIncrement = (2 * Math.PI * frequency) / getSampleRate();
 
   while (true) {
     yield Math.sin(phase);
@@ -58,7 +65,7 @@ export function* tone(frequency) {
  */
 export function* sawtooth(frequency) {
   let phase = 0;
-  const phaseIncrement = (2 * Math.PI * frequency) / samplingRate;
+  const phaseIncrement = (2 * Math.PI * frequency) / getSampleRate();
 
   while (true) {
     const value = -1 + 2 * (phase / (2 * Math.PI));

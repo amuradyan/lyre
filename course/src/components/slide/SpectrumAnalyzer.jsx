@@ -241,13 +241,23 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
   };
 
   const handleWheel = (e) => {
-    if (rangeWidth >= 20000) return;
-
     e.preventDefault();
-    const delta = e.deltaY || e.deltaX;
-    const step = 100;
-    const newPos = Math.max(0, Math.min(20000 - rangeWidth, scrollPos + (delta > 0 ? step : -step)));
-    setScrollPos(newPos);
+
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      const zoomStep = 1000;
+      const delta = e.deltaY;
+      const newRange = Math.max(2000, Math.min(20000, rangeWidth + (delta > 0 ? zoomStep : -zoomStep)));
+      setRangeWidth(newRange);
+      if (scrollPos + newRange > 20000) {
+        setScrollPos(Math.max(0, 20000 - newRange));
+      }
+    } else {
+      if (rangeWidth >= 20000) return;
+      const delta = e.deltaX;
+      const step = 100;
+      const newPos = Math.max(0, Math.min(20000 - rangeWidth, scrollPos + (delta > 0 ? step : -step)));
+      setScrollPos(newPos);
+    }
   };
 
   const showTooltip = (text) => {
@@ -633,21 +643,6 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <label htmlFor="threshold-slider" className="text-sm text-gray-700 whitespace-nowrap">
-              Threshold:
-            </label>
-            <input
-              id="threshold-slider"
-              type="range"
-              min="-85"
-              max="-20"
-              value={threshold}
-              onChange={(e) => setThreshold(Number(e.target.value))}
-              className="threshold-slider"
-            />
-            <span className="text-sm text-gray-600 w-12">{threshold}dB</span>
-          </div>
-          <div className="flex items-center gap-2">
             <label htmlFor="range-slider" className="text-sm text-gray-700 whitespace-nowrap">
               Range:
             </label>
@@ -668,6 +663,21 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
               className="range-slider"
             />
             <span className="text-sm text-gray-600 w-16">{(rangeWidth / 1000).toFixed(0)}kHz</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <label htmlFor="threshold-slider" className="text-sm text-gray-700 whitespace-nowrap">
+              Threshold:
+            </label>
+            <input
+              id="threshold-slider"
+              type="range"
+              min="-85"
+              max="-20"
+              value={threshold}
+              onChange={(e) => setThreshold(Number(e.target.value))}
+              className="threshold-slider"
+            />
+            <span className="text-sm text-gray-600 w-12">{threshold}dB</span>
           </div>
           <div className="flex items-center gap-2">
             <input

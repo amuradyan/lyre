@@ -5,6 +5,9 @@ class LyreStreamingProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
 
+    // Set global sample rate for synthesis functions
+    globalThis.SAMPLE_RATE = sampleRate;
+
     this.isPlaying = false;
     this.currentGenerator = null;
     this.ended = false;
