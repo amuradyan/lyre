@@ -107,7 +107,7 @@ const groupColors = [
 export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
-  const [threshold, setThreshold] = useState(-45);
+  const [threshold, setThreshold] = useState(-80);
   const [rangeWidth, setRangeWidth] = useState(8000);
   const [scrollPos, setScrollPos] = useState(0);
   const [cursorX, setCursorX] = useState(null);
@@ -422,7 +422,7 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
           if (windowData.length > 0) {
             peakData = windowData.reduce((max, d) =>
               d.level > max.level ? d : max
-            , windowData[0]);
+              , windowData[0]);
           } else {
             peakData = data.reduce((nearest, d) => {
               const currDist = Math.abs(d.freq - harmonicFreq);
