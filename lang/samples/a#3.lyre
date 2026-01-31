@@ -1,7 +1,7 @@
 (gain
   (harmony
-    (gain (envelope (tone 237) 0.01 2.0 0 0.1) 0.19)
-    (gain (envelope (tone 473) 0.01 1.8 0 0.1) 0.06)
+    (gain (envelope (tone 237) 0.01 1.8 0 0 0.1) 0.19)
+    (gain (envelope (tone 473) 0.01 1.6 0 0.1) 0.06)
     (gain (envelope (tone 926) 0.01 1.6 0 0.1) 0.12)
     (gain (envelope (tone 947) 0.01 1.5 0 0.1) 0.08)
     (gain (envelope (tone 1873) 0.01 1.3 0 0.1) 0.15)
