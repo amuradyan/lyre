@@ -2,7 +2,7 @@
 <!-- slide-id: 53095e93-c2f1-4800-8d9f-dd26de5c403b -->
 <!-- tags: synth, pluck, a#3 -->
 
-We can now recreate the A♯3 pluck sound with the harmonics we found in the spectrum analysis:
+After some experimenting and comparing to the original sample, I came to this:
 
 ```lyre
 (gain
@@ -22,16 +22,9 @@ We can now recreate the A♯3 pluck sound with the harmonics we found in the spe
   1.5)
 ```
 
-Each harmonic gets its own envelope with different decay times - higher frequencies fade faster, mimicking how a plucked string behaves. The parameters are:
+12 pitches captured - each with its own envelope with different decay times /higher frequencies fade faster, mimicking how a plucked string behaves/. The parameters are purely by ear: the _attack_ is set to `0.01` for a quick onset, _decay_ times range from `2.0` seconds for the lowest harmonic down to `0.25` seconds for the highest, _sustain_ is `0` so they all fade to silence, and _release_ is a brief `0.1` seconds to give a little tail.
 
-- **Frequency** - each harmonic peak from the spectrum /237, 473, 926.../
-- **Attack** - 0.01s /quick onset/
-- **Decay** - longer for lower harmonics /2.0s down to 0.25s/
-- **Sustain** - 0 /decays to silence/
-- **Release** - 0.1s /brief tail/
-- **Gain** - relative amplitude of each harmonic /0.19, 0.06, 0.12.../
-
-The outer `gain` at 1.5 boosts the overall level to match the original recording's amplitude.
+The _gain_ levels are adjusted according to the original sample's relative harmonic amplitudes. The outer gain at 1.5 boosts the overall level to match the original recording's amplitude.
 
 This is good enough for now. The sound is recognizable and captures the essential character of the pluck.
 
