@@ -1,4 +1,4 @@
-# Wave fundamentals
+# Waves on waves 🌊
 <!-- slide-id: 0752f3c3-1166-4c12-abde-fbb9a78dc72b -->
 <!-- tags: waves, superposition, physics -->
 
@@ -25,4 +25,4 @@ So combining sounds comes down to addition at each sample point - this we can do
 
 ##### Back: [Frequencies](52%20Frequencies.md)
 
-##### Next: [Synthesis plan](54%20Synthesis%20plan.md)
+##### Next: [Gameplan](54%20Gameplan.md)

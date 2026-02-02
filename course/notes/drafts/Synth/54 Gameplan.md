@@ -1,4 +1,4 @@
-# Synthesis plan
+# Gameplan 🏈
 <!-- slide-id: e9d0a3ce-4dcd-4bb9-8f25-8f9245226f4d -->
 <!-- tags: architecture, harmony, interpreter -->
 
@@ -32,6 +32,6 @@ So the pattern is the same as when we added `sequence`:
 - Add the interpreter case `"harmony"` that calls it
 - Test it with Lyre code like `(harmony (tone 261.63) (tone 329.63))`
 
-##### Back: [Wave fundamentals](53%20Wave%20fundamentals.md)
+##### Back: [Waves on waves](53%20Waves%20on%20waves.md)
 
 ##### Next: [A♯3](55%20A♯3.md)
