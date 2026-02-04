@@ -254,7 +254,7 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
     } else {
       if (rangeWidth >= 20000) return;
       const delta = e.deltaX;
-      const step = 100;
+      const step = isLogScale ? rangeWidth * 0.05 : 100;
       const newPos = Math.max(0, Math.min(20000 - rangeWidth, scrollPos + (delta > 0 ? step : -step)));
       setScrollPos(newPos);
     }
@@ -475,12 +475,19 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
         let currentFreq = lastHarmonic.freq;
         let currentLevel = lastHarmonic.level;
 
-        while (currentFreq < maxFreq) {
+        const maxExtrapolationFreq = Math.min(maxFreq, 20000);
+        const minVisibleLevel = threshold;
+
+        while (currentFreq < maxExtrapolationFreq && currentLevel >= minVisibleLevel) {
           currentFreq *= freqRatio;
           currentLevel += levelDecay;
 
-          if (currentFreq > maxFreq) {
-            const finalX = xScale(maxFreq);
+          if (currentLevel < minVisibleLevel) {
+            break;
+          }
+
+          if (currentFreq > maxExtrapolationFreq) {
+            const finalX = xScale(maxExtrapolationFreq);
             const finalY = yScale(currentLevel);
             extrapolatedPoints.push({ x: finalX, y: finalY });
             break;
@@ -641,58 +648,7 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
         }
       `}</style>
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <label htmlFor="range-slider" className="text-sm text-gray-700 whitespace-nowrap">
-              Range:
-            </label>
-            <input
-              id="range-slider"
-              type="range"
-              min="2000"
-              max="20000"
-              step="1000"
-              value={rangeWidth}
-              onChange={(e) => {
-                const newRange = Number(e.target.value);
-                setRangeWidth(newRange);
-                if (scrollPos + newRange > 20000) {
-                  setScrollPos(Math.max(0, 20000 - newRange));
-                }
-              }}
-              className="range-slider"
-            />
-            <span className="text-sm text-gray-600 w-16">{(rangeWidth / 1000).toFixed(0)}kHz</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <label htmlFor="threshold-slider" className="text-sm text-gray-700 whitespace-nowrap">
-              Threshold:
-            </label>
-            <input
-              id="threshold-slider"
-              type="range"
-              min="-85"
-              max="-20"
-              value={threshold}
-              onChange={(e) => setThreshold(Number(e.target.value))}
-              className="threshold-slider"
-            />
-            <span className="text-sm text-gray-600 w-12">{threshold}dB</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              id="log-scale-checkbox"
-              type="checkbox"
-              checked={isLogScale}
-              onChange={(e) => setIsLogScale(e.target.checked)}
-              className="cursor-pointer"
-            />
-            <label htmlFor="log-scale-checkbox" className="text-sm text-gray-700 whitespace-nowrap cursor-pointer">
-              Log scale
-            </label>
-          </div>
-        </div>
-        <div className="flex gap-2 min-h-8" style={{ alignItems: 'center' }}>
+        <div className="flex flex-wrap gap-2 min-h-8 flex-1 mr-2" style={{ alignItems: 'center' }}>
           {frozenGroups.map((marker, index) => (
             <div
               key={index}
@@ -708,18 +664,18 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
               {getNoteFromFreq(marker.freq)}
             </div>
           ))}
-          {frozenGroups.length > 0 && (
-            <div className="py-1">
-              <EraserIcon
-                color="rgb(192, 132, 252)"
-                size={20}
-                onClick={handleClearAll}
-                className="cursor-pointer hover:opacity-70 transition-opacity"
-                title="Clear all markers"
-              />
-            </div>
-          )}
         </div>
+        {frozenGroups.length > 0 && (
+          <div className="py-1">
+            <EraserIcon
+              color="rgb(192, 132, 252)"
+              size={20}
+              onClick={handleClearAll}
+              className="cursor-pointer hover:opacity-70 transition-opacity"
+              title="Clear all markers"
+            />
+          </div>
+        )}
       </div>
       <div className="relative" onWheel={handleWheel}>
         <div className="absolute flex items-center gap-2 z-10" style={{ top: '30px', right: '50px' }}>
@@ -834,6 +790,61 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
             `}</style>
           </div>
         )}
+      </div>
+      <div className="flex items-center justify-between mt-3">
+        <div className="flex items-center justify-center gap-6 flex-1">
+          <div className="flex items-center gap-2">
+            <label htmlFor="range-slider" className="text-sm text-gray-700 whitespace-nowrap">
+              Range:
+            </label>
+            <input
+              id="range-slider"
+              type="range"
+              min="2000"
+              max="20000"
+              step="1000"
+              value={rangeWidth}
+              onChange={(e) => {
+                const newRange = Number(e.target.value);
+                setRangeWidth(newRange);
+                if (scrollPos + newRange > 20000) {
+                  setScrollPos(Math.max(0, 20000 - newRange));
+                }
+              }}
+              className="range-slider"
+            />
+            <span className="text-sm text-gray-600 w-16">{(rangeWidth / 1000).toFixed(0)}kHz</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <label htmlFor="threshold-slider" className="text-sm text-gray-700 whitespace-nowrap">
+              Threshold:
+            </label>
+            <input
+              id="threshold-slider"
+              type="range"
+              min="-85"
+              max="-20"
+              value={threshold}
+              onChange={(e) => setThreshold(Number(e.target.value))}
+              className="threshold-slider"
+            />
+            <span className="text-sm text-gray-600 w-12">{threshold}dB</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-700">Log</span>
+          <label className="relative inline-block w-12 h-6 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={!isLogScale}
+              onChange={(e) => setIsLogScale(!e.target.checked)}
+              className="opacity-0 w-0 h-0 peer"
+            />
+            <span className="absolute inset-0 bg-gray-300 rounded-full transition-colors"></span>
+            <span className="absolute left-1 top-1 w-4 h-4 bg-purple-400 rounded-full transition-transform peer-checked:translate-x-6"></span>
+          </label>
+          <span className="text-sm text-gray-700">Linear</span>
+        </div>
       </div>
     </div>
   );
