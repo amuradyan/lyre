@@ -498,26 +498,28 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
           extrapolatedPoints.push({ x: extrapolatedX, y: extrapolatedY });
         }
 
-        ctx.strokeStyle = groupColor;
-        ctx.lineWidth = 2;
-        ctx.globalAlpha = 0.6;
-        ctx.setLineDash([5, 3]);
-        ctx.beginPath();
-        for (let i = 0; i < harmonicPoints.length; i++) {
-          if (i === 0) {
-            ctx.moveTo(harmonicPoints[i].x, harmonicPoints[i].y);
-          } else {
-            ctx.lineTo(harmonicPoints[i].x, harmonicPoints[i].y);
+        if (harmonicPoints.length >= 2) {
+          ctx.strokeStyle = groupColor;
+          ctx.lineWidth = 2;
+          ctx.globalAlpha = 0.6;
+          ctx.setLineDash([5, 3]);
+          ctx.beginPath();
+          for (let i = 0; i < harmonicPoints.length; i++) {
+            if (i === 0) {
+              ctx.moveTo(harmonicPoints[i].x, harmonicPoints[i].y);
+            } else {
+              ctx.lineTo(harmonicPoints[i].x, harmonicPoints[i].y);
+            }
           }
-        }
 
-        for (let i = 0; i < extrapolatedPoints.length; i++) {
-          ctx.lineTo(extrapolatedPoints[i].x, extrapolatedPoints[i].y);
-        }
+          for (let i = 0; i < extrapolatedPoints.length; i++) {
+            ctx.lineTo(extrapolatedPoints[i].x, extrapolatedPoints[i].y);
+          }
 
-        ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.globalAlpha = 1.0;
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.globalAlpha = 1.0;
+        }
       }
     };
 
