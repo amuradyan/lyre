@@ -99,10 +99,12 @@ const interpolateData = (data, pointsPerInterval = 3) => {
   return interpolated;
 };
 
-const groupColors = [
-  '#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#a855f7',
-  '#06b6d4', '#84cc16', '#ec4899', '#10b981', '#f97316'
-];
+const generateRandomColor = () => {
+  const hue = Math.floor(Math.random() * 360);
+  const saturation = 60 + Math.floor(Math.random() * 20);
+  const lightness = 50 + Math.floor(Math.random() * 15);
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};
 
 export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
   const canvasRef = useRef(null);
@@ -144,13 +146,13 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
   useEffect(() => {
     if (presetMarkers && data.length > 0 && !presetsInitialized.current) {
       presetsInitialized.current = true;
-      const markers = presetMarkers.map((targetFreq, index) => {
+      const markers = presetMarkers.map((targetFreq) => {
         const nearest = data.reduce((prev, curr) => {
           return Math.abs(curr.freq - targetFreq) < Math.abs(prev.freq - targetFreq) ? curr : prev;
         });
         return {
           ...nearest,
-          color: groupColors[index % groupColors.length]
+          color: generateRandomColor()
         };
       });
       setFrozenGroups(markers);
@@ -229,9 +231,8 @@ export default function SpectrumAnalyzer({ audioSrc, presetMarkers }) {
     } else {
       const nearestPoint = getNearestPoint();
       if (nearestPoint) {
-        const usedColors = new Set(frozenGroups.map(g => g.color));
-        const availableColor = groupColors.find(c => !usedColors.has(c)) || groupColors[frozenGroups.length % groupColors.length];
-        setFrozenGroups([...frozenGroups, { ...nearestPoint, color: availableColor }]);
+        const newColor = generateRandomColor();
+        setFrozenGroups([...frozenGroups, { ...nearestPoint, color: newColor }]);
       }
     }
   };
