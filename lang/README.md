@@ -145,13 +145,13 @@ for (const sample of generator) {
 
 **Generating waves.** The foundation is `oscillate(frequency)`, which yields an infinite sine wave at the given frequency. `tone(frequency)` wraps this in a convenient generator that you can pass to other functions. `sawtooth(frequency)` generates a richer waveform - a rising ramp from -1 to 1 - that contains more harmonics than a sine wave.
 
-**Shaping sound.** `envelope(source, attack, decay, sustain, release, gateTime)` applies an ADSR envelope to a source generator. All times are in seconds. The attack ramps up from silence, decay falls to the sustain level, the sustain holds for the gate time (defaults to 0), then release fades to silence. `filter(source, cutoff)` applies a simple low-pass filter that smooths the signal, removing frequencies above the cutoff. `filterEnvelope(source, startCutoff, endCutoff, decayTime)` applies a low-pass filter with a cutoff that sweeps from start to end over the decay time - useful for evolving timbres.
+**Shaping sound.** `envelope(source, attack, decay, sustain, release, gateTime)` applies an ADSR envelope to a source generator. All times are in seconds. The attack ramps up from silence, decay falls to the sustain level, the sustain holds for the gate time (defaults to 0), then release fades to silence. `gain(source, level)` multiplies all samples by the given level (0 to 1) to control volume. `filter(source, cutoff)` applies a simple low-pass filter that smooths the signal, removing frequencies above the cutoff. `filterEnvelope(source, startCutoff, endCutoff, decayTime)` applies a low-pass filter with a cutoff that sweeps from start to end over the decay time - useful for evolving timbres.
 
 **Composition.** `sequence(...generators)` plays each generator in turn, yielding all samples from the first, then all from the second, and so on. `harmony(...generators)` mixes generators in parallel by summing their samples at each step. When any generator finishes, it contributes 0 to the sum. When all finish, harmony stops. `repeat(times, generatorFunc)` repeats a generator function N times. Pass a function that returns a new generator each time it's called.
 
 **Language.** `tokenize(input)` parses Lyre code into nested arrays of strings - the first element is the operator, the rest are operands. `interpret(expression)` evaluates a tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
 
-The sampling rate is 44,100 Hz, exported as `samplingRate` from the synth module.
+The sampling rate is 48,000 Hz, exported as `samplingRate` from the synth module.
 
 ## License
 

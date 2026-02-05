@@ -64,36 +64,63 @@ export default function Index() {
             <div className="lg:col-span-2">
               <div className="bg-white/70 backdrop-blur rounded-sm shadow-sm p-6">
                 <div className="space-y-4 text-sm">
-                  {/* Produce sounds */}
+                  {/* Produce */}
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Produce sounds</h3>
-                    <ul className="space-y-2">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Produce</h3>
+                    <ul className="space-y-3">
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(tone 440)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Generate infinite sine wave at given frequency in Hz</div>
-                      </li>
-                      <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(envelope (tone 440) 0.01 0.5 0 0.01)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Apply ADSR envelope to create finite sound. Parameters: attack\decay\sustain\release in seconds</div>
-                      </li>
-                      <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(envelope (tone 0) 0.01 1.0 0 0.01)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Create silence using 0Hz tone with envelope for duration</div>
+                        <code className="font-mono text-purple-600 text-xs">(tone frequency)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">
+                          <div className="mb-1">Generate infinite sine wave at given frequency in Hz</div>
+                          <code className="font-mono text-purple-500 text-xs">(tone 440)</code>
+                          <span className="text-gray-500 ml-2">- A4 sine wave</span>
+                        </div>
                       </li>
                     </ul>
                   </div>
 
-                  {/* Combine sounds */}
+                  {/* Shape */}
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Combine sounds</h3>
-                    <ul className="space-y-2">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Shape</h3>
+                    <ul className="space-y-3">
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(sequence (envelope ...) (envelope ...) ...)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Play sounds one after another in order</div>
+                        <code className="font-mono text-purple-600 text-xs">(envelope source attack decay sustain release gate)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">
+                          <div className="mb-1">Apply ADSR envelope. All times in seconds</div>
+                          <code className="font-mono text-purple-500 text-xs">(envelope (tone 261.63) 0.01 1.0 0 0.5 0)</code>
+                          <span className="text-gray-500 ml-2">- Plucked C4</span>
+                        </div>
                       </li>
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(harmony (envelope ...) (envelope ...) ...)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">Play multiple sounds simultaneously</div>
+                        <code className="font-mono text-purple-600 text-xs">(gain source level)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">
+                          <div className="mb-1">Control volume, level from 0 to 1</div>
+                          <code className="font-mono text-purple-500 text-xs">(gain (envelope ...) 0.5)</code>
+                          <span className="text-gray-500 ml-2">- Half volume</span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Compose */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Compose</h3>
+                    <ul className="space-y-3">
+                      <li className="text-left">
+                        <code className="font-mono text-purple-600 text-xs">(sequence sound1 sound2 ...)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">
+                          <div className="mb-1">Play sounds one after another</div>
+                          <code className="font-mono text-purple-500 text-xs">(sequence noteC noteD noteE)</code>
+                          <span className="text-gray-500 ml-2">- Melody</span>
+                        </div>
+                      </li>
+                      <li className="text-left">
+                        <code className="font-mono text-purple-600 text-xs">(harmony sound1 sound2 ...)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">
+                          <div className="mb-1">Play sounds simultaneously</div>
+                          <code className="font-mono text-purple-500 text-xs">(harmony noteC noteE noteG)</code>
+                          <span className="text-gray-500 ml-2">- C major chord</span>
+                        </div>
                       </li>
                     </ul>
                   </div>
