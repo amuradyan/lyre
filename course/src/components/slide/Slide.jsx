@@ -488,9 +488,9 @@ export default function SlideExperimental({ initialMarkdownPath }) {
         >
           {getCurriculumFromPath(mdPath) === 'Lyre' ? (
             <svg width="18" height="22" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 19l7-7 3 3-7 7-3-3z"/>
-              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
-              <path d="M2 2l7.586 7.586"/>
+              <path d="M12 19l7-7 3 3-7 7-3-3z" />
+              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+              <path d="M2 2l7.586 7.586" />
             </svg>
           ) : (
             <svg width="18" height="22" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -535,121 +535,121 @@ export default function SlideExperimental({ initialMarkdownPath }) {
           {parsed.title && (
             <h1 className="text-3xl font-bold text-left mb-8">
               {parsed.title}
-              {currentChapter && <span className="text-gray-400 text-base font-normal"> / {currentChapter}</span>}
+              {currentChapter && <><span className="text-gray-400 text-xl font-normal"> / </span><span className="text-gray-400 text-base font-normal">{currentChapter}</span></>}
             </h1>
           )}
           <div className="space-y-6 text-left">
             {parsed.content.map((item, i) => {
-                if (item.type === 'paragraph') {
-                  return <p key={i} className="text-gray-700 text-left">{processContentWithAudio(item.content, `p-${i}`)}</p>;
-                } else if (item.type === 'collapsible') {
-                  return <CollapsibleParagraph key={i} content={item.content} />;
-                } else if (item.type === 'list') {
+              if (item.type === 'paragraph') {
+                return <p key={i} className="text-gray-700 text-left">{processContentWithAudio(item.content, `p-${i}`)}</p>;
+              } else if (item.type === 'collapsible') {
+                return <CollapsibleParagraph key={i} content={item.content} />;
+              } else if (item.type === 'list') {
+                return (
+                  <ul key={i} className="text-gray-700 text-left list-disc list-inside space-y-1 ml-8">
+                    {item.items.map((listItem, j) => (
+                      <li key={j}>{processContentWithAudio(listItem, `li-${i}-${j}`)}</li>
+                    ))}
+                  </ul>
+                );
+              } else if (item.type === 'blockquote') {
+                return (
+                  <blockquote key={i} className="border-l-4 border-gray-300 pl-4 italic text-gray-600 text-left">
+                    <p>{processContentWithAudio(item.content, `bq-${i}`)}</p>
+                  </blockquote>
+                );
+              } else if (item.type === 'indented') {
+                return (
+                  <div key={i} className="ml-8 text-gray-700 text-left whitespace-pre-line">
+                    <div>{processContentWithAudio(item.content, `ind-${i}`)}</div>
+                  </div>
+                );
+              } else if (item.type === 'header') {
+                const HeaderTag = `h${item.level}`;
+                const headerClass = item.level === 2 ? "text-xl font-semibold text-gray-800 mt-6 mb-4" :
+                  item.level === 3 ? "text-lg font-medium text-gray-700 mt-4 mb-3" :
+                    "text-base font-medium text-gray-600 mt-3 mb-2";
+                return <HeaderTag key={i} className={headerClass}>{processContentWithAudio(item.text, `h-${i}`)}</HeaderTag>;
+              } else if (item.type === 'hr') {
+                return <hr key={i} className="border-gray-300 my-6" />;
+              } else if (item.type === 'wave-superposition') {
+                return <WaveSuperposition key={i} />;
+              } else if (item.type === 'harmonic-builder') {
+                return <HarmonicBuilder key={i} />;
+              } else if (item.type === 'spectrum-analyzer') {
+                const audioSrc = item.audioSrc ? resolveAudioPath(item.audioSrc) : null;
+                return <SpectrumAnalyzer key={i} audioSrc={audioSrc} presetMarkers={item.presetMarkers} />;
+              } else if (item.type === 'synthesis-diagram') {
+                return <div key={i} className="flex justify-center"><SynthesisDiagram /></div>;
+              } else if (item.type === 'sine-wave-visualizer') {
+                return <SineWaveVisualizer key={i} />;
+              } else if (item.type === 'image') {
+                const resolveImagePath = (src) => {
+                  if (src.startsWith('http://') || src.startsWith('https://')) {
+                    return src;
+                  }
+                  return joinUrlFs(src);
+                };
+                return (
+                  <img
+                    key={i}
+                    src={resolveImagePath(item.src)}
+                    alt={item.alt}
+                    className="max-w-full h-auto my-6 mx-auto"
+                  />
+                );
+              } else if (item.type === 'codeblock-group') {
+                const savedCodes = item.blocks.map(block =>
+                  parsed.slideId ? loadCodeBlock(parsed.slideId, block.code) : null
+                );
+                return (
+                  <TabbedCodeblock
+                    key={i}
+                    blocks={item.blocks}
+                    savedCodes={savedCodes}
+                    groupPlayable={item.playable}
+                    slideId={parsed.slideId}
+                    blockIndex={i}
+                    testComment={item.testComment}
+                  />
+                );
+              } else if (item.type === 'codeblock') {
+                if (item.playable) {
                   return (
-                    <ul key={i} className="text-gray-700 text-left list-disc list-inside space-y-1 ml-8">
-                      {item.items.map((listItem, j) => (
-                        <li key={j}>{processContentWithAudio(listItem, `li-${i}-${j}`)}</li>
-                      ))}
-                    </ul>
-                  );
-                } else if (item.type === 'blockquote') {
-                  return (
-                    <blockquote key={i} className="border-l-4 border-gray-300 pl-4 italic text-gray-600 text-left">
-                      <p>{processContentWithAudio(item.content, `bq-${i}`)}</p>
-                    </blockquote>
-                  );
-                } else if (item.type === 'indented') {
-                  return (
-                    <div key={i} className="ml-8 text-gray-700 text-left whitespace-pre-line">
-                      <div>{processContentWithAudio(item.content, `ind-${i}`)}</div>
-                    </div>
-                  );
-                } else if (item.type === 'header') {
-                  const HeaderTag = `h${item.level}`;
-                  const headerClass = item.level === 2 ? "text-xl font-semibold text-gray-800 mt-6 mb-4" :
-                    item.level === 3 ? "text-lg font-medium text-gray-700 mt-4 mb-3" :
-                      "text-base font-medium text-gray-600 mt-3 mb-2";
-                  return <HeaderTag key={i} className={headerClass}>{processContentWithAudio(item.text, `h-${i}`)}</HeaderTag>;
-                } else if (item.type === 'hr') {
-                  return <hr key={i} className="border-gray-300 my-6" />;
-                } else if (item.type === 'wave-superposition') {
-                  return <WaveSuperposition key={i} />;
-                } else if (item.type === 'harmonic-builder') {
-                  return <HarmonicBuilder key={i} />;
-                } else if (item.type === 'spectrum-analyzer') {
-                  const audioSrc = item.audioSrc ? resolveAudioPath(item.audioSrc) : null;
-                  return <SpectrumAnalyzer key={i} audioSrc={audioSrc} presetMarkers={item.presetMarkers} />;
-                } else if (item.type === 'synthesis-diagram') {
-                  return <div key={i} className="flex justify-center"><SynthesisDiagram /></div>;
-                } else if (item.type === 'sine-wave-visualizer') {
-                  return <SineWaveVisualizer key={i} />;
-                } else if (item.type === 'image') {
-                  const resolveImagePath = (src) => {
-                    if (src.startsWith('http://') || src.startsWith('https://')) {
-                      return src;
-                    }
-                    return joinUrlFs(src);
-                  };
-                  return (
-                    <img
+                    <PlayableJsCodeblock
                       key={i}
-                      src={resolveImagePath(item.src)}
-                      alt={item.alt}
-                      className="max-w-full h-auto my-6 mx-auto"
+                      code={item.code}
+                      readOnly={false}
+                      slideId={parsed.slideId}
+                      blockIndex={i}
                     />
                   );
-                } else if (item.type === 'codeblock-group') {
-                  const savedCodes = item.blocks.map(block =>
-                    parsed.slideId ? loadCodeBlock(parsed.slideId, block.code) : null
-                  );
+                } else if (item.language === 'lyre') {
                   return (
-                    <TabbedCodeblock
+                    <LyreCodeblock
                       key={i}
-                      blocks={item.blocks}
-                      savedCodes={savedCodes}
-                      groupPlayable={item.playable}
+                      code={item.code}
+                      showContainer={true}
+                    />
+                  );
+                } else {
+                  const savedCode = parsed.slideId ? loadCodeBlock(parsed.slideId, item.code) : null;
+
+                  return (
+                    <Codeblock
+                      key={i}
+                      code={item.code}
+                      savedCode={savedCode}
                       slideId={parsed.slideId}
                       blockIndex={i}
                       testComment={item.testComment}
+                      hints={item.hints}
                     />
                   );
-                } else if (item.type === 'codeblock') {
-                  if (item.playable) {
-                    return (
-                      <PlayableJsCodeblock
-                        key={i}
-                        code={item.code}
-                        readOnly={false}
-                        slideId={parsed.slideId}
-                        blockIndex={i}
-                      />
-                    );
-                  } else if (item.language === 'lyre') {
-                    return (
-                      <LyreCodeblock
-                        key={i}
-                        code={item.code}
-                        showContainer={true}
-                      />
-                    );
-                  } else {
-                    const savedCode = parsed.slideId ? loadCodeBlock(parsed.slideId, item.code) : null;
-
-                    return (
-                      <Codeblock
-                        key={i}
-                        code={item.code}
-                        savedCode={savedCode}
-                        slideId={parsed.slideId}
-                        blockIndex={i}
-                        testComment={item.testComment}
-                        hints={item.hints}
-                      />
-                    );
-                  }
                 }
-                return null;
-              })}
+              }
+              return null;
+            })}
           </div>
           {(parsed.backHref || parsed.nextHref || parsed.skipHref) && (
             <div className="flex justify-between items-center" style={{ marginTop: '48px' }}>
@@ -738,32 +738,37 @@ export default function SlideExperimental({ initialMarkdownPath }) {
             </div>
           )}
         </div>
-      )}
-      {navigatorOpen && createPortal(
-        <SlideNavigator
-          currentIndex={slideIndex?.current}
-          currentCurriculum={getCurriculumFromPath(mdPath)}
-          onNavigate={(path) => {
-            setMdPath(path);
-            setDisplayPath(path);
-            updateUrl(path);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onPreview={(path) => {
-            setDisplayPath(path);
-          }}
-          onClose={() => setNavigatorOpen(false)}
-          onHome={() => handleHomeRef.current?.()}
-          onEnd={() => handleEndRef.current?.()}
-        />,
-        document.body
-      )}
-      {helpModalOpen && createPortal(
-        <InfoPlaque
-          onClose={() => setHelpModalOpen(false)}
-        />,
-        document.body
-      )}
-    </div>
+      )
+      }
+      {
+        navigatorOpen && createPortal(
+          <SlideNavigator
+            currentIndex={slideIndex?.current}
+            currentCurriculum={getCurriculumFromPath(mdPath)}
+            onNavigate={(path) => {
+              setMdPath(path);
+              setDisplayPath(path);
+              updateUrl(path);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onPreview={(path) => {
+              setDisplayPath(path);
+            }}
+            onClose={() => setNavigatorOpen(false)}
+            onHome={() => handleHomeRef.current?.()}
+            onEnd={() => handleEndRef.current?.()}
+          />,
+          document.body
+        )
+      }
+      {
+        helpModalOpen && createPortal(
+          <InfoPlaque
+            onClose={() => setHelpModalOpen(false)}
+          />,
+          document.body
+        )
+      }
+    </div >
   );
 }
