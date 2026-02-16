@@ -14,6 +14,6 @@ Let us do another round of sound engineering thinking to build a richer synth - 
 
 On to our analysis then!
 
-##### Back: [A good run](../../A%20bit%20of%20both/48%20A%20good%20run.md)
+##### Back: [A good run](../A%20bit%20of%20both/48%20A%20good%20run.md)
 
 ##### Next: [A♯3](50%20A♯3.md)
