@@ -29,4 +29,3 @@ This is good enough for now. The sound is recognizable and captures the essentia
 
 ##### Back: [Gain](58%20Gain.md)
 
-##### Next: [Drafts](../drafts.md)
