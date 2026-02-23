@@ -10,16 +10,8 @@ Experimental content and explorations.
 - [Streaming samples](#streaming-samples)
 - [Playing audio](#playing-audio)
 
-## Synth
+## Lang
 
-- [A deep breath](#a-deep-breath)
-- [A♯3](#a3)
-- [Harmonics](#harmonics)
-- [Frequencies](#frequencies)
-- [Waves on waves](#waves-on-waves)
-- [Gameplan](#gameplan)
-- [A♯3](#a3-1)
-- [Levels](#levels)
-- [... no gain](#no-gain)
-- [Gain](#gain)
-- [A bit closer](#a-bit-closer)
+- [Twinkle, twinkle](#twinkle-twinkle)
+- [Music notation](#music-notation)
+- [Dots](#dots)
