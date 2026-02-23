@@ -28,4 +28,4 @@ Let's exercise our imagination: we'll rewrite the "Twinkle, twinkle..." to look 
 
 ##### Back: [Drafts](../drafts.md)
 
-##### Next: [Music notation](61 Music notation.md)
+##### Next: [Music notation](61%20Music%20notation.md)

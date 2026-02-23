@@ -22,6 +22,6 @@ We can get rid of the `.` before the note names, assuming that the smallest dura
 
 Let's park it here for now. We have a nice way to express the melody and the rhythm, but we still have to solve the `envelope`.
 
-##### Back: [Music notation](61 Music notation.md)
+##### Back: [Music notation](61%20Music%20notation.md)
 
 ##### Next: [Drafts](../drafts.md)

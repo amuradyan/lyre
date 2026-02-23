@@ -28,6 +28,6 @@ The combination of the two above in a music sheet is called a _metronome mark_ a
 
 >+ In case the rhythmic value is missing, we might check another marking - the _time signature_. It captures the structure of the rhythm. It tells us how many beats are in a measure, and what rhythmic value constitutes one beat. For example, a 4/4 time signature means there are 4 beats in a measure /the top number/, and each beat plays a quarter note /the bottom number/. A 3/4 time signature means the quarter note appears thrice. When the rhythmic value is missing from the metronome mark, we can assume it is the same as the one in the time signature.
 
-##### Back: [Twinkle, twinkle](60 Twinkle, twinkle.md)
+##### Back: [Twinkle, twinkle](60%20Twinkle,%20twinkle.md)
 
-##### Next: [Dots](62 Dots.md)
+##### Next: [Dots](62%20Dots.md)
