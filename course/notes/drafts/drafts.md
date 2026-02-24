@@ -15,5 +15,5 @@ Experimental content and explorations.
 - [Twinkle, twinkle](#twinkle-twinkle)
 - [Music notation](#music-notation)
 - [Dots](#dots)
-- [Grouping tones](#grouping-tones)
-- [Define piano](#define-piano)
+- [Bref](#bref)
+- [What if...](#what-if)

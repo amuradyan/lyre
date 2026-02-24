@@ -24,4 +24,4 @@ Let's park it here for now. We have a nice way to express the melody and the rhy
 
 ##### Back: [Music notation](61%20Music%20notation.md)
 
-##### Next: [Grouping tones](63%20Grouping%20tones.md)
+##### Next: [Bref](63%20Bref.md)
