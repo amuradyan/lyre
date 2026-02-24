@@ -23,3 +23,5 @@ CLAUDE.md
 **/assets/
 
 **/*.raw
+
+*.wav
