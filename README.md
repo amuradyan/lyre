@@ -2,60 +2,80 @@
 
 [![Tests](https://github.com/amuradyan/lyre/actions/workflows/test.yml/badge.svg)](https://github.com/amuradyan/lyre/actions/workflows/test.yml)
 
-This repository accompanies a course on implementing a programming language from scratch. The idea is to explore how programming languages work by building a simple language to write music step by step.
-
-For the looks and the mechanics of our language, we'll draw inspiration from an old and powerful family of programming languages - the LISPs, and we'll use JS to actually build and use the tool. We won't get into details with any of these languages, and, I hope, you'll be surprised to learn how far one can go in their experiments relying on a few fundamental ideas.
-
-Here's how one might write the "Twinkle Twinkle Little Star" song in Lyre:
+Lyre is a musical Lisp interpreter backed by a JavaScript synthesis engine. Write music as code using s-expressions, play it from the command line, or use it as a library to build audio applications.
 
 ```lisp
 (sequence
-  (silence 500)
-
-  ;  Twin-            kle,          twin-         kle,
-  (tone C4 500) (tone C4 500) (tone G4 500) (tone G4 500)
-  ;  Lit-             tle           star
-  (tone A4 500) (tone A4 500) (tone G4 1000)
-  ;  How              I             won-          der
-  (tone F4 500) (tone F4 500) (tone E4 500) (tone E4 500)
-  ;  what             you           are
-  (tone D4 500) (tone D4 500) (tone C4 1000)
-
-  (silence 500))
+  (envelope (tone 261.63) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 261.63) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 392.00) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 392.00) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 440.00) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 440.00) 0.01 0.1 0.7 0.2 0.35)
+  (envelope (tone 392.00) 0.01 0.1 0.7 0.2 0.85))
 ```
 
-Starting from a single note, we'll then explore the ways of combining them, changing our system piece by piece, to be able to write more complex pieces. From there we shall look into the repetitive nature of music and the ability to name certain passages in a piece.
+Save this as `twinkle.lyre` and play it:
 
-Lyre is the tool, that we'll be working on through the course. It is a lisp-like language for writing music. Below is the epic intro from Beethoven's 5th symphony in it:
-
-```lisp
-(sequence
-    (harmony (tone G3 300) (tone Eb3 300))    ; da
-    (harmony (tone G3 300) (tone Eb3 300))    ; da
-    (harmony (tone G3 300) (tone Eb3 300))    ; da
-    (harmony (tone Eb3 1500) (tone G2 1500))) ; DUMMMM
+```bash
+cd lang
+bin/lyre samples/twinkle.lyre --play
 ```
-
-To describe a sound, Lyre provides the `tone` function, which takes a pitch and a duration. Certain pitches have names and are known to Lyre, so we can use them directly, e.g. `C4`, `E4`, `A4`, etc. The `harmony` combines multiple sounds into one, and `sequence` puts them one after another. The `;` character is used to add comments.
 
 ## Project Structure
 
-This is a monorepo containing two packages:
+This is a monorepo containing:
 
-- **`lang/`** - The `@lyre/core` library (language + synth engine)
-- **`course/`** - The interactive course/educational platform
+- **`lang/`** - The `@lyre/core` library (language + synth engine) - standalone, usable independently
+- **`course/`** - An interactive educational platform exploring language implementation
+
+The `lang/` package can be used on its own without the course.
+
+## Quick Start
+
+**Play a Lyre file:**
+```bash
+cd lang
+bin/lyre samples/twinkle.lyre --play
+```
+
+**Use as a library:**
+```bash
+npm install @lyre/core
+```
+
+```js
+import { tone, envelope, sequence } from '@lyre/core/synth';
+
+const melody = sequence(
+  envelope(tone(261.63), 0.01, 0.1, 0.7, 0.2, 0.5),
+  envelope(tone(293.66), 0.01, 0.1, 0.7, 0.2, 0.5)
+);
+
+for (const sample of melody) {
+  // process audio sample
+}
+```
+
+See [lang/README.md](lang/README.md) for full API documentation.
 
 ## Getting Started
 
 ```bash
-# Install dependencies for all packages
+# Clone and install dependencies
+git clone https://github.com/amuradyan/lyre.git
+cd lyre
 npm install
 
-# Run the development server
-npm run dev
+# Set up git hooks
+git config core.hooksPath .githooks
 
-# Build the course
-npm run build
+# Try the language
+cd lang
+bin/lyre samples/twinkle.lyre --play
+
+# Or run the course/development server
+npm run dev
 ```
 
 ## Development
@@ -64,8 +84,9 @@ npm run build
 
 ```bash
 cd lang
-# The library is pure ES modules with no build step
-# Tests can be run directly with Node
+# Pure ES modules, no build step
+# Tests run directly with Node
+npm test
 ```
 
 ### Working on the course (`course/`)
@@ -77,24 +98,36 @@ npm run build   # Build for production
 npm run lint    # Run ESLint
 ```
 
+## Features
+
+**Language:**
+- Lisp-like syntax with s-expressions
+- Musical primitives (tone, harmony, sequence)
+- ADSR envelopes
+
+**Synthesis Engine:**
+- Generator-based audio (infinite streams of samples)
+- Oscillators (sine, sawtooth)
+- ADSR envelopes with gate time
+- Filters (low-pass with envelope support)
+- Gain control
+- Composition (sequence, harmony, repeat)
+- 48kHz sampling rate
+
+**CLI:**
+- `--play` flag for direct playback
+- Stream raw PCM for piping to other tools
+- Read `.lyre` files and generate audio
+
 ## Packages
 
 ### @lyre/core (lang/)
 
-The core Lyre language and synthesis engine. See [lang/README.md](lang/README.md) for API documentation.
-
-Features:
-
-- Lisp-like language with s-expressions
-- Generator-based audio synthesis
-- Oscillators (sine, sawtooth)
-- ADSR envelopes
-- Filters (low-pass, filter envelopes)
-- Composition functions (sequence, harmony, repeat)
+The standalone Lyre language and synthesis engine. See [lang/README.md](lang/README.md) for complete API documentation and examples.
 
 ### Lyre Course (course/)
 
-An interactive educational platform for learning programming through building a musical Lisp. Built with React and Vite.
+An interactive educational platform for learning programming language implementation through building Lyre. Built with React and Vite.
 
 ## License
 

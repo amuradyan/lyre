@@ -125,11 +125,13 @@ Note that in Lyre syntax, the gate time parameter for envelope uses milliseconds
 The `lyre` command reads a `.lyre` file and outputs audio.
 
 **Play directly:**
+
 ```bash
 lyre sample.lyre --play
 ```
 
 **Stream raw PCM to stdout:**
+
 ```bash
 lyre sample.lyre | ffplay -f f32le -ar 48000 -autoexit -
 ```
