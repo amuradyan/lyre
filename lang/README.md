@@ -122,13 +122,19 @@ Note that in Lyre syntax, the gate time parameter for envelope uses milliseconds
 
 ## Command line
 
-The `lyre` command reads a `.lyre` file and streams raw PCM audio to stdout. Pipe the output to an audio player:
+The `lyre` command reads a `.lyre` file and outputs audio.
 
+**Play directly:**
 ```bash
-lyre sample.lyre | ffplay -f f32le -ar 44100 -autoexit -
+lyre sample.lyre --play
 ```
 
-The `-f f32le` flag tells ffplay to expect 32-bit little-endian floats, `-ar 44100` sets the sample rate, and `-autoexit` quits when the audio finishes.
+**Stream raw PCM to stdout:**
+```bash
+lyre sample.lyre | ffplay -f f32le -ar 48000 -autoexit -
+```
+
+The `-f f32le` flag tells ffplay to expect 32-bit little-endian floats, `-ar 48000` sets the sample rate, and `-autoexit` quits when the audio finishes.
 
 For programmatic use, the `stream(filePath)` function reads a file and yields samples:
 

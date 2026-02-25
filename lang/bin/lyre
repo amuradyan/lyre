@@ -1,12 +1,28 @@
 #!/usr/bin/env node
 import { stream } from '../src/language/runner.js';
+import { spawn } from 'child_process';
 
-const filePath = process.argv[2];
+const args = process.argv.slice(2);
+const playMode = args.includes('--play');
+const filePath = args.find(arg => !arg.startsWith('--'));
+
 const generator = stream(filePath);
-
 const buffer = Buffer.allocUnsafe(4);
 
-for (const [sample] of generator) {
-  buffer.writeFloatLE(sample, 0);
-  process.stdout.write(Buffer.from(buffer));
+if (playMode) {
+  const ffplay = spawn('ffplay', ['-f', 'f32le', '-ar', '48000', '-autoexit', '-'], {
+    stdio: ['pipe', 'inherit', 'inherit']
+  });
+
+  for (const [sample] of generator) {
+    buffer.writeFloatLE(sample, 0);
+    ffplay.stdin.write(Buffer.from(buffer));
+  }
+
+  ffplay.stdin.end();
+} else {
+  for (const [sample] of generator) {
+    buffer.writeFloatLE(sample, 0);
+    process.stdout.write(Buffer.from(buffer));
+  }
 }
