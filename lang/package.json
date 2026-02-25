@@ -10,7 +10,8 @@
     "./language": "./src/language/index.js"
   },
   "scripts": {
-    "test": "for file in $(find src -name '*.test.js' 2>/dev/null); do echo \"Running $file\"; node \"$file\"; done || echo 'No tests found'"
+    "test": "for file in $(find src test -name '*.test.js' 2>/dev/null); do echo \"Running $file\"; node \"$file\"; done || echo 'No tests found'",
+    "test:watch": "nodemon --watch src --watch test --ext js --exec npm test"
   },
   "files": [
     "src/**/*.js",
@@ -34,5 +35,8 @@
   "homepage": "https://lyre.amuradyan.am",
   "bugs": {
     "url": "https://github.com/amuradyan/lyre/issues"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
