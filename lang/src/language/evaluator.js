@@ -33,8 +33,11 @@ export function interpret(expression) {
         const [frequency] = evaluated;
         return tone(frequency);
       case "envelope":
-        const [source, attackTime, decayTime, sustainLevel, releaseTime, gateTime = 0] = evaluated;
-        return envelope(source, attackTime, decayTime, sustainLevel, releaseTime, gateTime / 1000);
+        const [attackTime, decayTime, sustainLevel, releaseTime, gateTime, ...sources] = evaluated;
+        const enveloped =
+          sources.map(source =>
+            envelope(source, attackTime, decayTime, sustainLevel, releaseTime, gateTime));
+        return sequence(...enveloped);
       case "sequence":
         return sequence(...evaluated);
       case "harmony":
