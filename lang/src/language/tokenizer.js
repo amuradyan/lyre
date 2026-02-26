@@ -1,5 +1,9 @@
-function process(symbol, token, expressions) {
+function process(symbol, token, expressions, inComment) {
   const current = expressions[expressions.length - 1];
+
+  if (inComment) {
+    return [token, expressions];
+  }
 
   switch (symbol) {
     case "(":
@@ -26,6 +30,16 @@ function process(symbol, token, expressions) {
   }
 }
 
+function checkForComments(symbol, inComment) {
+  if (symbol === ";") {
+    return true;
+  } else if (symbol === "\n" || symbol === "\r") {
+    return false;
+  } else {
+    return inComment;
+  }
+}
+
 /**
  * Tokenizes Lyre code into nested arrays representing the expression tree.
  * @param {string} input - The Lyre code to parse
@@ -37,9 +51,11 @@ function process(symbol, token, expressions) {
 export function tokenize(input) {
   let token = "";
   let expressions = [[]];
+  let inComment = false;
 
   for (const symbol of input) {
-    [token, expressions] = process(symbol, token, expressions);
+    inComment = checkForComments(symbol, inComment);
+    [token, expressions] = process(symbol, token, expressions, inComment);
   }
 
   if (token != "") {
