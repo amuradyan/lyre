@@ -1,10 +1,12 @@
 import { tone } from '../synth/oscillators.js';
 import { envelope, gain } from '../synth/envelopes.js';
 import { sequence, harmony } from '../synth/composition.js';
+import { lookup } from './environment.js';
 
 /**
  * Interprets a tokenized Lyre expression and returns a generator function.
  * @param {string|Array} expression - A tokenized expression (from tokenize) or a string number
+ * @param {Array} env - Environment bindings (list of [name, value] pairs)
  * @returns {Generator|number} A generator that yields audio samples, or a number if the expression is a string
  * @example
  * const tokens = tokenize("(tone 440)");
@@ -13,20 +15,17 @@ import { sequence, harmony } from '../synth/composition.js';
  *   // process audio sample
  * }
  */
-export function interpret(expression) {
+export function interpret(expression, env = []) {
   if (typeof expression === 'string') {
-    return parseFloat(expression);
+    const num = parseFloat(expression);
+    if (!isNaN(num)) {
+      return num;
+    }
+    return lookup(expression, env);
   } else {
     const [operator, ...operands] = expression;
 
-    const evaluated = [];
-    for (const operand of operands) {
-      if (typeof operand === 'string') {
-        evaluated.push(parseFloat(operand));
-      } else {
-        evaluated.push(interpret(operand));
-      }
-    }
+    const evaluated = operands.map(operand => interpret(operand, env));
 
     switch (operator) {
       case "tone":
