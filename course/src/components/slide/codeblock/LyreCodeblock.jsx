@@ -6,7 +6,8 @@ export default function LyreCodeblock({
   code,
   onChange,
   readOnly = false,
-  showContainer = true
+  showContainer = true,
+  version = null
 }) {
   const [userCode, setUserCode] = useState(code);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -20,6 +21,9 @@ export default function LyreCodeblock({
   const getAudioContext = () => {
     if (!audioContextRef.current) {
       audioContextRef.current = createAudioContext();
+      if (!audioContextRef.current.lyreModulesLoaded) {
+        audioContextRef.current.lyreModulesLoaded = new Set();
+      }
     }
     return audioContextRef.current;
   };
@@ -32,8 +36,25 @@ export default function LyreCodeblock({
     }
 
     if (!workletNodeRef.current) {
-      await audioContext.audioWorklet.addModule('/audio-worklet-processor.js');
-      const workletNode = new AudioWorkletNode(audioContext, 'lyre-processor');
+      const workletUrl = version
+        ? `/audio-worklet-processor-${version}.js`
+        : '/audio-worklet-processor.js';
+
+      const processorName = version
+        ? `lyre-processor-${version.replace(/\./g, '-')}`
+        : 'lyre-processor';
+
+      if (!audioContext.lyreModulesLoaded.has(workletUrl)) {
+        try {
+          await audioContext.audioWorklet.addModule(workletUrl);
+          audioContext.lyreModulesLoaded.add(workletUrl);
+        } catch (error) {
+          console.error('Failed to load worklet module:', error);
+          throw error;
+        }
+      }
+
+      const workletNode = new AudioWorkletNode(audioContext, processorName);
 
       workletNode.port.onmessage = (event) => {
         if (event.data.type === 'ended') {

@@ -4,7 +4,7 @@
 
 Looking at it again, we see that every note in our melody needs the same envelope. Can we apply it once to a group of tones instead of wrapping each note individually?
 
-```lyre
+```lyre@4.7.0
 (sequence
   (envelope (tone 261.63) 0 0.5 0 0)
   (envelope (tone 261.63) 0 0.5 0 0)

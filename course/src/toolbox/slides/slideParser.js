@@ -179,13 +179,18 @@ const extractImage = (line) => {
 };
 
 const parseFenceLanguage = (languageString) => {
-  if (!languageString) return ['javascript', null];
+  if (!languageString) return ['javascript', null, null];
   const parts = languageString.split(':');
-  const language = parts[0] || 'javascript';
+  const langAndVersion = parts[0] || 'javascript';
+
+  const versionMatch = langAndVersion.match(/^([^@]+)@(.+)$/);
+  const language = versionMatch ? versionMatch[1] : langAndVersion;
+  const version = versionMatch ? versionMatch[2] : null;
+
   const normalizedLanguage = language === 'js' ? 'javascript' : language;
-  return parts.length > 1
-    ? [normalizedLanguage, parts[1]]
-    : [normalizedLanguage, null];
+  const filename = parts.length > 1 ? parts[1] : null;
+
+  return [normalizedLanguage, filename, version];
 };
 
 const extractHints = (code) => {
@@ -427,7 +432,7 @@ const processLine = (lines) => (state, line, index) => {
     if (context.inCode) {
       const code = context.codeBuffer.join('\n');
       const { comment, endIndex } = findTestComment(lines, index);
-      const [language, filename] = parseFenceLanguage(context.codeLanguage);
+      const [language, filename, version] = parseFenceLanguage(context.codeLanguage);
       const hints = extractHints(code);
 
       return {
@@ -438,6 +443,7 @@ const processLine = (lines) => (state, line, index) => {
           testComment: comment,
           language,
           filename,
+          version,
           playable: context.playableNext,
           hints
         }],

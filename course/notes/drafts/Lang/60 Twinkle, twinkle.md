@@ -4,7 +4,7 @@
 
 When we look at this code we see a sequence of tones, each shaped by an envelope. That is true and we know that since we designed it. When someone who happens to know music and frequencies of notes but did not design this looks at the code, they see a structured text, mostly numbers, sometimes words. It is somewhat repetitive, a lot of zeros, looks like it's playing a sequence of tones and a bunch of numbers that probably control the playback. This is also true, though we could tell that story in less symbols.
 
-```lyre
+```lyre@4.7.0
 (sequence
   (envelope (tone 261.63) 0 0.5 0 0)
   (envelope (tone 261.63) 0 0.5 0 0)

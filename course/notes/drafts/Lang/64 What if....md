@@ -1,4 +1,4 @@
-# What if...
+# What if
 <!-- slide-id: fb319c6e-0dc5-4ac3-a8ab-d0c7ea544613 -->
 <!-- tags: Lyre, syntax, draft -->
 
@@ -15,7 +15,7 @@ This applies the envelope to multiple notes in fewer words, but it's still more 
 ```lisp
 (set! . 0.5) ; set the tempo
 
-; `piano` wraps tones in an envelope and produces sound.
+; `piano` applies the envelope to each tone.
 ; The gate time is computed from the dot notation.
 (define piano (adsr 0.01 0.1 0.3 0.2))
 

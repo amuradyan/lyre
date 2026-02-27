@@ -630,6 +630,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
                       key={i}
                       code={item.code}
                       showContainer={true}
+                      version={item.version}
                     />
                   );
                 } else {

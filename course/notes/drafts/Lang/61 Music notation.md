@@ -4,7 +4,7 @@
 
 Let's look at the first line of the song:
 
-```lyre
+```lyre@4.7.0
 (sequence
   (envelope (tone 261.63) 0 0.5 0 0)
   (envelope (tone 261.63) 0 0.5 0 0)

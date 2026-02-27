@@ -4,7 +4,7 @@
 
 After some experimenting and comparing to the original sample, I came to this:
 
-```lyre
+```lyre@4.7.0
 (gain
   (harmony
     (gain (envelope (tone 237) 0.003 0.03 0.6 1.5) 0.12)
