@@ -37,7 +37,7 @@ export default function LyreCodeblock({
 
     if (!workletNodeRef.current) {
       const workletUrl = version
-        ? `/audio-worklet-processor-${version}.js`
+        ? `/lyre-versions/${version}/worklet.js`
         : '/audio-worklet-processor.js';
 
       const processorName = version

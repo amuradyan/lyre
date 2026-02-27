@@ -1,4 +1,4 @@
-import { tokenize, interpret } from '/lyre-5.7.1.bundle.js';
+import { tokenize, interpret } from '/lyre-versions/5.7.1/bundle.js';
 
 class LyreStreamingProcessor extends AudioWorkletProcessor {
   constructor() {
