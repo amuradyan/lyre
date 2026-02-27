@@ -1,51 +1,39 @@
 (sequence
-  (envelope (tone 0) 0.01 0.5 0 0.01)
+  (envelope  0.01 0.5 0 0.01 0
+    (tone 261.63) (tone 261.63)
+    (tone 392.00) (tone 392.00)
+    (tone 440.00) (tone 440.00))
+  (envelope 0.01 1.0 0 0.01 0
+    (tone 392.00))
+  (envelope 0.01 0.5 0 0.01 0
+    (tone 349.23) (tone 349.23)
+    (tone 329.63) (tone 329.63)
+    (tone 293.66) (tone 293.66))
+  (envelope 0.01 1.0 0 0.01 0
+    (tone 261.63))
 
-  (envelope (tone 261.63) 0.01 0.5 0 0.01)
-  (envelope (tone 261.63) 0.01 0.5 0 0.01)
-  (envelope (tone 392.00) 0.01 0.5 0 0.01)
-  (envelope (tone 392.00) 0.01 0.5 0 0.01)
-  (envelope (tone 440.00) 0.01 0.5 0 0.01)
-  (envelope (tone 440.00) 0.01 0.5 0 0.01)
-  (envelope (tone 392.00) 0.01 1.0 0 0.01)
-  (envelope (tone 349.23) 0.01 0.5 0 0.01)
-  (envelope (tone 349.23) 0.01 0.5 0 0.01)
-  (envelope (tone 329.63) 0.01 0.5 0 0.01)
-  (envelope (tone 329.63) 0.01 0.5 0 0.01)
-  (envelope (tone 293.66) 0.01 0.5 0 0.01)
-  (envelope (tone 293.66) 0.01 0.5 0 0.01)
-  (envelope (tone 261.63) 0.01 1.0 0 0.01)
+  (envelope 0.01 0.5 0 0.01 0
+    (tone 392.00) (tone 392.00)
+    (tone 349.23) (tone 349.23)
+    (tone 329.63) (tone 329.63))
+  (envelope 0.01 1.0 0 0.01 0
+    (tone 293.66))
+  (envelope 0.01 0.5 0 0.01 0
+    (tone 392.00) (tone 392.00)
+    (tone 349.23) (tone 349.23)
+    (tone 329.63) (tone 329.63))
+  (envelope 0.01 1.0 0 0.01 0
+    (tone 293.66))
 
-  (envelope (tone 0) 0.01 0.5 0 0.01)
-
-  (envelope (tone 392.00) 0.01 0.5 0 0.01)
-  (envelope (tone 392.00) 0.01 0.5 0 0.01)
-  (envelope (tone 349.23) 0.01 0.5 0 0.01)
-  (envelope (tone 349.23) 0.01 0.5 0 0.01)
-  (envelope (tone 329.63) 0.01 0.5 0 0.01)
-  (envelope (tone 329.63) 0.01 0.5 0 0.01)
-  (envelope (tone 293.66) 0.01 1.0 0 0.01)
-  (envelope (tone 392.00) 0.01 0.5 0 0.01)
-  (envelope (tone 392.00) 0.01 0.5 0 0.01)
-  (envelope (tone 349.23) 0.01 0.5 0 0.01)
-  (envelope (tone 349.23) 0.01 0.5 0 0.01)
-  (envelope (tone 329.63) 0.01 0.5 0 0.01)
-  (envelope (tone 329.63) 0.01 0.5 0 0.01)
-  (envelope (tone 293.66) 0.01 1.0 0 0.01)
-
-  (envelope (tone 0) 0.01 0.5 0 0.01)
-
-  (envelope (tone 261.63) 0.01 0.5 0 0.01)
-  (envelope (tone 261.63) 0.01 0.5 0 0.01)
-  (envelope (tone 392.00) 0.01 0.5 0 0.01)
-  (envelope (tone 392.00) 0.01 0.5 0 0.01)
-  (envelope (tone 440.00) 0.01 0.5 0 0.01)
-  (envelope (tone 440.00) 0.01 0.5 0 0.01)
-  (envelope (tone 392.00) 0.01 1.0 0 0.01)
-  (envelope (tone 349.23) 0.01 0.5 0 0.01)
-  (envelope (tone 349.23) 0.01 0.5 0 0.01)
-  (envelope (tone 329.63) 0.01 0.5 0 0.01)
-  (envelope (tone 329.63) 0.01 0.5 0 0.01)
-  (envelope (tone 293.66) 0.01 0.5 0 0.01)
-  (envelope (tone 293.66) 0.01 0.5 0 0.01)
-  (envelope (tone 261.63) 0.01 1.0 0 0.01))
+  (envelope 0.01 0.5 0 0.01 0
+    (tone 261.63) (tone 261.63)
+    (tone 392.00) (tone 392.00)
+    (tone 440.00) (tone 440.00))
+  (envelope 0.01 1.0 0 0.01 0
+    (tone 392.00))
+  (envelope 0.01 0.5 0 0.01 0
+    (tone 349.23) (tone 349.23)
+    (tone 329.63) (tone 329.63)
+    (tone 293.66) (tone 293.66))
+  (envelope 0.01 1.0 0 0.01 0
+    (tone 261.63)))
