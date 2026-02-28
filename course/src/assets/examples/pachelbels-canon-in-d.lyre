@@ -1,12 +1,12 @@
 (sequence
   (harmony
-    (envelope 0.01 1.97 0 0.01 0 (tone 184.86))
+    (envelope 0.01 1.97 0 0.01 0 (tone F#3))
     (envelope 0.01 0.25 0 0.01 0
-      (tone 830) (tone 0) (tone 697.94) (tone 739.45)
-      (tone 830) (tone 0) (tone 697.94) (tone 739.45)))
+      (tone G#5) (tone 0) (tone F5) (tone F#5)
+      (tone G#5) (tone 0) (tone F5) (tone F#5)))
 
   (harmony
-    (envelope 0.01 1.97 0 0.01 0 (tone 103.75))
+    (envelope 0.01 1.97 0 0.01 0 (tone G#2))
     (envelope 0.01 0.25 0 0.01 0
-      (tone 830) (tone 415) (tone 465.82) (tone 522.87)
-      (tone 553.96) (tone 621.80) (tone 697.94) (tone 739.45))))
+      (tone G#5) (tone G#4) (tone A#4) (tone C5)
+      (tone C#5) (tone D#5) (tone F5) (tone F#5))))

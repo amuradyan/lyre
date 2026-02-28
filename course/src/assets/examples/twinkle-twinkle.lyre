@@ -1,39 +1,39 @@
 (sequence
   (envelope  0.01 0.5 0 0.01 0
-    (tone 261.63) (tone 261.63)
-    (tone 392.00) (tone 392.00)
-    (tone 440.00) (tone 440.00))
+    (tone C4) (tone C4)
+    (tone G4) (tone G4)
+    (tone A4) (tone A4))
   (envelope 0.01 1.0 0 0.01 0
-    (tone 392.00))
+    (tone G4))
   (envelope 0.01 0.5 0 0.01 0
-    (tone 349.23) (tone 349.23)
-    (tone 329.63) (tone 329.63)
-    (tone 293.66) (tone 293.66))
+    (tone F4) (tone F4)
+    (tone E4) (tone E4)
+    (tone D4) (tone D4))
   (envelope 0.01 1.0 0 0.01 0
-    (tone 261.63))
+    (tone C4))
 
   (envelope 0.01 0.5 0 0.01 0
-    (tone 392.00) (tone 392.00)
-    (tone 349.23) (tone 349.23)
-    (tone 329.63) (tone 329.63))
+    (tone G4) (tone G4)
+    (tone F4) (tone F4)
+    (tone E4) (tone E4))
   (envelope 0.01 1.0 0 0.01 0
-    (tone 293.66))
+    (tone D4))
   (envelope 0.01 0.5 0 0.01 0
-    (tone 392.00) (tone 392.00)
-    (tone 349.23) (tone 349.23)
-    (tone 329.63) (tone 329.63))
+    (tone G4) (tone G4)
+    (tone F4) (tone F4)
+    (tone E4) (tone E4))
   (envelope 0.01 1.0 0 0.01 0
-    (tone 293.66))
+    (tone D4))
 
   (envelope 0.01 0.5 0 0.01 0
-    (tone 261.63) (tone 261.63)
-    (tone 392.00) (tone 392.00)
-    (tone 440.00) (tone 440.00))
+    (tone C4) (tone C4)
+    (tone G4) (tone G4)
+    (tone A4) (tone A4))
   (envelope 0.01 1.0 0 0.01 0
-    (tone 392.00))
+    (tone G4))
   (envelope 0.01 0.5 0 0.01 0
-    (tone 349.23) (tone 349.23)
-    (tone 329.63) (tone 329.63)
-    (tone 293.66) (tone 293.66))
+    (tone F4) (tone F4)
+    (tone E4) (tone E4)
+    (tone D4) (tone D4))
   (envelope 0.01 1.0 0 0.01 0
-    (tone 261.63)))
+    (tone C4)))

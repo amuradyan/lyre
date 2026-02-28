@@ -1,64 +1,64 @@
 (sequence
   (envelope 0.01 0.35 0 0.01 0
-    (tone 659.25) (tone 622.25) (tone 659.25) (tone 622.25) (tone 659.25)
-    (tone 493.88) (tone 587.33) (tone 523.25))
+    (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)
+    (tone B4) (tone D5) (tone C5))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 440.00))
+    (tone A4))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 261.63) (tone 329.63) (tone 440.00))
+    (tone 0) (tone C4) (tone E4) (tone A4))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 493.88))
+    (tone B4))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 329.63) (tone 415.30) (tone 493.88))
+    (tone 0) (tone E4) (tone G#4) (tone B4))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 523.25))
+    (tone C5))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 329.63)
-    (tone 659.25) (tone 622.25) (tone 659.25) (tone 622.25) (tone 659.25)
-    (tone 493.88) (tone 587.33) (tone 523.25))
+    (tone 0) (tone E4)
+    (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)
+    (tone B4) (tone D5) (tone C5))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 440.00))
+    (tone A4))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 261.63) (tone 329.63) (tone 440.00))
+    (tone 0) (tone C4) (tone E4) (tone A4))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 493.88))
+    (tone B4))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 329.63) (tone 523.25) (tone 493.88))
+    (tone 0) (tone E4) (tone C5) (tone B4))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 440.00))
+    (tone A4))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 493.88) (tone 523.25) (tone 587.33))
+    (tone 0) (tone B4) (tone C5) (tone D5))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 659.25))
+    (tone E5))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 392.00) (tone 698.46) (tone 659.25))
+    (tone 0) (tone G4) (tone F5) (tone E5))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 587.33))
+    (tone D5))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 349.23) (tone 659.25) (tone 587.33))
+    (tone 0) (tone F4) (tone E5) (tone D5))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 523.25))
+    (tone C5))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 329.63) (tone 587.33) (tone 523.25))
+    (tone 0) (tone E4) (tone D5) (tone C5))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 493.88))
+    (tone B4))
   (envelope 0.01 0.35 0 0.01 0
     (tone 0)
-    (tone 659.25) (tone 622.25) (tone 659.25) (tone 622.25) (tone 659.25)
-    (tone 493.88) (tone 587.33) (tone 523.25))
+    (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)
+    (tone B4) (tone D5) (tone C5))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 440.00))
+    (tone A4))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 261.63) (tone 329.63) (tone 440.00))
+    (tone 0) (tone C4) (tone E4) (tone A4))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 493.88))
+    (tone B4))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 329.63) (tone 415.30) (tone 493.88))
+    (tone 0) (tone E4) (tone G#4) (tone B4))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 523.25))
+    (tone C5))
   (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone 329.63)
-    (tone 659.25) (tone 622.25) (tone 659.25) (tone 622.25) (tone 659.25)
-    (tone 493.88) (tone 587.33) (tone 523.25))
+    (tone 0) (tone E4)
+    (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)
+    (tone B4) (tone D5) (tone C5))
   (envelope 0.01 0.25 0 0.01 0
-    (tone 440.00)))
+    (tone A4)))
