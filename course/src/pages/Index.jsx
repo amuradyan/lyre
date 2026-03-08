@@ -84,10 +84,10 @@ export default function Index() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Shape</h3>
                     <ul className="space-y-3">
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(envelope source attack decay sustain release gate)</code>
+                        <code className="font-mono text-purple-600 text-xs">(envelope attack decay sustain release gate source1 ...)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">
                           <div className="mb-1">Apply ADSR envelope. All times in seconds</div>
-                          <code className="font-mono text-purple-500 text-xs">(envelope (tone 261.63) 0.01 1.0 0 0.5 0)</code>
+                          <code className="font-mono text-purple-500 text-xs">(envelope 0.01 1.0 0 0.5 0 (tone 261.63))</code>
                           <span className="text-gray-500 ml-2">- Plucked C4</span>
                         </div>
                       </li>
@@ -138,7 +138,7 @@ export default function Index() {
               <a href="#walkthrough" className="text-purple-600 hover:text-purple-800 underline" style={{ fontSize: '1.1rem' }}>
                 walkthrough
               </a>{' '}
-              /currently a mess and under construction 🚧/
+              /currently under construction 🚧/
             </p>
           </div>
         </div>
