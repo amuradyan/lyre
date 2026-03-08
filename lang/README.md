@@ -118,6 +118,14 @@ const generator = interpret(tokens);
 
 Lyre is a minimal Lisp. Parentheses group expressions, the first element names the operation, the rest are arguments. The interpreter evaluates nested expressions and returns generators.
 
+You can write multiple top-level expressions in a single file, and they will play in sequence:
+
+```lisp
+(envelope 0.01 0.2 0 0.1 0 (tone 261.63))  ; C
+(envelope 0.01 0.2 0 0.1 0 (tone 329.63))  ; E
+(envelope 0.01 0.2 0 0.1 0 (tone 392.00))  ; G
+```
+
 Note that in Lyre syntax, envelope parameters come before the source: `(envelope attack decay sustain release gate source...)`. All time values are in seconds.
 
 ## Command line
@@ -169,7 +177,7 @@ The Lyre language currently supports these operations:
 - `(sequence sound1 sound2 ...)` - Play sounds in sequence
 - `(harmony sound1 sound2 ...)` - Play sounds simultaneously
 
-**Language functions.** `tokenize(input)` parses Lyre code into nested arrays of strings - the first element is the operator, the rest are operands. `interpret(expression)` evaluates a tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
+**Language functions.** `tokenize(input)` parses Lyre code into an array of expressions. Each expression is a nested array where the first element is the operator and the rest are operands. For single expressions, it returns an array with one element. For multiple expressions, it returns an array of expressions. `interpret(expression)` evaluates a single tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
 
 The sampling rate is 48,000 Hz, exported as `samplingRate` from the synth module.
 

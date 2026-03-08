@@ -18,8 +18,15 @@ class LyreStreamingProcessor extends AudioWorkletProcessor {
       if (type === 'code') {
         try {
           const tokens = tokenize(code);
-          const generator = interpret(tokens);
-          this.currentGenerator = generator;
+          const generators = tokens.map(expr => interpret(expr));
+
+          function* sequenceAll() {
+            for (const gen of generators) {
+              yield* gen;
+            }
+          }
+
+          this.currentGenerator = sequenceAll();
           this.isPlaying = true;
           this.ended = false;
         } catch (error) {

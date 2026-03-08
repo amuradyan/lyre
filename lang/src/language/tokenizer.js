@@ -64,5 +64,5 @@ export function tokenize(input) {
   }
 
   const result = expressions.pop();
-  return result[0];
+  return result;
 }
