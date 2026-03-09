@@ -25,6 +25,18 @@ export function interpret(expression, env = []) {
   } else {
     const [operator, ...operands] = expression;
 
+    if (operator === "set!") {
+      const [name, value] = operands;
+      const evaluatedValue = interpret(value, env);
+      const existing = env.find(([k]) => k === name);
+      if (existing) {
+        existing[1] = evaluatedValue;
+      } else {
+        env.push([name, evaluatedValue]);
+      }
+      return (function*() {})();
+    }
+
     const evaluated = operands.map(operand => interpret(operand, env));
 
     switch (operator) {

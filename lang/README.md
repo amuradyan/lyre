@@ -126,6 +126,14 @@ You can write multiple top-level expressions in a single file, and they will pla
 (envelope 0.01 0.2 0 0.1 0 (tone 392.00))  ; G
 ```
 
+You can also use `set!` to create bindings:
+
+```lisp
+(set! middle-c 261.63)                      ; Create binding
+(set! theme (envelope 0.01 0.5 0 0.2 0 (tone middle-c)))
+theme                                        ; Play the theme
+```
+
 Note that in Lyre syntax, envelope parameters come before the source: `(envelope attack decay sustain release gate source...)`. All time values are in seconds.
 
 ## Command line
@@ -176,6 +184,7 @@ The Lyre language currently supports these operations:
 - `(gain source level)` - Control volume (0-1)
 - `(sequence sound1 sound2 ...)` - Play sounds in sequence
 - `(harmony sound1 sound2 ...)` - Play sounds simultaneously
+- `(set! name value)` - Create or update a binding (produces no sound)
 
 **Language functions.** `tokenize(input)` parses Lyre code into an array of expressions. Each expression is a nested array where the first element is the operator and the rest are operands. For single expressions, it returns an array with one element. For multiple expressions, it returns an array of expressions. `interpret(expression)` evaluates a single tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
 
