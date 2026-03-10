@@ -7,6 +7,9 @@ function process(symbol, token, expressions, inComment) {
 
   switch (symbol) {
     case "(":
+      if (token != "") {
+        current.push(token);
+      }
       expressions.push([]);
       return ["", expressions];
     case " ":
@@ -39,6 +42,30 @@ function checkForComments(symbol, inComment) {
   } else {
     return inComment;
   }
+}
+
+/**
+ * Expands syntactic sugar for sequence and harmony operators.
+ * @param {Array} tokens - Array of tokens, possibly containing sugar syntax
+ * @returns {Array} Tokens with sugar expanded
+ * @example
+ * desugar(["-", ["A2", "E3"]]) // returns [["sequence", "A2", "E3"]]
+ * desugar(["=", ["C4", "E4", "G4"]]) // returns [["harmony", "C4", "E4", "G4"]]
+ */
+export function desugar(tokens) {
+  const result = [];
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i] === "-" && Array.isArray(tokens[i + 1])) {
+      result.push(["sequence", ...tokens[i + 1]]);
+      i++; // skip next token, we consumed it
+    } else if (tokens[i] === "=" && Array.isArray(tokens[i + 1])) {
+      result.push(["harmony", ...tokens[i + 1]]);
+      i++; // skip next token, we consumed it
+    } else {
+      result.push(tokens[i]);
+    }
+  }
+  return result;
 }
 
 /**

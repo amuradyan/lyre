@@ -186,6 +186,11 @@ The Lyre language currently supports these operations:
 - `(harmony sound1 sound2 ...)` - Play sounds simultaneously
 - `(set! name value)` - Create or update a binding (produces no sound)
 
+**Syntactic sugar:**
+- `-(expr1 expr2 ...)` - Shorthand for `(sequence expr1 expr2 ...)`
+- `=(expr1 expr2 ...)` - Shorthand for `(harmony expr1 expr2 ...)`
+- `|` - Bar separator, treated as whitespace for visual organization
+
 **Language functions.** `tokenize(input)` parses Lyre code into an array of expressions. Each expression is a nested array where the first element is the operator and the rest are operands. For single expressions, it returns an array with one element. For multiple expressions, it returns an array of expressions. `interpret(expression)` evaluates a single tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
 
 The sampling rate is 48,000 Hz, exported as `samplingRate` from the synth module.
