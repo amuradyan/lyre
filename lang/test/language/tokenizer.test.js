@@ -69,4 +69,10 @@ assert.deepEqual(
   "Multiple top-level expressions"
 );
 
+assert.deepEqual(
+  tokenize("(tone 261.63) | (tone 329.63) | (tone 392.00)"),
+  [["tone", "261.63"], ["tone", "329.63"], ["tone", "392.00"]],
+  "Expressions split with bars"
+);
+
 console.log('All tests passed!');

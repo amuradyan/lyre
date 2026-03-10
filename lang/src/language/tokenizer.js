@@ -10,6 +10,7 @@ function process(symbol, token, expressions, inComment) {
       expressions.push([]);
       return ["", expressions];
     case " ":
+    case "|":
     case "\n":
     case "\t":
     case "\r":
