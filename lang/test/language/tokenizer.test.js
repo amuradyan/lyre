@@ -1,4 +1,4 @@
-import { tokenize } from '../../src/language/tokenizer.js';
+import { tokenize, desugar } from '../../src/language/tokenizer.js';
 import { strict as assert } from 'assert';
 
 console.log('Testing tokenizer...');
@@ -73,6 +73,51 @@ assert.deepEqual(
   tokenize("(tone 261.63) | (tone 329.63) | (tone 392.00)"),
   [["tone", "261.63"], ["tone", "329.63"], ["tone", "392.00"]],
   "Expressions split with bars"
+);
+
+// Desugar tests
+console.log('Testing desugar...');
+
+assert.deepEqual(
+  desugar(["-", ["A2", "E3"]]),
+  [["sequence", "A2", "E3"]],
+  "Desugar sequence operator"
+);
+
+assert.deepEqual(
+  desugar(["=", ["C4", "E4", "G4"]]),
+  [["harmony", "C4", "E4", "G4"]],
+  "Desugar harmony operator"
+);
+
+assert.deepEqual(
+  desugar(["-", ["A2", "E3"], "-", ["F4", "G5"]]),
+  [["sequence", "A2", "E3"], ["sequence", "F4", "G5"]],
+  "Desugar multiple sequences"
+);
+
+assert.deepEqual(
+  desugar(["=", ["C4", "E4"], "=", ["F4", "A4"]]),
+  [["harmony", "C4", "E4"], ["harmony", "F4", "A4"]],
+  "Desugar multiple harmonies"
+);
+
+assert.deepEqual(
+  desugar([["tone", "440"]]),
+  [["tone", "440"]],
+  "Leave regular expressions unchanged"
+);
+
+assert.deepEqual(
+  desugar(["-", ["A2"], ["tone", "440"], "=", ["C4"]]),
+  [["sequence", "A2"], ["tone", "440"], ["harmony", "C4"]],
+  "Mixed sugar and regular expressions"
+);
+
+assert.deepEqual(
+  desugar(["-", "not-an-array", "=", "also-not-array"]),
+  ["-", "not-an-array", "=", "also-not-array"],
+  "Don't expand if not followed by array"
 );
 
 console.log('All tests passed!');
