@@ -25,16 +25,18 @@ export function interpret(expression, env = []) {
   } else {
     const [operator, ...operands] = expression;
 
-    if (operator === "set!") {
-      const [name, value] = operands;
-      const evaluatedValue = interpret(value, env);
-      const existing = env.find(([k]) => k === name);
-      if (existing) {
-        existing[1] = evaluatedValue;
-      } else {
-        env.push([name, evaluatedValue]);
+    if (operator === "let") {
+      const [bindings, body] = operands;
+
+      const newEnv = [...env];
+
+      for (let i = 0; i < bindings.length; i += 2) {
+        const name = bindings[i];
+        const value = interpret(bindings[i + 1], newEnv);
+        newEnv.push([name, value]);
       }
-      return (function*() {})();
+
+      return interpret(body, newEnv);
     }
 
     const evaluated = operands.map(operand => interpret(operand, env));

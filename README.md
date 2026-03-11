@@ -5,15 +5,17 @@
 Lyre is a musical Lisp interpreter backed by a JavaScript synthesis engine. Write music as code using s-expressions, play it from the command line, or use it as a library to build audio applications.
 
 ```lisp
-(sequence
-  (envelope (tone 261.63) 0.01 0.1 0.7 0.2 0.35)
-  (envelope (tone 261.63) 0.01 0.1 0.7 0.2 0.35)
-  (envelope (tone 392.00) 0.01 0.1 0.7 0.2 0.35)
-  (envelope (tone 392.00) 0.01 0.1 0.7 0.2 0.35)
-  (envelope (tone 440.00) 0.01 0.1 0.7 0.2 0.35)
-  (envelope (tone 440.00) 0.01 0.1 0.7 0.2 0.35)
-  (envelope (tone 392.00) 0.01 0.1 0.7 0.2 0.85))
+-(
+  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 261.63))
+  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 261.63))
+  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 392.00))
+  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 392.00))
+  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 440.00))
+  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 440.00))
+  (envelope 0.01 0.1 0.7 0.2 0.85 (tone 392.00)))
 ```
+
+The `-()` is syntactic sugar for `sequence`. You can also use `=()` for `harmony` to play notes simultaneously.
 
 Save this as `twinkle.lyre` and play it:
 
@@ -104,6 +106,8 @@ npm run lint    # Run ESLint
 - Lisp-like syntax with s-expressions
 - Musical primitives (tone, harmony, sequence)
 - ADSR envelopes
+- Syntactic sugar: `-()` for sequence, `=()` for harmony
+- Local bindings with `let`
 
 **Synthesis Engine:**
 - Generator-based audio (infinite streams of samples)

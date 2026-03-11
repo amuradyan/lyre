@@ -126,12 +126,25 @@ You can write multiple top-level expressions in a single file, and they will pla
 (envelope 0.01 0.2 0 0.1 0 (tone 392.00))  ; G
 ```
 
-You can also use `set!` to create bindings:
+Or use syntactic sugar for cleaner composition:
 
 ```lisp
-(set! middle-c 261.63)                      ; Create binding
-(set! theme (envelope 0.01 0.5 0 0.2 0 (tone middle-c)))
-theme                                        ; Play the theme
+-(
+  (tone C4)
+  (tone E4)
+  (tone G4))
+
+=(
+  (tone C4)
+  (tone E4)
+  (tone G4))  ; Plays as a chord
+```
+
+Use `let` for local bindings:
+
+```lisp
+(let (freq 440 duration 0.5)
+  (envelope 0.01 0.1 0.7 0.2 duration (tone freq)))
 ```
 
 Note that in Lyre syntax, envelope parameters come before the source: `(envelope attack decay sustain release gate source...)`. All time values are in seconds.
@@ -184,7 +197,7 @@ The Lyre language currently supports these operations:
 - `(gain source level)` - Control volume (0-1)
 - `(sequence sound1 sound2 ...)` - Play sounds in sequence
 - `(harmony sound1 sound2 ...)` - Play sounds simultaneously
-- `(set! name value)` - Create or update a binding (produces no sound)
+- `(let (var1 val1 var2 val2 ...) body)` - Create local bindings and evaluate body
 
 **Syntactic sugar:**
 - `-(expr1 expr2 ...)` - Shorthand for `(sequence expr1 expr2 ...)`

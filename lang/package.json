@@ -1,6 +1,6 @@
 {
   "name": "@lyre/core",
-  "version": "6.10.2",
+  "version": "7.10.3",
   "description": "Lyre - A musical Lisp with synthesis capabilities",
   "type": "module",
   "main": "./src/index.js",

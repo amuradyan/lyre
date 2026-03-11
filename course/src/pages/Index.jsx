@@ -102,6 +102,21 @@ export default function Index() {
                     </ul>
                   </div>
 
+                  {/* Bind */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Bind</h3>
+                    <ul className="space-y-3">
+                      <li className="text-left">
+                        <code className="font-mono text-purple-600 text-xs">(let (var1 val1 var2 val2 ...) body)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">
+                          <div className="mb-1">Create local bindings</div>
+                          <code className="font-mono text-purple-500 text-xs">(let (freq 440 dur 0.5) (envelope 0.01 0.1 0 0.2 dur (tone freq)))</code>
+                          <span className="text-gray-500 ml-2">- Parameterized note</span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
                   {/* Compose */}
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">Compose</h3>
@@ -115,11 +130,27 @@ export default function Index() {
                         </div>
                       </li>
                       <li className="text-left">
+                        <code className="font-mono text-purple-600 text-xs">-(sound1 sound2 ...)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">
+                          <div className="mb-1">Shorthand for sequence</div>
+                          <code className="font-mono text-purple-500 text-xs">-(noteC noteD noteE)</code>
+                          <span className="text-gray-500 ml-2">- Same melody, cleaner</span>
+                        </div>
+                      </li>
+                      <li className="text-left">
                         <code className="font-mono text-purple-600 text-xs">(harmony sound1 sound2 ...)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">
                           <div className="mb-1">Play sounds simultaneously</div>
                           <code className="font-mono text-purple-500 text-xs">(harmony noteC noteE noteG)</code>
                           <span className="text-gray-500 ml-2">- C major chord</span>
+                        </div>
+                      </li>
+                      <li className="text-left">
+                        <code className="font-mono text-purple-600 text-xs">=(sound1 sound2 ...)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">
+                          <div className="mb-1">Shorthand for harmony</div>
+                          <code className="font-mono text-purple-500 text-xs">=(noteC noteE noteG)</code>
+                          <span className="text-gray-500 ml-2">- Same chord, cleaner</span>
                         </div>
                       </li>
                     </ul>

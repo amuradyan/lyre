@@ -118,7 +118,11 @@ export const prelude = [
  * lookup("C4", [["C4", 300]]) // 300 (custom env overrides prelude)
  */
 export function lookup(key, env = []) {
-  const entry = [...env, ...prelude].find(([k]) => k === key);
-  if (entry) return entry[1];
+  const combined = [...env, ...prelude];
+  for (let i = combined.length - 1; i >= 0; i--) {
+    if (combined[i][0] === key) {
+      return combined[i][1];
+    }
+  }
   throw new Error(`Unknown name: ${key}`);
 }
