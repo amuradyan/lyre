@@ -53,19 +53,18 @@ function checkForComments(symbol, inComment) {
  * desugar(["=", ["C4", "E4", "G4"]]) // returns [["harmony", "C4", "E4", "G4"]]
  */
 export function desugar(tokens) {
-  const result = [];
-  for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i] === "-" && Array.isArray(tokens[i + 1])) {
-      result.push(["sequence", ...tokens[i + 1]]);
-      i++; // skip next token, we consumed it
-    } else if (tokens[i] === "=" && Array.isArray(tokens[i + 1])) {
-      result.push(["harmony", ...tokens[i + 1]]);
-      i++; // skip next token, we consumed it
-    } else {
-      result.push(tokens[i]);
-    }
+  if (!Array.isArray(tokens)) return tokens;
+  if (tokens.length === 0) return [];
+
+  const [head, ...tail] = tokens;
+
+  if ((head === '-' || head === '=') && Array.isArray(tail[0])) {
+    const operator = head === '-' ? 'sequence' : 'harmony';
+    const [operand, ...rest] = tail;
+    return [[operator, ...desugar(operand)], ...desugar(rest)];
   }
-  return result;
+
+  return [head, ...desugar(tail)];
 }
 
 /**
