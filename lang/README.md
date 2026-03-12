@@ -108,7 +108,7 @@ import { tokenize, interpret } from '@lyre/core';
 const code = `
   (envelope
     0.05 0.05 0.9 0.1 0
-    (tone 440))`;
+    (tone A4))`;
 
 const tokens = tokenize(code);
 const generator = interpret(tokens);
@@ -121,9 +121,9 @@ Lyre is a minimal Lisp. Parentheses group expressions, the first element names t
 You can write multiple top-level expressions in a single file, and they will play in sequence:
 
 ```lisp
-(envelope 0.01 0.2 0 0.1 0 (tone 261.63))  ; C
-(envelope 0.01 0.2 0 0.1 0 (tone 329.63))  ; E
-(envelope 0.01 0.2 0 0.1 0 (tone 392.00))  ; G
+(envelope 0.01 0.2 0 0.1 0 (tone C4))
+(envelope 0.01 0.2 0 0.1 0 (tone E4))
+(envelope 0.01 0.2 0 0.1 0 (tone G4))
 ```
 
 Or use syntactic sugar for cleaner composition:
@@ -143,8 +143,8 @@ Or use syntactic sugar for cleaner composition:
 Use `let` for local bindings:
 
 ```lisp
-(let (freq 440 duration 0.5)
-  (envelope 0.01 0.1 0.7 0.2 duration (tone freq)))
+(let (note A4 duration 0.5)
+  (envelope 0.01 0.1 0.7 0.2 duration (tone note)))
 ```
 
 Note that in Lyre syntax, envelope parameters come before the source: `(envelope attack decay sustain release gate source...)`. All time values are in seconds.

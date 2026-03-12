@@ -1,4 +1,4 @@
-(sequence
+-(
   (envelope 0.01 0.35 0 0.01 0
     (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)
     (tone B4) (tone D5) (tone C5))
@@ -12,6 +12,7 @@
     (tone 0) (tone E4) (tone G#4) (tone B4))
   (envelope 0.01 0.25 0 0.01 0
     (tone C5))
+
   (envelope 0.01 0.35 0 0.01 0
     (tone 0) (tone E4)
     (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)
@@ -26,6 +27,7 @@
     (tone 0) (tone E4) (tone C5) (tone B4))
   (envelope 0.01 0.25 0 0.01 0
     (tone A4))
+
   (envelope 0.01 0.35 0 0.01 0
     (tone 0) (tone B4) (tone C5) (tone D5))
   (envelope 0.01 0.25 0 0.01 0
@@ -42,6 +44,7 @@
     (tone 0) (tone E4) (tone D5) (tone C5))
   (envelope 0.01 0.25 0 0.01 0
     (tone B4))
+
   (envelope 0.01 0.35 0 0.01 0
     (tone 0)
     (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)

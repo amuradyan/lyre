@@ -6,13 +6,13 @@ Lyre is a musical Lisp interpreter backed by a JavaScript synthesis engine. Writ
 
 ```lisp
 -(
-  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 261.63))
-  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 261.63))
-  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 392.00))
-  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 392.00))
-  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 440.00))
-  (envelope 0.01 0.1 0.7 0.2 0.35 (tone 440.00))
-  (envelope 0.01 0.1 0.7 0.2 0.85 (tone 392.00)))
+  (envelope 0.01 0.5 0 0.01 0 (tone C4))
+  (envelope 0.01 0.5 0 0.01 0 (tone C4))
+  (envelope 0.01 0.5 0 0.01 0 (tone G4))
+  (envelope 0.01 0.5 0 0.01 0 (tone G4))
+  (envelope 0.01 0.5 0 0.01 0 (tone A4))
+  (envelope 0.01 0.5 0 0.01 0 (tone A4))
+  (envelope 0.01 1.0 0 0.01 0 (tone G4)))
 ```
 
 The `-()` is syntactic sugar for `sequence`. You can also use `=()` for `harmony` to play notes simultaneously.
