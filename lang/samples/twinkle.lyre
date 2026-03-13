@@ -1,12 +1,8 @@
--(
-  (envelope 0.01 0.5 0 0.01 0 (tone C4))
-  (envelope 0.01 0.5 0 0.01 0 (tone C4))
-  (envelope 0.01 0.5 0 0.01 0 (tone G4))
-  (envelope 0.01 0.5 0 0.01 0 (tone G4))
-  (envelope 0.01 0.5 0 0.01 0 (tone A4))
-  (envelope 0.01 0.5 0 0.01 0 (tone A4))
-  (envelope 0.01 1.0 0 0.01 0 (tone G4)))
+-(.C4 .C4 .G4 .G4 | .A4 .A4 :G4
+  .F4 .F4 .E4 .E4 | .D4 .D4 :C4
 
-=(
-  (envelope 0.01 0.5 0 0.01 0 (tone C4))
-  (envelope 0.01 0.5 0 0.01 0 (tone G4)))
+  .G4 .G4 .F4 .F4 | .E4 .E4 :D4
+  .G4 .G4 .F4 .F4 | .E4 .E4 :D4
+
+  .C4 .C4 .G4 .G4 | .A4 .A4 :G4
+  .F4 .F4 .E4 .E4 | .D4 .D4 :C4 )

@@ -5,14 +5,14 @@
 Lyre is a musical Lisp interpreter backed by a JavaScript synthesis engine. Write music as code using s-expressions, play it from the command line, or use it as a library to build audio applications.
 
 ```lisp
--(
-  (envelope 0.01 0.5 0 0.01 0 (tone C4))
-  (envelope 0.01 0.5 0 0.01 0 (tone C4))
-  (envelope 0.01 0.5 0 0.01 0 (tone G4))
-  (envelope 0.01 0.5 0 0.01 0 (tone G4))
-  (envelope 0.01 0.5 0 0.01 0 (tone A4))
-  (envelope 0.01 0.5 0 0.01 0 (tone A4))
-  (envelope 0.01 1.0 0 0.01 0 (tone G4)))
+-(.C4 .C4 .G4 .G4 | .A4 .A4 :G4
+  .F4 .F4 .E4 .E4 | .D4 .D4 :C4
+
+  .G4 .G4 .F4 .F4 | .E4 .E4 :D4
+  .G4 .G4 .F4 .F4 | .E4 .E4 :D4
+
+  .C4 .C4 .G4 .G4 | .A4 .A4 :G4
+  .F4 .F4 .E4 .E4 | .D4 .D4 :C4 )
 ```
 
 The `-()` is syntactic sugar for `sequence`. You can also use `=()` for `harmony` to play notes simultaneously.
@@ -36,12 +36,14 @@ The `lang/` package can be used on its own without the course.
 ## Quick Start
 
 **Play a Lyre file:**
+
 ```bash
 cd lang
 bin/lyre samples/twinkle.lyre --play
 ```
 
 **Use as a library:**
+
 ```bash
 npm install @lyre/core
 ```
@@ -103,6 +105,7 @@ npm run lint    # Run ESLint
 ## Features
 
 **Language:**
+
 - Lisp-like syntax with s-expressions
 - Musical primitives (tone, harmony, sequence)
 - ADSR envelopes
@@ -111,6 +114,7 @@ npm run lint    # Run ESLint
 - Local bindings with `let`
 
 **Synthesis Engine:**
+
 - Generator-based audio (infinite streams of samples)
 - Oscillators (sine, sawtooth)
 - ADSR envelopes with gate time
@@ -120,6 +124,7 @@ npm run lint    # Run ESLint
 - 48kHz sampling rate
 
 **CLI:**
+
 - `--play` flag for direct playback
 - Stream raw PCM for piping to other tools
 - Read `.lyre` files and generate audio
