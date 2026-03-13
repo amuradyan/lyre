@@ -56,6 +56,13 @@ export function* harmony(...generators) {
   }
 }
 
+export function* mix(...generators) {
+  for (const sample of harmony(...generators)) {
+    const [s, n, totalSamples] = sample;
+    yield [s / generators.length, n, totalSamples];
+  }
+}
+
 /**
  * Repeats a generator function N times.
  * @param {number} times - Number of repetitions

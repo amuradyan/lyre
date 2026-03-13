@@ -1,6 +1,6 @@
 import { tone } from '../synth/oscillators.js';
 import { envelope, gain } from '../synth/envelopes.js';
-import { sequence, harmony } from '../synth/composition.js';
+import { sequence, harmony, mix } from '../synth/composition.js';
 import { lookup } from './environment.js';
 
 const isDotOrColon = (ch) => ch === '.' || ch === ':';
@@ -94,6 +94,8 @@ export function interpret(expression, env = []) {
         return sequence(...evaluated);
       case "harmony":
         return harmony(...evaluated);
+      case "mix":
+        return mix(...evaluated);
       case "gain":
         const [signal, level] = evaluated;
         return gain(signal, level);

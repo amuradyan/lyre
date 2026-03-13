@@ -106,10 +106,10 @@ export const prelude = [
   ["Ab6", 1661.22],
   ["Bb6", 1864.66],
   [".", 0.5],
-  ["attack", 0],
+  ["attack", 0.005],
   ["decay", 0],
   ["sustain", 1],
-  ["release", 0]
+  ["release", 0.005]
 ];
 
 /**

@@ -2,7 +2,7 @@
 
 Lyre makes sound with code. An oscillator is a generator that yields samples forever. An envelope is a generator that shapes those samples. A filter is a generator that smooths them. String these together and you have a synthesizer - built from simple, composable pieces that each do one thing well.
 
-At its core, sound is represented as infinite streams of samples - generator functions that yield numbers between -1 and 1 at 44,100 times per second. Because everything follows this pattern, pieces compose naturally into complex sounds.
+At its core, sound is represented as infinite streams of samples - generator functions that yield numbers between -1 and 1 at 48,000 times per second. Because everything follows this pattern, pieces compose naturally into complex sounds.
 
 ## Making sound
 
@@ -73,18 +73,20 @@ const melody = sequence(
 // yields all samples from C, then D, then E
 ```
 
-Harmony mixes generators in parallel by summing their samples:
+Mix plays generators in parallel, normalizing by voice count to avoid clipping:
 
 ```js
-import { harmony } from '@lyre/core/synth';
+import { mix } from '@lyre/core/synth';
 
-const chord = harmony(
+const chord = mix(
   envelope(tone(261.63), 0.01, 1.0, 0, 0.5),  // C
   envelope(tone(329.63), 0.01, 1.0, 0, 0.5),  // E
   envelope(tone(392.00), 0.01, 1.0, 0, 0.5)   // G
 );
-// yields the sum of all three notes at each sample
+// yields normalized sum of all three notes at each sample
 ```
+
+For manual level control, `harmony` sums samples without normalization - use with `gain` to set levels explicitly.
 
 Filters shape the frequency content by smoothing the signal:
 
@@ -216,7 +218,7 @@ for (const sample of generator) {
 
 **Shaping sound.** `envelope(source, attack, decay, sustain, release, gateTime)` applies an ADSR envelope to a source generator. All times are in seconds. The attack ramps up from silence, decay falls to the sustain level, the sustain holds for the gate time (defaults to 0), then release fades to silence. `gain(source, level)` multiplies all samples by the given level (0 to 1) to control volume. `filter(source, cutoff)` applies a simple low-pass filter that smooths the signal, removing frequencies above the cutoff. `filterEnvelope(source, startCutoff, endCutoff, decayTime)` applies a low-pass filter with a cutoff that sweeps from start to end over the decay time - useful for evolving timbres.
 
-**Composition.** `sequence(...generators)` plays each generator in turn, yielding all samples from the first, then all from the second, and so on. `harmony(...generators)` mixes generators in parallel by summing their samples at each step. When any generator finishes, it contributes 0 to the sum. When all finish, harmony stops. `repeat(times, generatorFunc)` repeats a generator function N times. Pass a function that returns a new generator each time it's called.
+**Composition.** `sequence(...generators)` plays each generator in turn, yielding all samples from the first, then all from the second, and so on. `mix(...generators)` plays generators in parallel, dividing the sum by voice count to prevent clipping. `harmony(...generators)` also plays in parallel but sums samples without normalization - use with `gain` for manual level control. When any generator finishes, it contributes 0 to the sum. When all finish, mix/harmony stops. `repeat(times, generatorFunc)` repeats a generator function N times. Pass a function that returns a new generator each time it's called.
 
 ### Lyre Language
 
@@ -226,18 +228,19 @@ The Lyre language currently supports these operations:
 - `(envelope attack decay sustain release gate source1 source2 ...)` - Apply ADSR envelope
 - `(gain source level)` - Control volume (0-1)
 - `(sequence sound1 sound2 ...)` - Play sounds in sequence
-- `(harmony sound1 sound2 ...)` - Play sounds simultaneously
+- `(mix sound1 sound2 ...)` - Play sounds simultaneously, normalized to avoid clipping
+- `(harmony sound1 sound2 ...)` - Play sounds simultaneously, raw sum for manual mixing with `gain`
 - `(let (var1 val1 var2 val2 ...) body)` - Create local bindings and evaluate body
 
 **Syntactic sugar:**
 - `-(expr1 expr2 ...)` - Shorthand for `(sequence expr1 expr2 ...)`
-- `=(expr1 expr2 ...)` - Shorthand for `(harmony expr1 expr2 ...)`
+- `=(expr1 expr2 ...)` - Shorthand for `(mix expr1 expr2 ...)`
 - `.name` / `:name` / `name.` / `name:` - Enveloped tone with duration (see Dot notation)
 - `|` - Bar separator, treated as whitespace for visual organization
 
 **Prelude defaults:**
 - `.` = 0.5 (tick duration in seconds)
-- `attack` = 0, `decay` = 0, `sustain` = 1, `release` = 0
+- `attack` = 0.005, `decay` = 0, `sustain` = 1, `release` = 0.005
 
 **Language functions.** `tokenize(input)` parses Lyre code into an array of expressions. Each expression is a nested array where the first element is the operator and the rest are operands. For single expressions, it returns an array with one element. For multiple expressions, it returns an array of expressions. `interpret(expression)` evaluates a single tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
 

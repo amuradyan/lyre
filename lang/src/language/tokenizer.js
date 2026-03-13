@@ -59,7 +59,7 @@ export function desugar(tokens) {
   const [head, ...tail] = tokens;
 
   if ((head === '-' || head === '=') && Array.isArray(tail[0])) {
-    const operator = head === '-' ? 'sequence' : 'harmony';
+    const operator = head === '-' ? 'sequence' : 'mix';
     const [operand, ...rest] = tail;
     return [[operator, ...desugar(operand)], ...desugar(rest)];
   }

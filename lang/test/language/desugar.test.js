@@ -13,7 +13,7 @@ assert.deepEqual(
 // =(C4 E4 G4)
 assert.deepEqual(
   desugar(["=", ["C4", "E4", "G4"]]),
-  [["harmony", "C4", "E4", "G4"]],
+  [["mix", "C4", "E4", "G4"]],
   "Desugar harmony operator"
 );
 
@@ -27,7 +27,7 @@ assert.deepEqual(
 // =(C4 E4) =(F4 A4)
 assert.deepEqual(
   desugar(["=", ["C4", "E4"], "=", ["F4", "A4"]]),
-  [["harmony", "C4", "E4"], ["harmony", "F4", "A4"]],
+  [["mix", "C4", "E4"], ["mix", "F4", "A4"]],
   "Desugar multiple harmonies"
 );
 
@@ -41,7 +41,7 @@ assert.deepEqual(
 // -(A2) (tone 440) =(C4)
 assert.deepEqual(
   desugar(["-", ["A2"], ["tone", "440"], "=", ["C4"]]),
-  [["sequence", "A2"], ["tone", "440"], ["harmony", "C4"]],
+  [["sequence", "A2"], ["tone", "440"], ["mix", "C4"]],
   "Mixed sugar and regular expressions"
 );
 
@@ -54,28 +54,28 @@ assert.deepEqual(
 // -(=(C4 E4) =(F4 A4))
 assert.deepEqual(
   desugar(["-", ["=", ["C4", "E4"], "=", ["F4", "A4"]]]),
-  [["sequence", ["harmony", "C4", "E4"], ["harmony", "F4", "A4"]]],
+  [["sequence", ["mix", "C4", "E4"], ["mix", "F4", "A4"]]],
   "Nested sugar: sequence containing harmonies"
 );
 
 // =(-(A2 E3) -(F4 G5))
 assert.deepEqual(
   desugar(["=", ["-", ["A2", "E3"], "-", ["F4", "G5"]]]),
-  [["harmony", ["sequence", "A2", "E3"], ["sequence", "F4", "G5"]]],
+  [["mix", ["sequence", "A2", "E3"], ["sequence", "F4", "G5"]]],
   "Nested sugar: harmony containing sequences"
 );
 
 // -(-(A2) =(C4 E4))
 assert.deepEqual(
   desugar(["-", ["-", ["A2"], "=", ["C4", "E4"]]]),
-  [["sequence", ["sequence", "A2"], ["harmony", "C4", "E4"]]],
+  [["sequence", ["sequence", "A2"], ["mix", "C4", "E4"]]],
   "Deeply nested mixed sugar"
 );
 
 // -(=(-((tone 440))))
 assert.deepEqual(
   desugar(["-", ["=", ["-", [["tone", "440"]]]]]),
-  [["sequence", ["harmony", ["sequence", ["tone", "440"]]]]],
+  [["sequence", ["mix", ["sequence", ["tone", "440"]]]]],
   "Triple nested sugar"
 );
 
@@ -103,14 +103,14 @@ assert.deepEqual(
 // =()
 assert.deepEqual(
   desugar(["=", []]),
-  [["harmony"]],
+  [["mix"]],
   "Empty harmony sugar"
 );
 
 // -((tone 440)) =((tone 880)) (envelope 0.1 0.2)
 assert.deepEqual(
   desugar(["-", [["tone", "440"]], "=", [["tone", "880"]], ["envelope", "0.1", "0.2"]]),
-  [["sequence", ["tone", "440"]], ["harmony", ["tone", "880"]], ["envelope", "0.1", "0.2"]],
+  [["sequence", ["tone", "440"]], ["mix", ["tone", "880"]], ["envelope", "0.1", "0.2"]],
   "Mixed sugar and regular at top level"
 );
 
@@ -124,7 +124,7 @@ assert.deepEqual(
 // =((envelope 0.1) -(A2))
 assert.deepEqual(
   desugar(["=", [["envelope", "0.1"], "-", ["A2"]]]),
-  [["harmony", ["envelope", "0.1"], ["sequence", "A2"]]],
+  [["mix", ["envelope", "0.1"], ["sequence", "A2"]]],
   "Harmony with mixed regular and sugar expressions"
 );
 

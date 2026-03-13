@@ -15,7 +15,7 @@ Lyre is a musical Lisp interpreter backed by a JavaScript synthesis engine. Writ
   .F4 .F4 .E4 .E4 | .D4 .D4 :C4 )
 ```
 
-The `-()` is syntactic sugar for `sequence`. You can also use `=()` for `harmony` to play notes simultaneously.
+The `-()` is syntactic sugar for `sequence`. You can also use `=()` for `mix` to play notes simultaneously.
 
 Save this as `twinkle.lyre` and play it:
 
@@ -107,9 +107,9 @@ npm run lint    # Run ESLint
 **Language:**
 
 - Lisp-like syntax with s-expressions
-- Musical primitives (tone, harmony, sequence)
+- Musical primitives (tone, mix, harmony, sequence)
 - ADSR envelopes
-- Syntactic sugar: `-()` for sequence, `=()` for harmony
+- Syntactic sugar: `-()` for sequence, `=()` for mix
 - Dot notation: `.C4` for quick enveloped notes with duration control
 - Local bindings with `let`
 
@@ -120,12 +120,13 @@ npm run lint    # Run ESLint
 - ADSR envelopes with gate time
 - Filters (low-pass with envelope support)
 - Gain control
-- Composition (sequence, harmony, repeat)
+- Composition (sequence, mix, harmony, repeat)
 - 48kHz sampling rate
 
 **CLI:**
 
 - `--play` flag for direct playback
+- `--desugar` flag to inspect desugared tokens
 - Stream raw PCM for piping to other tools
 - Read `.lyre` files and generate audio
 
