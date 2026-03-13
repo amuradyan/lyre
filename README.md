@@ -107,6 +107,7 @@ npm run lint    # Run ESLint
 - Musical primitives (tone, harmony, sequence)
 - ADSR envelopes
 - Syntactic sugar: `-()` for sequence, `=()` for harmony
+- Dot notation: `.C4` for quick enveloped notes with duration control
 - Local bindings with `let`
 
 **Synthesis Engine:**

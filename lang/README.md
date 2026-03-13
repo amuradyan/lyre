@@ -149,6 +149,30 @@ Use `let` for local bindings:
 
 Note that in Lyre syntax, envelope parameters come before the source: `(envelope attack decay sustain release gate source...)`. All time values are in seconds.
 
+### Dot notation
+
+Wrap a note name in dots or colons to get an enveloped tone with automatic duration:
+
+```lisp
+-(.C4 .C4 .G4 .G4 .A4 .A4 :G4)
+```
+
+`.C4` expands to `(envelope attack decay sustain release . (tone C4))` where `.` is the tick duration and `attack`, `decay`, `sustain`, `release` are looked up from the environment.
+
+Dots and colons control duration as a fraction of `.`. Each `.` counts as 1, each `:` counts as 2. Left side multiplies, right side divides:
+
+- `.C4` = 1 tick
+- `:C4` = 2 ticks
+- `C4:` = half tick
+- `.:C4:` = 3/2 ticks
+
+Override defaults with `let`:
+
+```lisp
+(let (. 0.25 attack 0.01 decay 0.1 sustain 0.8 release 0.05)
+  -(.C4 .E4 .G4))
+```
+
 ## Command line
 
 The `lyre` command reads a `.lyre` file and outputs audio.
@@ -202,7 +226,12 @@ The Lyre language currently supports these operations:
 **Syntactic sugar:**
 - `-(expr1 expr2 ...)` - Shorthand for `(sequence expr1 expr2 ...)`
 - `=(expr1 expr2 ...)` - Shorthand for `(harmony expr1 expr2 ...)`
+- `.name` / `:name` / `name.` / `name:` - Enveloped tone with duration (see Dot notation)
 - `|` - Bar separator, treated as whitespace for visual organization
+
+**Prelude defaults:**
+- `.` = 0.5 (tick duration in seconds)
+- `attack` = 0, `decay` = 0, `sustain` = 1, `release` = 0
 
 **Language functions.** `tokenize(input)` parses Lyre code into an array of expressions. Each expression is a nested array where the first element is the operator and the rest are operands. For single expressions, it returns an array with one element. For multiple expressions, it returns an array of expressions. `interpret(expression)` evaluates a single tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
 
