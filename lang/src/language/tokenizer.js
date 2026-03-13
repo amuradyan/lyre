@@ -64,7 +64,7 @@ export function desugar(tokens) {
     return [[operator, ...desugar(operand)], ...desugar(rest)];
   }
 
-  return [head, ...desugar(tail)];
+  return [Array.isArray(head) ? desugar(head) : head, ...desugar(tail)];
 }
 
 /**

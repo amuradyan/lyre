@@ -1,10 +1,20 @@
 #!/usr/bin/env node
 import { stream } from '../src/language/runner.js';
+import { tokenize, desugar } from '../src/language/tokenizer.js';
+import { readFileSync } from 'fs';
 import { spawn } from 'child_process';
 
 const args = process.argv.slice(2);
 const playMode = args.includes('--play');
+const desugarMode = args.includes('--desugar');
 const filePath = args.find(arg => !arg.startsWith('--'));
+
+if (desugarMode) {
+  const code = readFileSync(filePath, 'utf-8');
+  const tokens = desugar(tokenize(code));
+  console.log(JSON.stringify(tokens, null, 2));
+  process.exit(0);
+}
 
 const generator = stream(filePath);
 const buffer = Buffer.allocUnsafe(4);

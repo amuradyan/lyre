@@ -79,11 +79,18 @@ assert.deepEqual(
   "Triple nested sugar"
 );
 
-// (envelope - (A2 E3))
+// (envelope - (A2 E3)) - sugar expands inside nested arrays too
 assert.deepEqual(
   desugar([["envelope", "-", ["A2", "E3"]]]),
-  [["envelope", "-", ["A2", "E3"]]],
-  "Sugar operators inside regular expressions not expanded"
+  [["envelope", ["sequence", "A2", "E3"]]],
+  "Sugar operators inside nested expressions are expanded"
+);
+
+// (let (. 0.5) -(A2 E3))
+assert.deepEqual(
+  desugar([["let", [".", "0.5"], "-", ["A2", "E3"]]]),
+  [["let", [".", "0.5"], ["sequence", "A2", "E3"]]],
+  "Sugar inside let expression"
 );
 
 // -()

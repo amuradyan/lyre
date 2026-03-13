@@ -183,6 +183,12 @@ The `lyre` command reads a `.lyre` file and outputs audio.
 lyre sample.lyre --play
 ```
 
+**Inspect desugared tokens:**
+
+```bash
+lyre sample.lyre --desugar
+```
+
 **Stream raw PCM to stdout:**
 
 ```bash
