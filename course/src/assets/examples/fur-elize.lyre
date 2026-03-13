@@ -1,67 +1,18 @@
--(
-  (envelope 0.01 0.35 0 0.01 0
-    (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)
-    (tone B4) (tone D5) (tone C5))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone A4))
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone C4) (tone E4) (tone A4))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone B4))
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone E4) (tone G#4) (tone B4))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone C5))
+(let
+  ( . 0.05
+    attack 0.01
+    release 0.01)
 
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone E4)
-    (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)
-    (tone B4) (tone D5) (tone C5))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone A4))
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone C4) (tone E4) (tone A4))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone B4))
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone E4) (tone C5) (tone B4))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone A4))
+  -(.E5 .D#5 .E5 .D#5 | .E5 .B4 .D5 .C5 .:A4
+    .C4 .E4 .A4 .:B4  | .E4 .G#4 .B4 .:C5
 
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone B4) (tone C5) (tone D5))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone E5))
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone G4) (tone F5) (tone E5))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone D5))
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone F4) (tone E5) (tone D5))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone C5))
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone E4) (tone D5) (tone C5))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone B4))
+    .E4 .E5 .D#5 .E5  | .D#5 .E5 .B4 .D5 .C5 .:A4
+    .C4 .E4 .A4 .:B4  | .E4 .C5 .B4 .:A4
 
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0)
-    (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)
-    (tone B4) (tone D5) (tone C5))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone A4))
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone C4) (tone E4) (tone A4))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone B4))
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone E4) (tone G#4) (tone B4))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone C5))
-  (envelope 0.01 0.35 0 0.01 0
-    (tone 0) (tone E4)
-    (tone E5) (tone D#5) (tone E5) (tone D#5) (tone E5)
-    (tone B4) (tone D5) (tone C5))
-  (envelope 0.01 0.25 0 0.01 0
-    (tone A4)))
+    .B4 .C5 .D5 .:E5  | .G4 .F5 .E5 .:D5
+    .F4 .E5 .D5 .:C5  | .E4 .D5 .C5 .:B4
+
+    .E5 .D#5 .E5 .D#5 | .E5 .B4 .D5 .C5 .:A4
+    .C4 .E4 .A4 .:B4  | .E4 .G#4 .B4 .:C5
+
+    .E4 .E5 .D#5 .E5  | .D#5 .E5 .B4 .D5 .C5 .:A4))

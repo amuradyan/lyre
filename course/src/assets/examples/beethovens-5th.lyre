@@ -1,14 +1,6 @@
--(
-  (envelope 0.02 0.28 0.6 0.1 0
-    (harmony (tone G3) (tone G2))
-    (harmony (tone G3) (tone G2))
-    (harmony (tone G3) (tone G2)))
-  (envelope 0.02 1.38 0.6 0.1 0
-    (harmony (tone Eb3) (tone Eb2)))
-|
-  (envelope 0.02 0.28 0.6 0.1 0
-    (harmony (tone F3) (tone F2))
-    (harmony (tone F3) (tone F2))
-    (harmony (tone F3) (tone F2)))
-  (envelope 0.02 1.38 0.6 0.1 0
-    (harmony (tone D3) (tone D2))))
+(let
+  (. 0.5)
+
+  -(
+    =(.G3 .G2) =(.G3 .G2) =(.G3 .G2) =(.Eb3 .Eb2)
+    =(.F3 .F2) =(.F3 .F2) =(.F3 .F2) =(.D3 .D2)))
