@@ -1,0 +1,12 @@
+(let
+  (. 0.1
+  rest 0)
+
+  -(
+    .G4 .G4 .G4
+    .Eb4 .rest .Bb4: :G4
+    .Eb4 .rest .Bb4: .:G4
+
+    .D5 .D5 .D5
+    .Eb5 .rest .Bb: :G4
+    .Eb4 .rest .Bb4: .:G4))
