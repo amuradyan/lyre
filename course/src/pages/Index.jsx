@@ -127,30 +127,22 @@ export default function Index() {
                           <div className="mb-1">Play sounds one after another</div>
                           <code className="font-mono text-purple-500 text-xs">(sequence noteC noteD noteE)</code>
                           <span className="text-gray-500 ml-2">- Melody</span>
+                          <div className="mt-2 ml-4 text-gray-500 text-xs">
+                            <code className="font-mono text-purple-400">-(noteC noteD noteE)</code>
+                            <span className="ml-2">- sugar</span>
+                          </div>
                         </div>
                       </li>
                       <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">-(sound1 sound2 ...)</code>
+                        <code className="font-mono text-purple-600 text-xs">(mix sound1 sound2 ...)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">
-                          <div className="mb-1">Shorthand for sequence</div>
-                          <code className="font-mono text-purple-500 text-xs">-(noteC noteD noteE)</code>
-                          <span className="text-gray-500 ml-2">- Same melody, cleaner</span>
-                        </div>
-                      </li>
-                      <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">(harmony sound1 sound2 ...)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">
-                          <div className="mb-1">Play sounds simultaneously</div>
-                          <code className="font-mono text-purple-500 text-xs">(harmony noteC noteE noteG)</code>
+                          <div className="mb-1">Play sounds simultaneously, normalized</div>
+                          <code className="font-mono text-purple-500 text-xs">(mix noteC noteE noteG)</code>
                           <span className="text-gray-500 ml-2">- C major chord</span>
-                        </div>
-                      </li>
-                      <li className="text-left">
-                        <code className="font-mono text-purple-600 text-xs">=(sound1 sound2 ...)</code>
-                        <div className="text-gray-600 mt-1 ml-4 text-left">
-                          <div className="mb-1">Shorthand for harmony</div>
-                          <code className="font-mono text-purple-500 text-xs">=(noteC noteE noteG)</code>
-                          <span className="text-gray-500 ml-2">- Same chord, cleaner</span>
+                          <div className="mt-2 ml-4 text-gray-500 text-xs">
+                            <code className="font-mono text-purple-400">=(noteC noteE noteG)</code>
+                            <span className="ml-2">- sugar</span>
+                          </div>
                         </div>
                       </li>
                     </ul>
