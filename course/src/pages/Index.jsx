@@ -72,8 +72,18 @@ export default function Index() {
                         <code className="font-mono text-purple-600 text-xs">(tone frequency)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">
                           <div className="mb-1">Generate infinite sine wave at given frequency in Hz</div>
-                          <code className="font-mono text-purple-500 text-xs">(tone 440)</code>
-                          <span className="text-gray-500 ml-2">- A4 sine wave</span>
+                          <code className="font-mono text-purple-500 text-xs">(tone 440) ; A4 sine wave</code>
+                        </div>
+                      </li>
+                      <li className="text-left">
+                        <code className="font-mono text-purple-600 text-xs">(play ticks note)</code>
+                        <div className="text-gray-600 mt-1 ml-4 text-left">
+                          <div className="mb-1">Play note for given number of ticks</div>
+                          <code className="font-mono text-purple-500 text-xs">(play 2 C4) ; Two ticks of middle C</code>
+                          <div className="mt-2 ml-4 text-gray-500 text-xs">
+                            <code className="font-mono text-purple-400">:C4</code>
+                            <span className="ml-2">- sugar</span>
+                          </div>
                         </div>
                       </li>
                     </ul>
@@ -87,16 +97,16 @@ export default function Index() {
                         <code className="font-mono text-purple-600 text-xs">(envelope attack decay sustain release gate source1 ...)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">
                           <div className="mb-1">Apply ADSR envelope. All times in seconds</div>
-                          <code className="font-mono text-purple-500 text-xs">(envelope 0.01 1.0 0 0.5 0 (tone 261.63))</code>
-                          <span className="text-gray-500 ml-2">- Plucked C4</span>
+                          <pre className="font-mono text-purple-500 text-xs">{`(envelope 0.01 1.0 0 0.5 0
+  (tone 261.63)) ; Plucked C4`}</pre>
                         </div>
                       </li>
                       <li className="text-left">
                         <code className="font-mono text-purple-600 text-xs">(gain source level)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">
                           <div className="mb-1">Control volume, level from 0 to 1</div>
-                          <code className="font-mono text-purple-500 text-xs">(gain (envelope ...) 0.5)</code>
-                          <span className="text-gray-500 ml-2">- Half volume</span>
+                          <pre className="font-mono text-purple-500 text-xs">{`(gain
+  (envelope ...) 0.5) ; Half volume`}</pre>
                         </div>
                       </li>
                     </ul>
@@ -110,8 +120,12 @@ export default function Index() {
                         <code className="font-mono text-purple-600 text-xs">(let (var1 val1 var2 val2 ...) body)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">
                           <div className="mb-1">Create local bindings</div>
-                          <code className="font-mono text-purple-500 text-xs">(let (freq 440 dur 0.5) (envelope 0.01 0.1 0 0.2 dur (tone freq)))</code>
-                          <span className="text-gray-500 ml-2">- Parameterized note</span>
+                          <pre className="font-mono text-purple-500 text-xs">{`(let
+  (freq 440
+   dur 0.5)
+
+  (envelope 0.01 0.1 0 0.2 dur
+    (tone freq))) ; Parameterized note`}</pre>
                         </div>
                       </li>
                     </ul>
@@ -125,8 +139,7 @@ export default function Index() {
                         <code className="font-mono text-purple-600 text-xs">(sequence sound1 sound2 ...)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">
                           <div className="mb-1">Play sounds one after another</div>
-                          <code className="font-mono text-purple-500 text-xs">(sequence noteC noteD noteE)</code>
-                          <span className="text-gray-500 ml-2">- Melody</span>
+                          <code className="font-mono text-purple-500 text-xs">(sequence noteC noteD noteE) ; Melody</code>
                           <div className="mt-2 ml-4 text-gray-500 text-xs">
                             <code className="font-mono text-purple-400">-(noteC noteD noteE)</code>
                             <span className="ml-2">- sugar</span>
@@ -137,8 +150,7 @@ export default function Index() {
                         <code className="font-mono text-purple-600 text-xs">(mix sound1 sound2 ...)</code>
                         <div className="text-gray-600 mt-1 ml-4 text-left">
                           <div className="mb-1">Play sounds simultaneously, normalized</div>
-                          <code className="font-mono text-purple-500 text-xs">(mix noteC noteE noteG)</code>
-                          <span className="text-gray-500 ml-2">- C major chord</span>
+                          <code className="font-mono text-purple-500 text-xs">(mix noteC noteE noteG) ; C major chord</code>
                           <div className="mt-2 ml-4 text-gray-500 text-xs">
                             <code className="font-mono text-purple-400">=(noteC noteE noteG)</code>
                             <span className="ml-2">- sugar</span>

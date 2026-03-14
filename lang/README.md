@@ -151,22 +151,28 @@ Use `let` for local bindings:
 
 Note that in Lyre syntax, envelope parameters come before the source: `(envelope attack decay sustain release gate source...)`. All time values are in seconds.
 
-### Dot notation
+### Play
 
-Wrap a note name in dots or colons to get an enveloped tone with automatic duration:
+`(play ticks note)` wraps a tone in an envelope with default ADSR parameters. The gate time is `ticks * .` where `.` is the tick duration (default 0.5s):
+
+```lisp
+(play 1 C4)  ; one tick of middle C
+(play 2 G4)  ; two ticks of G
+```
+
+Dot notation is sugar for `play`. Each `.` prefix counts as 1 tick, each `:` as 2:
+
+```lisp
+.C4          ; (play 1 C4)
+:G4          ; (play 2 G4)
+.:A4         ; (play 3 A4)
+```
+
+A melody using dot notation:
 
 ```lisp
 -(.C4 .C4 .G4 .G4 .A4 .A4 :G4)
 ```
-
-`.C4` expands to `(envelope attack decay sustain release . (tone C4))` where `.` is the tick duration and `attack`, `decay`, `sustain`, `release` are looked up from the environment.
-
-Dots and colons control duration as a fraction of `.`. Each `.` counts as 1, each `:` counts as 2. Left side multiplies, right side divides:
-
-- `.C4` = 1 tick
-- `:C4` = 2 ticks
-- `C4:` = half tick
-- `.:C4:` = 3/2 ticks
 
 Override defaults with `let`:
 
@@ -227,15 +233,16 @@ The Lyre language currently supports these operations:
 - `(tone frequency)` - Generate sine wave at given frequency
 - `(envelope attack decay sustain release gate source1 source2 ...)` - Apply ADSR envelope
 - `(gain source level)` - Control volume (0-1)
+- `(play ticks note)` - Play note for given number of ticks with default ADSR
 - `(sequence sound1 sound2 ...)` - Play sounds in sequence
 - `(mix sound1 sound2 ...)` - Play sounds simultaneously, normalized to avoid clipping
 - `(harmony sound1 sound2 ...)` - Play sounds simultaneously, raw sum for manual mixing with `gain`
-- `(let (var1 val1 var2 val2 ...) body)` - Create local bindings and evaluate body
+- `(let (name1 value1 name2 value2 ...) body)` - Create local bindings and evaluate body
 
 **Syntactic sugar:**
 - `-(expr1 expr2 ...)` - Shorthand for `(sequence expr1 expr2 ...)`
 - `=(expr1 expr2 ...)` - Shorthand for `(mix expr1 expr2 ...)`
-- `.name` / `:name` / `name.` / `name:` - Enveloped tone with duration (see Dot notation)
+- `.name` / `:name` - Shorthand for `(play N name)` where `.` = 1 tick, `:` = 2 ticks
 - `|` - Bar separator, treated as whitespace for visual organization
 
 **Prelude defaults:**

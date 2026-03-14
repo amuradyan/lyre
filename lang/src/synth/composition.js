@@ -56,6 +56,18 @@ export function* harmony(...generators) {
   }
 }
 
+/**
+ * Mixes generators in parallel, normalizing by voice count to prevent clipping.
+ * Wraps harmony and divides each sample by the number of generators.
+ * @param {...Generator} generators - Audio generators to mix
+ * @yields {Array} Tuples of [sample, n, maxTotalSamples] where sample is the normalized sum
+ * @example
+ * const chord = mix(
+ *   envelope(tone(261.63), 0.01, 1.0, 0, 0.5),  // C
+ *   envelope(tone(329.63), 0.01, 1.0, 0, 0.5),  // E
+ *   envelope(tone(392.00), 0.01, 1.0, 0, 0.5)   // G
+ * );
+ */
 export function* mix(...generators) {
   for (const sample of harmony(...generators)) {
     const [s, n, totalSamples] = sample;

@@ -128,4 +128,60 @@ assert.deepEqual(
   "Harmony with mixed regular and sugar expressions"
 );
 
+// .C4
+assert.deepEqual(
+  desugar([".C4"]),
+  [["play", "1", "C4"]],
+  "Dot notation: single dot"
+);
+
+// :G4
+assert.deepEqual(
+  desugar([":G4"]),
+  [["play", "2", "G4"]],
+  "Dot notation: colon = 2 ticks"
+);
+
+// .:A4
+assert.deepEqual(
+  desugar([".:A4"]),
+  [["play", "3", "A4"]],
+  "Dot notation: dot + colon = 3 ticks"
+);
+
+// .Bb4: suffix divides
+assert.deepEqual(
+  desugar([".Bb4:"]),
+  [["play", "0.5", "Bb4"]],
+  "Dot notation: suffix colon divides"
+);
+
+// :C4. suffix dot divides
+assert.deepEqual(
+  desugar([":C4."]),
+  [["play", "2", "C4"]],
+  "Dot notation: colon prefix, dot suffix"
+);
+
+// . alone is NOT expanded
+assert.deepEqual(
+  desugar([".", "0.5"]),
+  [".", "0.5"],
+  "Bare dot is not expanded"
+);
+
+// -(.C4 .G4)
+assert.deepEqual(
+  desugar(["-", [".C4", ".G4"]]),
+  [["sequence", ["play", "1", "C4"], ["play", "1", "G4"]]],
+  "Dot notation inside sequence sugar"
+);
+
+// .C4 inside a nested expression
+assert.deepEqual(
+  desugar([["let", [".", "0.25"], ".C4"]]),
+  [["let", [".", "0.25"], ["play", "1", "C4"]]],
+  "Dot notation inside let, bare dot preserved"
+);
+
 console.log('All desugar tests passed!');

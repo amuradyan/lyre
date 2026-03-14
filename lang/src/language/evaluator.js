@@ -3,34 +3,6 @@ import { envelope, gain } from '../synth/envelopes.js';
 import { sequence, harmony, mix } from '../synth/composition.js';
 import { lookup } from './environment.js';
 
-const isDotOrColon = (ch) => ch === '.' || ch === ':';
-
-const countDuration = (chars) =>
-  chars.reduce((sum, ch) => sum + (ch === '.' ? 1 : 2), 0);
-
-function parseDotNotation(token) {
-  const chars = [...token];
-  const prefix = [];
-  const suffix = [];
-
-  while (chars.length > 0 && isDotOrColon(chars[0]))
-    prefix.push(chars.shift());
-
-  while (chars.length > 0 && isDotOrColon(chars[chars.length - 1]))
-    suffix.push(chars.pop());
-
-  const name = chars.join('');
-
-  if (name.length === 0 || (prefix.length === 0 && suffix.length === 0))
-    return null;
-
-  return {
-    name,
-    left: prefix.length > 0 ? countDuration(prefix) : 1,
-    right: suffix.length > 0 ? countDuration(suffix) : 1
-  };
-}
-
 /**
  * Interprets a tokenized Lyre expression and returns a generator function.
  * @param {string|Array} expression - A tokenized expression (from tokenize) or a string number
@@ -48,16 +20,6 @@ export function interpret(expression, env = []) {
     const num = parseFloat(expression);
     if (!isNaN(num)) {
       return num;
-    }
-
-    const note = parseDotNotation(expression);
-    if (note) {
-      const gate = (note.left / note.right) * lookup('.', env);
-      const a = lookup('attack', env);
-      const d = lookup('decay', env);
-      const s = lookup('sustain', env);
-      const r = lookup('release', env);
-      return interpret(["envelope", String(a), String(d), String(s), String(r), String(gate), ["tone", note.name]], env);
     }
 
     return lookup(expression, env);
@@ -99,6 +61,15 @@ export function interpret(expression, env = []) {
       case "gain":
         const [signal, level] = evaluated;
         return gain(signal, level);
+      case "play": {
+        const [ticks, freq] = evaluated;
+        const gateTime = ticks * lookup('.', env);
+        const a = lookup('attack', env);
+        const d = lookup('decay', env);
+        const s = lookup('sustain', env);
+        const r = lookup('release', env);
+        return envelope(tone(freq), a, d, s, r, gateTime);
+      }
       default:
         throw new Error(`Unknown operator: ${operator}`);
     }

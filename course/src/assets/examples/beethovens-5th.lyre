@@ -2,10 +2,10 @@
   (. 0.5)
 
   ; to avoid clipping, mixing normalizes/lowers/ sound levels
-  ; we use gain to amplify it
+  ; we use `gain` to amplify the patch in the end
 
   (gain
     -(
-      =(.G3 .G2) =(.G3 .G2) =(.G3 .G2) =(:Eb3 :Eb2)
-      =(.F3 .F2) =(.F3 .F2) =(.F3 .F2) =(:D3 :D2))
+      =(.G3 .G2) =(.G3 .G2) =(.G3 .G2) =(:Eb3 .:Eb2)
+      =(.F3 .F2) =(.F3 .F2) =(.F3 .F2) =(:D3 .:D2))
     1.2))
