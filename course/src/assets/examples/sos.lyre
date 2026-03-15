@@ -1,0 +1,6 @@
+(let
+  (. 0.1
+   𝄩 0)
+
+  ; S - 3 shorts   O - 3 longs    S - 3 shorts
+  -(A4: A4: A4: 𝄩: .A4 .A4 .A4 𝄩: A4: A4: A4:))
