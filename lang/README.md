@@ -105,15 +105,15 @@ const mellow = filter(
 Writing nested generator calls gets verbose. The Lyre language provides cleaner syntax for the same operations:
 
 ```js
-import { tokenize, interpret } from '@lyre/core';
+import { tokenize, desugar, interpret } from '@lyre/core';
 
 const code = `
   (envelope
     0.05 0.05 0.9 0.1 0
     (tone A4))`;
 
-const tokens = tokenize(code);
-const generator = interpret(tokens);
+const tokens = desugar(tokenize(code));
+const generator = interpret(tokens[0]);
 
 // generator yields the same samples as the JavaScript version
 ```
@@ -242,7 +242,7 @@ The Lyre language currently supports these operations:
 **Syntactic sugar:**
 - `-(expr1 expr2 ...)` - Shorthand for `(sequence expr1 expr2 ...)`
 - `=(expr1 expr2 ...)` - Shorthand for `(mix expr1 expr2 ...)`
-- `.name` / `:name` - Shorthand for `(play N name)` where `.` = 1 tick, `:` = 2 ticks
+- `.name` / `:name` / `name.` / `name:` - Shorthand for `(play N name)`. Each `.` = 1 tick, `:` = 2. Prefix multiplies, suffix divides
 - `|` - Bar separator, treated as whitespace for visual organization
 
 **Prelude defaults:**
