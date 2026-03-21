@@ -1,12 +1,17 @@
--(
-  =(
-    (envelope 0.01 1.97 0 0.01 0 (tone F#3))
-    (envelope 0.01 0.25 0 0.01 0
-      (tone G#5) (tone 0) (tone F5) (tone F#5)
-      (tone G#5) (tone 0) (tone F5) (tone F#5)))
+(let
+  (. 0.5
+   𝄩 0
+   ; Baroque frequencies
+   qA2 103.75   qD3 138.63
+   qA4 415      qB4 465.82
+   qA5 830      qC#5 522.87
+   qD5 553.96   qE5 621.80
+   qF#5 697.94  qG5 739.45)
 
-  =(
-    (envelope 0.01 1.97 0 0.01 0 (tone G#2))
-    (envelope 0.01 0.25 0 0.01 0
-      (tone G#5) (tone G#4) (tone A#4) (tone C5)
-      (tone C#5) (tone D#5) (tone F5) (tone F#5))))
+  -(
+    =(
+      ::qD3
+      -(qA5: |  𝄩: qF#5: qG5: qA5: | 𝄩: qF#5: qG5:))
+    =(
+      ::qA2
+      -(qA5: qA4: qB4: qC#5: | qD5: qE5: qF#5: qG5:))))
