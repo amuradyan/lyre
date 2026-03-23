@@ -1,17 +1,14 @@
 (let
-  (. 0.5
-   𝄩 0
-   ; Baroque frequencies
-   qA2 103.75   qD3 138.63
-   qA4 415      qB4 465.82
-   qA5 830      qC#5 522.87
-   qD5 553.96   qE5 621.80
-   qF#5 697.94  qG5 739.45)
+  (. 0.5  ; set the unit duration
+   𝄩 0    ; define  the rest
+   qA2  103.75    qD3  138.63   qA4 415      qB4 465.82
+   qA5  830       qC#5 522.87   qD5 553.96   qE5 621.80
+   qF#5 697.94    qG5  739.45) ; and baroque frequencies
 
-  -(
-    =(
-      ::qD3
-      -(qA5: |  𝄩: qF#5: qG5: qA5: | 𝄩: qF#5: qG5:))
-    =(
-      ::qA2
-      -(qA5: qA4: qB4: qC#5: | qD5: qE5: qF#5: qG5:))))
+  ; The sequence below is the music to be played
+  =( ; mixing the base and the melody sequence
+    ::qD3
+    -(qA5: |  𝄩: qF#5: qG5: qA5: | 𝄩: qF#5: qG5:))
+  =(
+    ::qA2
+    -(qA5: qA4: qB4: qC#5: | qD5: qE5: qF#5: qG5:)))

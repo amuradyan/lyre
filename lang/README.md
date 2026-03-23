@@ -235,8 +235,8 @@ The Lyre language currently supports these operations:
 - `(gain source level)` - Control volume (0-1)
 - `(play ticks note)` - Play note for given number of ticks with default ADSR
 - `(sequence sound1 sound2 ...)` - Play sounds in sequence
-- `(mix sound1 sound2 ...)` - Play sounds simultaneously, normalized to avoid clipping
 - `(harmony sound1 sound2 ...)` - Play sounds simultaneously, raw sum for manual mixing with `gain`
+- `(mix sound1 sound2 ...)` - Play sounds simultaneously, normalized to avoid clipping
 - `(let (name1 value1 name2 value2 ...) body1 body2 ...)` - Create local bindings, evaluate all body expressions, sequence if multiple
 
 **Syntactic sugar:**

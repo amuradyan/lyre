@@ -1,14 +1,11 @@
-(sequence
-  (mix
-    (envelope 0.005 0 1 0.005 2 (tone D3))
+(mix
+  (envelope 0.005 0 1 0.005 2 (tone D3))
+  (envelope 0.005 0 1 0.005 0.25
+    (tone A5) (tone 0) (tone F#5) (tone G5)
+    (tone A5) (tone 0) (tone F#5) (tone G5)))
 
-    (envelope 0.005 0 1 0.005 0.25
-      (tone A5) (tone 0) (tone F#5) (tone G5)
-      (tone A5) (tone 0) (tone F#5) (tone G5)))
-
-  (mix
-    (envelope 0.005 0 1 0.005 2 (tone A2))
-
-    (envelope 0.005 0 1 0.005 0.25
-      (tone A5) (tone A4) (tone B4) (tone C#5)
-      (tone D5) (tone E5) (tone F#5) (tone G5))))
+(mix
+  (envelope 0.005 0 1 0.005 2 (tone A2))
+  (envelope 0.005 0 1 0.005 0.25
+    (tone A5) (tone A4) (tone B4) (tone C#5)
+    (tone D5) (tone E5) (tone F#5) (tone G5)))

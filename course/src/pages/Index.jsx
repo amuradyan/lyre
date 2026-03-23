@@ -12,14 +12,11 @@ const sections = [
     entries: [
       {
         signature: '(tone frequency)',
-        description: 'Generate infinite sine wave at given frequency in Hz',
-        example: '(tone 440) ; A4 sine wave',
+        description: 'Generates an infinite sine wave. Needs an envelope to stop',
       },
       {
-        signature: '(play ticks note)',
-        description: 'Play note for given number of ticks',
-        example: '(play 2 C4) ; Two ticks of middle C',
-        sugar: ':C4',
+        signature: '(play ticks note) | .note :note',
+        description: <>Note with default ADSR. Dot duration comes from <code>.</code> in the environment - use <code>let</code> to override it. Each <code>.</code> prefix = 1 tick, <code>:</code> = 2</>,
       },
     ],
   },
@@ -29,29 +26,12 @@ const sections = [
     starter: '(envelope 0.01 1.0 0 0.5 0\n  (tone 261.63)) ; Plucked C4\n\n(gain\n  (envelope 0.01 1.0 0 0.5 0\n    (tone 261.63))\n  0.5) ; Half volume\n',
     entries: [
       {
-        signature: '(envelope attack decay sustain release gate source1 ...)',
-        description: 'Apply ADSR envelope. All times in seconds',
-        example: `(envelope 0.01 1.0 0 0.5 0\n  (tone 261.63)) ; Plucked C4`,
-        multiline: true,
+        signature: '(envelope A D S R gate source ...)',
+        description: <>ADSR amplitude shaping. <code>A</code>, <code>D</code>, <code>R</code> in seconds. <code>S</code> is amplitude level, typically <code>0-1</code></>,
       },
       {
         signature: '(gain source level)',
-        description: 'Control volume, level from 0 to 1',
-        example: `(gain\n  (envelope ...) 0.5) ; Half volume`,
-        multiline: true,
-      },
-    ],
-  },
-  {
-    key: 'bind',
-    title: 'Name values',
-    starter: '(let\n  (freq 440\n   dur 0.5)\n  (envelope 0.01 0.1 0 0.2 dur\n    (tone freq)))\n',
-    entries: [
-      {
-        signature: '(let (var1 val1 var2 val2 ...) body)',
-        description: 'Create local bindings',
-        example: `(let\n  (freq 440\n   dur 0.5)\n  (envelope 0.01 0.1 0 0.2 dur\n    (tone freq))) ; Parameterized note`,
-        multiline: true,
+        description: 'Multiplies amplitude. Can go above 1',
       },
     ],
   },
@@ -61,21 +41,27 @@ const sections = [
     starter: '; Melody\n(sequence (play 1 C4) (play 1 E4) (play 1 G4))\n-((play 1 C4) (play 1 E4) (play 1 G4)) ; sugar\n\n; Chord\n(mix (play 1 C4) (play 1 E4) (play 1 G4))\n=((play 1 C4) (play 1 E4) (play 1 G4)) ; sugar\n\n; Raw sum\n(harmony (play 1 C4) (play 1 E4) (play 1 G4))\n',
     entries: [
       {
-        signature: '(sequence sound1 sound2 ...)',
-        description: 'Play sounds one after another',
-        example: '(sequence noteC noteD noteE) ; Melody',
-        sugar: '-(noteC noteD noteE)',
+        signature: '(sequence a b ...) | -(a b ...)',
+        description: 'Plays sounds one after another - use it to build melodies and phrases',
       },
       {
-        signature: '(mix sound1 sound2 ...)',
-        description: 'Play sounds simultaneously, normalized',
-        example: '(mix noteC noteE noteG) ; C major chord',
-        sugar: '=(noteC noteE noteG)',
+        signature: '(mix a b ...) | =(a b ...)',
+        description: 'Simultaneously, normalized by voice count to prevent clipping',
       },
       {
-        signature: '(harmony sound1 sound2 ...)',
-        description: 'Play sounds simultaneously, raw sum',
-        example: '(harmony noteC noteE noteG) ; Unmixed chord',
+        signature: '(harmony a b ...)',
+        description: 'Simultaneously, raw sum. Pair with gain for manual mixing',
+      },
+    ],
+  },
+  {
+    key: 'bind',
+    title: 'Name values',
+    starter: '(let (. 0.25)\n  :C4 .E4 | :G4 .B4 |\n  :C4 .F4 :G4)\n',
+    entries: [
+      {
+        signature: '(let (name val ...) body ...)',
+        description: <>Binds names in a new scope. Shadows parent names if they exist. All body expressions are sequenced. Defaults: <code>. = 0.5s</code> <code>attack = 0.005</code> <code>decay = 0</code> <code>sustain = 1</code> <code>release = 0.005</code></>,
       },
     ],
   },
@@ -87,19 +73,7 @@ function SectionContent({ entries }) {
       {entries.map((entry, i) => (
         <li key={i} className="text-left">
           <code className="font-mono text-purple-600 text-xs">{entry.signature}</code>
-          <div className="text-gray-600 mt-1 ml-4">
-            <div className="mb-1">{entry.description}</div>
-            {entry.multiline
-              ? <pre className="font-mono text-purple-500 text-xs">{entry.example}</pre>
-              : <code className="font-mono text-purple-500 text-xs">{entry.example}</code>
-            }
-            {entry.sugar && (
-              <div className="mt-2 ml-4 text-gray-500 text-xs">
-                <code className="font-mono text-purple-400">{entry.sugar}</code>
-                <span className="ml-2">- sugar</span>
-              </div>
-            )}
-          </div>
+          <div className="text-gray-600 mt-1 ml-4">{entry.description}</div>
         </li>
       ))}
     </ul>
@@ -138,8 +112,18 @@ export default function Index() {
             <p className="text-l text-gray-600 pb-2">\ a music streaming lisp</p>
           </div>
 
-          {/* Row 1: Plain Pachelbel + P1 P2 P3 */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center mb-8">
+          {/* P1: Full width intro */}
+          <div className="mb-8">
+            <p className="text-left text-[18px] text-gray-600 text-justify">
+              Lyre is a duo of a Lisp-like language for writing music and a rather simple synthesizer that streams it.
+              As in any lisp, we write expressions to later evaluate to values - tones of given
+              frequencies, durations and amplitudes in our case. We also write expressions to put
+              these tones in sequence or in parallel and then again for something else for sure.
+            </p>
+          </div>
+
+          {/* P2 P3 + Plain Pachelbel */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start mb-8">
             <div className="lg:col-span-3">
               <LyreCodeblock
                 code={plainCode}
@@ -148,40 +132,47 @@ export default function Index() {
               />
             </div>
 
-            <div className="lg:col-span-2 flex items-center">
-              <div className="text-center space-y-4 text-[17px] text-gray-600">
+            <div className="lg:col-span-2">
+              <div className="text-left space-y-4 text-[18px] text-gray-600 text-justify">
                 <p>
-                  Lyre is a system comprising of a Lisp-like language for writing music and a rather simple synthesizer
-                  that streams that music.
+                  Here is the Canon in D by Pachelbel. It takes some time to figure how spatially the
+                  notes are placed, then you can read the melody in between the code. Tones are the most
+                  nested yet most important data, above them the duration and timbre, above that - the
+                  composition pattern.
                 </p>
                 <p>
-                  This is the Canon in D of Pachelbel. As in any lisp, we write expressions to produce values - tones of given
-                  frequencies, durations and amplitudes in our case.
-                </p>
-                <p>
-                  We also write expressions to put them in a sequence or in parallel and then again for something else.
-                  Looks rather noisy for a music description, right?
+                  This pattern might go on as, things can get rather nested pretty
+                  fast in Lisps. Looks rather noisy for a music description, right?
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center mb-8">
-            <div className="lg:col-span-2 flex items-center">
-              <div className="text-center space-y-4 text-[17px] text-gray-600">
+          {/* P4: Full width bridge */}
+          <div className="mb-8">
+            <p className="text-left text-[18px] text-gray-600 text-justify">
+              To aid the reader in seeing the music though language mechanics, some functions are
+              sugared. That sugar mostly covers composition, but a notable part of it is
+              the <i>dot</i> notation - prefixing and postfixing a note name /practically a frequency/
+              with dots and colons to get an enveloped tone with default duration and timbre.
+            </p>
+          </div>
+
+          {/* P5 P6 + Lyre examples */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start mb-8">
+            <div className="lg:col-span-2">
+              <div className="text-left space-y-4 text-[18px] text-gray-600 text-justify">
                 <p>
-                  To distance the reader from such mechanical aspects of the language and to look more musical, some
-                  functions are sugared. A notable part of that sugar is the <i>dot</i> notation - prefixing and postfixing
-                  a note name or, rather any frequency, with dots and colons to get an enveloped tone with automatic duration.
+                  Each <code>.</code> around a note counts as one tick - a unit duration set to half a
+                  second by default. Left side multiplies, right side divides -
+                  so <code>.C4</code> is one tick or 0.5 seconds, <code>:G4</code> is two ticks or a
+                  full second, and <code>.Bb4:</code> is a half tick or 0.25 seconds. With this notation
+                  we can write the Canon much shorter and music-alike.
                 </p>
                 <p>
-                  Each <code>.</code> counts as one tick, Left side multiplies, right side divides - so <code>.C4</code> is
-                  one tick, <code>:G4</code> is two, and <code>.Bb4:</code> is a half. The canon from the previous example then
-                  becomes much shorter and music-alike.
-                </p>
-                <p>
-                  Lyre also allows assigning names to values and referring to them later. A nice example of that coming
-                  in handy for notation is the <i>SOS</i> sound in the examples.
+                  Lyre also allows assigning names to values and referring to them later, which makes it
+                  possible to use musical notation without tampering with language syntax. A nice example
+                  of that coming in handy is the SOS signal from the examples.
                 </p>
               </div>
             </div>
@@ -231,7 +222,7 @@ export default function Index() {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">{current.title}</h3>
                 <SectionContent entries={current.entries} />
