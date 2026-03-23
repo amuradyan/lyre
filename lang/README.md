@@ -237,7 +237,7 @@ The Lyre language currently supports these operations:
 - `(sequence sound1 sound2 ...)` - Play sounds in sequence
 - `(mix sound1 sound2 ...)` - Play sounds simultaneously, normalized to avoid clipping
 - `(harmony sound1 sound2 ...)` - Play sounds simultaneously, raw sum for manual mixing with `gain`
-- `(let (name1 value1 name2 value2 ...) body)` - Create local bindings and evaluate body
+- `(let (name1 value1 name2 value2 ...) body1 body2 ...)` - Create local bindings, evaluate all body expressions, sequence if multiple
 
 **Syntactic sugar:**
 - `-(expr1 expr2 ...)` - Shorthand for `(sequence expr1 expr2 ...)`

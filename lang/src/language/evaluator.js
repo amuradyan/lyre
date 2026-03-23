@@ -27,7 +27,7 @@ export function interpret(expression, env = []) {
     const [operator, ...operands] = expression;
 
     if (operator === "let") {
-      const [bindings, body] = operands;
+      const [bindings, ...bodies] = operands;
 
       const newEnv = [...env];
 
@@ -37,7 +37,8 @@ export function interpret(expression, env = []) {
         newEnv.push([name, value]);
       }
 
-      return interpret(body, newEnv);
+      const evaluated = bodies.map(body => interpret(body, newEnv));
+      return evaluated.length === 1 ? evaluated[0] : sequence(...evaluated);
     }
 
     const evaluated = operands.map(operand => interpret(operand, env));

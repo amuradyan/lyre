@@ -1,6 +1,6 @@
 {
   "name": "@dekanat/lyre",
-  "version": "9.14.4",
+  "version": "10.14.4",
   "description": "A musical Lisp with audio synthesis - build sound from composable generators",
   "license": "MIT",
   "exports": "./mod.js",

@@ -41,4 +41,8 @@ const desugared = [
   "notes"
 ];
 
+const expr9 = tokenize("(let (freq 440) (tone freq) (tone freq))")[0];
+const gen9 = interpret(expr9);
+assert(gen9 && typeof gen9.next === 'function', "let with multiple bodies should return a sequenced generator");
+
 console.log('All let tests passed!');
