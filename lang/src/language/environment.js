@@ -1,3 +1,7 @@
+import { tone } from '../synth/oscillators.js';
+import { envelope, gain } from '../synth/envelopes.js';
+import { sequence, harmony, mix } from '../synth/composition.js';
+
 /**
  * Built-in note name to frequency mappings.
  * Contains musical notes from C1 to G6 with both sharp and flat notations.
@@ -109,7 +113,28 @@ export const prelude = [
   ["attack", 0.005],
   ["decay", 0],
   ["sustain", 1],
-  ["release", 0.005]
+  ["release", 0.005],
+  ["tone", (args) => tone(args[0])],
+  ["sequence", (args) => sequence(...args)],
+  ["harmony", (args) => harmony(...args)],
+  ["mix", (args) => mix(...args)],
+  ["gain", (args) => gain(args[0], args[1])],
+  ["envelope", (args) => {
+    const [attackTime, decayTime, sustainLevel, releaseTime, gateTime, ...sources] = args;
+    const enveloped =
+      sources.map(source =>
+        envelope(source, attackTime, decayTime, sustainLevel, releaseTime, gateTime));
+    return sequence(...enveloped);
+  }],
+  ["play", (args, env) => {
+    const [ticks, freq] = args;
+    const gateTime = ticks * lookup('.', env);
+    const a = lookup('attack', env);
+    const d = lookup('decay', env);
+    const s = lookup('sustain', env);
+    const r = lookup('release', env);
+    return envelope(tone(freq), a, d, s, r, gateTime);
+  }],
 ];
 
 /**

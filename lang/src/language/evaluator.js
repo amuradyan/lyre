@@ -1,6 +1,4 @@
-import { tone } from '../synth/oscillators.js';
-import { envelope, gain } from '../synth/envelopes.js';
-import { sequence, harmony, mix } from '../synth/composition.js';
+import { sequence } from '../synth/composition.js';
 import { lookup } from './environment.js';
 
 /**
@@ -42,37 +40,12 @@ export function interpret(expression, env = []) {
     }
 
     const evaluated = operands.map(operand => interpret(operand, env));
+    const fn = lookup(operator, env);
 
-    switch (operator) {
-      case "tone":
-        const [frequency] = evaluated;
-        return tone(frequency);
-      case "envelope":
-        const [attackTime, decayTime, sustainLevel, releaseTime, gateTime, ...sources] = evaluated;
-        const enveloped =
-          sources.map(source =>
-            envelope(source, attackTime, decayTime, sustainLevel, releaseTime, gateTime));
-        return sequence(...enveloped);
-      case "sequence":
-        return sequence(...evaluated);
-      case "harmony":
-        return harmony(...evaluated);
-      case "mix":
-        return mix(...evaluated);
-      case "gain":
-        const [signal, level] = evaluated;
-        return gain(signal, level);
-      case "play": {
-        const [ticks, freq] = evaluated;
-        const gateTime = ticks * lookup('.', env);
-        const a = lookup('attack', env);
-        const d = lookup('decay', env);
-        const s = lookup('sustain', env);
-        const r = lookup('release', env);
-        return envelope(tone(freq), a, d, s, r, gateTime);
-      }
-      default:
-        throw new Error(`Unknown operator: ${operator}`);
+    if (typeof fn === 'function') {
+      return fn(evaluated, env);
     }
+
+    throw new Error(`Unknown operator: ${operator}`);
   }
 }
