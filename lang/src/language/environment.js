@@ -148,7 +148,7 @@ export const prelude = [
  * lookup("C4", [["C4", 300]]) // 300 (custom env overrides prelude)
  */
 export function lookup(key, env = []) {
-  const combined = [...env, ...prelude];
+  const combined = [...prelude, ...env];
   for (let i = combined.length - 1; i >= 0; i--) {
     if (combined[i][0] === key) {
       return combined[i][1];
