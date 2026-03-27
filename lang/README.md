@@ -105,7 +105,7 @@ const mellow = filter(
 Writing nested generator calls gets verbose. The Lyre language provides cleaner syntax for the same operations:
 
 ```js
-import { tokenize, desugar, interpret } from '@lyre/core';
+import { tokenize, desugar, evaluate } from '@lyre/core';
 
 const code = `
   (envelope
@@ -113,12 +113,12 @@ const code = `
     (tone A4))`;
 
 const tokens = desugar(tokenize(code));
-const generator = interpret(tokens[0]);
+const generator = evaluate(tokens[0]);
 
 // generator yields the same samples as the JavaScript version
 ```
 
-Lyre is a minimal Lisp. Parentheses group expressions, the first element names the operation, the rest are arguments. The interpreter evaluates nested expressions and returns generators.
+Lyre is a minimal Lisp. Parentheses group expressions, the first element names the operation, the rest are arguments. The evaluator resolves nested expressions and returns generators.
 
 You can write multiple top-level expressions in a single file, and they will play in sequence:
 
@@ -249,7 +249,7 @@ The Lyre language currently supports these operations:
 - `.` = 0.5 (tick duration in seconds)
 - `attack` = 0.005, `decay` = 0, `sustain` = 1, `release` = 0.005
 
-**Language functions.** `tokenize(input)` parses Lyre code into an array of expressions. Each expression is a nested array where the first element is the operator and the rest are operands. For single expressions, it returns an array with one element. For multiple expressions, it returns an array of expressions. `interpret(expression)` evaluates a single tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
+**Language functions.** `tokenize(input)` parses Lyre code into an array of expressions. Each expression is a nested array where the first element is the operator and the rest are operands. For single expressions, it returns an array with one element. For multiple expressions, it returns an array of expressions. `evaluate(expression)` evaluates a single tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
 
 The sampling rate is 48,000 Hz, exported as `samplingRate` from the synth module.
 

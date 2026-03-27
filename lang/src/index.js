@@ -4,7 +4,7 @@
  */
 
 /**
- * Language parsing and interpretation functions
+ * Language parsing and evaluation functions
  */
 export * from './language/index.js';
 

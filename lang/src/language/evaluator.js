@@ -8,12 +8,12 @@ import { lookup } from './environment.js';
  * @returns {Generator|number} A generator that yields audio samples, or a number if the expression is a string
  * @example
  * const tokens = tokenize("(tone 440)");
- * const generator = interpret(tokens);
+ * const generator = evaluate(tokens);
  * for (const sample of generator) {
  *   // process audio sample
  * }
  */
-export function interpret(expression, env = []) {
+export function evaluate(expression, env = []) {
   if (typeof expression === 'string') {
     const num = parseFloat(expression);
     if (!isNaN(num)) {
@@ -31,15 +31,15 @@ export function interpret(expression, env = []) {
 
       for (let i = 0; i < bindings.length; i += 2) {
         const name = bindings[i];
-        const value = interpret(bindings[i + 1], newEnv);
+        const value = evaluate(bindings[i + 1], newEnv);
         newEnv.push([name, value]);
       }
 
-      const evaluated = bodies.map(body => interpret(body, newEnv));
+      const evaluated = bodies.map(body => evaluate(body, newEnv));
       return evaluated.length === 1 ? evaluated[0] : sequence(...evaluated);
     }
 
-    const evaluated = operands.map(operand => interpret(operand, env));
+    const evaluated = operands.map(operand => evaluate(operand, env));
     const fn = lookup(operator, env);
 
     if (typeof fn === 'function') {

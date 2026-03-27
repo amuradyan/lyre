@@ -1,5 +1,5 @@
 import { tokenize, desugar } from '/lang/language/tokenizer.js';
-import { interpret } from '/lang/language/evaluator.js';
+import { evaluate } from '/lang/language/evaluator.js';
 
 class LyreStreamingProcessor extends AudioWorkletProcessor {
   constructor() {
@@ -18,7 +18,7 @@ class LyreStreamingProcessor extends AudioWorkletProcessor {
       if (type === 'code') {
         try {
           const tokens = desugar(tokenize(code));
-          const generators = tokens.map(expr => interpret(expr));
+          const generators = tokens.map(expr => evaluate(expr));
 
           function* sequenceAll() {
             for (const gen of generators) {

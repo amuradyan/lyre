@@ -1,6 +1,6 @@
 /**
  * @module language
- * Lyre language parsing and interpretation
+ * Lyre language parsing and evaluation
  */
 
 /**
@@ -9,9 +9,9 @@
 export { tokenize } from './tokenizer.js';
 
 /**
- * Interpret tokenized expressions into generators
+ * Evaluate tokenized expressions into generators
  */
-export { interpret } from './evaluator.js';
+export { evaluate } from './evaluator.js';
 
 /**
  * Expand syntax sugar for a tokenized source

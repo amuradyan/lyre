@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { tokenize, desugar } from './tokenizer.js';
-import { interpret } from './evaluator.js';
+import { evaluate } from './evaluator.js';
 
 export function* stream(filePath) {
   const code = readFileSync(filePath, 'utf-8');
@@ -13,7 +13,7 @@ export function* stream(filePath) {
   }
 
   for (const expr of tokens) {
-    const generator = interpret(expr);
+    const generator = evaluate(expr);
     for (const sample of generator) {
       yield sample;
     }
