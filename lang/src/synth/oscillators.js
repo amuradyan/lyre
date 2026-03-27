@@ -78,3 +78,78 @@ export function* sawtooth(frequency) {
     }
   }
 }
+
+/**
+ * Generates an infinite square wave at the given frequency.
+ * Contains only odd harmonics, each at 1/n amplitude - hollow, clarinet-like.
+ * @param {number} frequency - Frequency in Hz
+ * @yields {number} Audio samples, either -1 or 1
+ * @example
+ * const sq = square(440);
+ * for (const sample of sq) {
+ *   // yields: 1, 1, ..., -1, -1, ...
+ * }
+ */
+export function* square(frequency) {
+  let phase = 0;
+  const phaseIncrement = (2 * Math.PI * frequency) / getSampleRate();
+
+  while (true) {
+    yield phase < Math.PI ? 1 : -1;
+    phase = phase + phaseIncrement;
+
+    if (phase >= 2 * Math.PI) {
+      phase = phase - 2 * Math.PI;
+    }
+  }
+}
+
+/**
+ * Generates an infinite triangle wave at the given frequency.
+ * Contains only odd harmonics, each at 1/n² amplitude - softer than square, close to sine.
+ * @param {number} frequency - Frequency in Hz
+ * @yields {number} Audio samples between -1 and 1
+ * @example
+ * const tri = triangle(220);
+ * for (const sample of tri) {
+ *   // yields triangle wave samples
+ * }
+ */
+export function* triangle(frequency) {
+  let phase = 0;
+  const phaseIncrement = (2 * Math.PI * frequency) / getSampleRate();
+
+  while (true) {
+    const normalized = phase / (2 * Math.PI);
+    yield normalized < 0.5
+      ? -1 + 4 * normalized
+      : 3 - 4 * normalized;
+    phase = phase + phaseIncrement;
+
+    if (phase >= 2 * Math.PI) {
+      phase = phase - 2 * Math.PI;
+    }
+  }
+}
+
+/**
+ * Wraps any raw oscillator function into the tupled [sample, n, Infinity] format.
+ * @param {Function} oscillatorFn - A raw oscillator generator function (e.g., sawtooth, square)
+ * @param {number} frequency - Frequency in Hz
+ * @yields {Array} Tuples of [sample, n, totalSamples] where totalSamples is Infinity
+ * @example
+ * const sawTone = toneWith(sawtooth, 440);
+ * for (const [sample, n, totalSamples] of sawTone) {
+ *   // yields: [sample, 0, Infinity], [sample, 1, Infinity], ...
+ * }
+ */
+export function* toneWith(oscillatorFn, frequency) {
+  const osc = oscillatorFn(frequency);
+  let n = 0;
+
+  while (true) {
+    const sample = osc.next().value;
+    yield [sample, n, Infinity];
+    n = n + 1;
+  }
+}

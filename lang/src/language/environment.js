@@ -1,4 +1,4 @@
-import { tone } from '../synth/oscillators.js';
+import { tone, sawtooth, square, triangle, toneWith } from '../synth/oscillators.js';
 import { envelope, gain } from '../synth/envelopes.js';
 import { sequence, harmony, mix } from '../synth/composition.js';
 
@@ -114,6 +114,11 @@ export const prelude = [
   ["decay", 0],
   ["sustain", 1],
   ["release", 0.005],
+  ["sine", (args) => tone(args[0])],
+  ["sawtooth", (args) => toneWith(sawtooth, args[0])],
+  ["square", (args) => toneWith(square, args[0])],
+  ["triangle", (args) => toneWith(triangle, args[0])],
+  ["wave", (args) => tone(args[0])],
   ["tone", (args) => tone(args[0])],
   ["sequence", (args) => sequence(...args)],
   ["harmony", (args) => harmony(...args)],
@@ -128,12 +133,13 @@ export const prelude = [
   }],
   ["play", (args, env) => {
     const [ticks, freq] = args;
+    const waveFn = lookup('wave', env);
     const gateTime = ticks * lookup('.', env);
     const a = lookup('attack', env);
     const d = lookup('decay', env);
     const s = lookup('sustain', env);
     const r = lookup('release', env);
-    return envelope(tone(freq), a, d, s, r, gateTime);
+    return envelope(waveFn([freq], env), a, d, s, r, gateTime);
   }],
 ];
 

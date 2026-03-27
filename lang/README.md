@@ -220,7 +220,7 @@ for (const sample of generator) {
 
 ### JavaScript API
 
-**Generating waves.** The foundation is `oscillate(frequency)`, which yields an infinite sine wave at the given frequency. `tone(frequency)` wraps this in a convenient generator that you can pass to other functions. `sawtooth(frequency)` generates a richer waveform - a rising ramp from -1 to 1 - that contains more harmonics than a sine wave.
+**Generating waves.** The foundation is `oscillate(frequency)`, which yields an infinite sine wave at the given frequency. `tone(frequency)` wraps this in a convenient generator that you can pass to other functions. Four waveforms are available: `oscillate` /sine/, `sawtooth`, `square`, and `triangle`. Each yields raw samples. `toneWith(oscillatorFn, frequency)` wraps any raw oscillator into the tupled `[sample, n, Infinity]` format that composition functions expect.
 
 **Shaping sound.** `envelope(source, attack, decay, sustain, release, gateTime)` applies an ADSR envelope to a source generator. All times are in seconds. The attack ramps up from silence, decay falls to the sustain level, the sustain holds for the gate time (defaults to 0), then release fades to silence. `gain(source, level)` multiplies all samples by the given level (0 to 1) to control volume. `filter(source, cutoff)` applies a simple low-pass filter that smooths the signal, removing frequencies above the cutoff. `filterEnvelope(source, startCutoff, endCutoff, decayTime)` applies a low-pass filter with a cutoff that sweeps from start to end over the decay time - useful for evolving timbres.
 
@@ -231,6 +231,7 @@ for (const sample of generator) {
 The Lyre language currently supports these operations:
 
 - `(tone frequency)` - Generate sine wave at given frequency
+- `(sine frequency)`, `(sawtooth frequency)`, `(square frequency)`, `(triangle frequency)` - Generate wave at given frequency
 - `(envelope attack decay sustain release gate source1 source2 ...)` - Apply ADSR envelope
 - `(gain source level)` - Control volume (0-1)
 - `(play ticks note)` - Play note for given number of ticks with default ADSR
@@ -248,6 +249,7 @@ The Lyre language currently supports these operations:
 **Prelude defaults:**
 - `.` = 0.5 (tick duration in seconds)
 - `attack` = 0.005, `decay` = 0, `sustain` = 1, `release` = 0.005
+- `wave` = `sine` (default waveform used by `play`)
 
 **Language functions.** `tokenize(input)` parses Lyre code into an array of expressions. Each expression is a nested array where the first element is the operator and the rest are operands. For single expressions, it returns an array with one element. For multiple expressions, it returns an array of expressions. `evaluate(expression)` evaluates a single tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
 
