@@ -8,15 +8,19 @@ const sections = [
   {
     key: 'produce',
     title: 'Produce sounds',
-    starter: '(tone 440) ; A4 sine wave that will go on forever\n; Comment tone to hear the play \n\n(play 2 C4) ; Two ticks of middle C\n:C4         ; same, sugar\n',
+    starter: '(sine 440)     ; Pure tone\n(square 440)   ; Hollow, clarinet-like\n(sawtooth 440) ; Bright, buzzy\n(triangle 440) ; Soft, close to sine\n\n; Comment the above to hear the play\n(play 0.5 C4)\n.E4:\n',
     entries: [
       {
         signature: '(tone frequency)',
         description: 'Generates an infinite sine wave. Needs an envelope to stop',
       },
       {
+        signature: '(sine | square | sawtooth | triangle  frequency)',
+        description: (navigate) => <>Waveform generators. Use as operators or <button className="underline text-purple-600 hover:text-purple-800" onClick={() => navigate(3)}>bind</button> to <code>wave</code> for <code>play</code> to use</>,
+      },
+      {
         signature: '(play ticks note) | .note :note',
-        description: <>Note with default ADSR. Dot duration comes from <code>.</code> in the environment - use <code>let</code> to override it. Each <code>.</code> prefix = 1 tick, <code>:</code> = 2</>,
+        description: <>Note with default ADSR and waveform. Each <code>.</code> prefix = 1 tick, <code>:</code> = 2. Uses <code>wave</code> from environment</>,
       },
     ],
   },
@@ -57,23 +61,23 @@ const sections = [
   {
     key: 'bind',
     title: 'Name values',
-    starter: '(let (. 0.25)\n  :C4 .E4 | :G4 .B4 |\n  :C4 .F4 :G4)\n',
+    starter: '(let (wave square . 0.25)\n  :C4 .E4 | :G4 .B4 |\n  :C4 .F4 :G4)\n',
     entries: [
       {
         signature: '(let (name val ...) body ...)',
-        description: <>Binds names in a new scope. Shadows parent names if they exist. All body expressions are sequenced. Defaults: <code>. = 0.5s</code> <code>attack = 0.005</code> <code>decay = 0</code> <code>sustain = 1</code> <code>release = 0.005</code></>,
+        description: <>Binds names in a new scope. Shadows parent names if they exist. All body expressions are sequenced. Defaults: <code>. = 0.5s</code> <code>wave = sine</code> <code>attack = 0.005</code> <code>decay = 0</code> <code>sustain = 1</code> <code>release = 0.005</code></>,
       },
     ],
   },
 ];
 
-function SectionContent({ entries }) {
+function SectionContent({ entries, onNavigate }) {
   return (
     <ul className="space-y-3 text-sm">
       {entries.map((entry, i) => (
         <li key={i} className="text-left">
           <code className="font-mono text-purple-600 text-xs">{entry.signature}</code>
-          <div className="text-gray-600 mt-1 ml-4">{entry.description}</div>
+          <div className="text-gray-600 mt-1 ml-4">{typeof entry.description === 'function' ? entry.description(onNavigate) : entry.description}</div>
         </li>
       ))}
     </ul>
@@ -114,7 +118,7 @@ export default function Index() {
 
           {/* P1: Full width intro */}
           <div className="mb-8">
-            <p className="text-left text-[18px] text-gray-600 text-justify">
+            <p className="text-left text-[17px] text-gray-600 text-justify">
               Lyre is a duo of a Lisp-like language for writing music and a rather simple synthesizer that streams it.
               As in any lisp, we write expressions to later evaluate to values - tones of given
               frequencies, durations and amplitudes in our case. We also write expressions to put
@@ -133,7 +137,7 @@ export default function Index() {
             </div>
 
             <div className="lg:col-span-2">
-              <div className="text-left space-y-4 text-[18px] text-gray-600 text-justify">
+              <div className="text-left space-y-4 text-[17px] text-gray-600 text-justify">
                 <p>
                   Here is the Canon in D by Pachelbel. It takes some time to figure how spatially the
                   notes are placed, then you can read the melody in between the code. Tones are the most
@@ -150,7 +154,7 @@ export default function Index() {
 
           {/* P4: Full width bridge */}
           <div className="mb-8">
-            <p className="text-left text-[18px] text-gray-600 text-justify">
+            <p className="text-left text-[17px] text-gray-600 text-justify">
               To aid the reader in seeing the music though language mechanics, some functions are
               sugared. That sugar mostly covers composition, but a notable part of it is
               the <i>dot</i> notation - prefixing and postfixing a note name /practically a frequency/
@@ -159,9 +163,9 @@ export default function Index() {
           </div>
 
           {/* P5 P6 + Lyre examples */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start mb-8 -mt-4">
             <div className="lg:col-span-2">
-              <div className="text-left space-y-4 text-[18px] text-gray-600 text-justify">
+              <div className="text-left space-y-4 text-[17px] text-gray-600 text-justify">
                 <p>
                   Each <code>.</code> around a note counts as one tick - a unit duration set to half a
                   second by default. Left side multiplies, right side divides -
@@ -225,7 +229,7 @@ export default function Index() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3 text-left">{current.title}</h3>
-                <SectionContent entries={current.entries} />
+                <SectionContent entries={current.entries} onNavigate={setCarouselIndex} />
               </div>
               <div>
                 <LyreCodeblock
@@ -246,7 +250,7 @@ export default function Index() {
               /always under construction 🚧/
             </p>
             <p className="text-gray-400 text-xs">
-              🤖 All the front end courtesy of robots, mainly Claude 🤖
+              🤖 All the front end is the courtesy of robots, mainly Claude 🤖
             </p>
           </div>
         </div>
