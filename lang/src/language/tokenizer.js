@@ -94,7 +94,13 @@ export function desugar(tokens) {
     if (expanded) return [expanded, ...desugar(tail)];
   }
 
-  return [Array.isArray(head) ? desugar(head) : head, ...desugar(tail)];
+  return [Array.isArray(head) ? desugarExpr(head) : head, ...desugar(tail)];
+}
+
+function desugarExpr(tokens) {
+  if (tokens.length === 0) return [];
+  const [operator, ...args] = tokens;
+  return [Array.isArray(operator) ? desugarExpr(operator) : operator, ...desugar(args)];
 }
 
 /**

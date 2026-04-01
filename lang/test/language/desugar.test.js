@@ -184,4 +184,32 @@ assert.deepEqual(
   "Dot notation inside let, bare dot preserved"
 );
 
+// (- (tone 440) (tone 880)) - operator position preserved
+assert.deepEqual(
+  desugar([["-", ["tone", "440"], ["tone", "880"]]]),
+  [["-", ["tone", "440"], ["tone", "880"]]],
+  "Minus in operator position is not desugared to sequence"
+);
+
+// (- -(tone 440)) - outer preserved, inner desugared
+assert.deepEqual(
+  desugar([["-", "-", ["tone", "440"]]]),
+  [["-", ["sequence", "tone", "440"]]],
+  "Minus in operator position preserved, minus in argument desugared"
+);
+
+// (let (x 5) (- 10 x)) - nested operator position preserved
+assert.deepEqual(
+  desugar([["let", ["x", "5"], ["-", "10", "x"]]]),
+  [["let", ["x", "5"], ["-", "10", "x"]]],
+  "Minus in nested operator position preserved"
+);
+
+// (= (a) (b)) - equals in operator position preserved
+assert.deepEqual(
+  desugar([["=", ["a"], ["b"]]]),
+  [["=", ["a"], ["b"]]],
+  "Equals in operator position is not desugared to mix"
+);
+
 console.log('All desugar tests passed!');
