@@ -32,6 +32,66 @@ export function* filter(source, cutoff) {
  * const sweep = filterEnvelope(sawtooth(220), 2000, 500, 2.0);
  * // Filter sweeps from 2000Hz to 500Hz over 2 seconds
  */
+/**
+ * Tuple-aware low-pass filter with fixed or modulated cutoff.
+ * @param {Generator} source - Source audio generator yielding [sample, n, totalSamples]
+ * @param {number|Generator} cutoffParam - Cutoff frequency in Hz, or a generator yielding [cutoff, n, total]
+ * @yields {Array} Filtered tuples of [sample, n, totalSamples]
+ * @example
+ * lowpassTupled(tone(440), 2000) // fixed cutoff
+ * lowpassTupled(tone(440), envelopeGen) // modulated cutoff
+ */
+export function* lowpassTupled(source, cutoffParam) {
+  const samplingRate = getSampleRate();
+  const cutoffIsGen = typeof cutoffParam?.next === 'function';
+  let y = 0;
+  let lastCutoff = 0;
+
+  for (const [sample, n, totalSamples] of source) {
+    let cutoff;
+    if (cutoffIsGen) {
+      const next = cutoffParam.next();
+      cutoff = next.done ? lastCutoff : next.value[0];
+      if (!next.done) lastCutoff = cutoff;
+    } else {
+      cutoff = cutoffParam;
+    }
+    const alpha = cutoff / samplingRate;
+    y = y + alpha * (sample - y);
+    yield [y, n, totalSamples];
+  }
+}
+
+/**
+ * Tuple-aware high-pass filter with fixed or modulated cutoff.
+ * @param {Generator} source - Source audio generator yielding [sample, n, totalSamples]
+ * @param {number|Generator} cutoffParam - Cutoff frequency in Hz, or a generator yielding [cutoff, n, total]
+ * @yields {Array} Filtered tuples of [sample, n, totalSamples]
+ * @example
+ * highpassTupled(tone(440), 200) // fixed cutoff
+ * highpassTupled(tone(440), envelopeGen) // modulated cutoff
+ */
+export function* highpassTupled(source, cutoffParam) {
+  const samplingRate = getSampleRate();
+  const cutoffIsGen = typeof cutoffParam?.next === 'function';
+  let y = 0;
+  let lastCutoff = 0;
+
+  for (const [sample, n, totalSamples] of source) {
+    let cutoff;
+    if (cutoffIsGen) {
+      const next = cutoffParam.next();
+      cutoff = next.done ? lastCutoff : next.value[0];
+      if (!next.done) lastCutoff = cutoff;
+    } else {
+      cutoff = cutoffParam;
+    }
+    const alpha = cutoff / samplingRate;
+    y = y + alpha * (sample - y);
+    yield [sample - y, n, totalSamples];
+  }
+}
+
 export function* filterEnvelope(source, startCutoff, endCutoff, decayTime) {
   const samplingRate = getSampleRate();
   const decaySamples = decayTime * samplingRate;
