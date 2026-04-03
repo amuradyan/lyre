@@ -2,6 +2,35 @@ import { tone, sawtooth, square, triangle, toneWith } from '../synth/oscillators
 import { envelope, gain } from '../synth/envelopes.js';
 import { sequence, harmony, mix } from '../synth/composition.js';
 
+const isGen = (x) => typeof x?.next === 'function';
+
+function* arithmeticGen(a, b, op) {
+  const aGen = isGen(a);
+  const bGen = isGen(b);
+  let n = 0;
+
+  while (true) {
+    const aNext = aGen ? a.next() : null;
+    const bNext = bGen ? b.next() : null;
+
+    if ((aGen && aNext.done) || (bGen && bNext.done)) return;
+
+    const aVal = aGen ? aNext.value[0] : a;
+    const bVal = bGen ? bNext.value[0] : b;
+    const aTotal = aGen ? aNext.value[2] : Infinity;
+    const bTotal = bGen ? bNext.value[2] : Infinity;
+
+    yield [op(aVal, bVal), n, Math.max(aTotal, bTotal)];
+    n = n + 1;
+  }
+}
+
+function arithmetic(args, op) {
+  const [a, b] = args;
+  if (!isGen(a) && !isGen(b)) return op(a, b);
+  return arithmeticGen(a, b, op);
+}
+
 /**
  * Built-in note name to frequency mappings.
  * Contains musical notes from C1 to G6 with both sharp and flat notations.
@@ -119,6 +148,10 @@ export const prelude = [
   ["square", (args) => toneWith(square, args[0])],
   ["triangle", (args) => toneWith(triangle, args[0])],
   ["wave", (args) => tone(args[0])],
+  ["+", (args) => arithmetic(args, (a, b) => a + b)],
+  ["-", (args) => arithmetic(args, (a, b) => a - b)],
+  ["*", (args) => arithmetic(args, (a, b) => a * b)],
+  ["/", (args) => arithmetic(args, (a, b) => a / b)],
   ["tone", (args) => tone(args[0])],
   ["sequence", (args) => sequence(...args)],
   ["harmony", (args) => harmony(...args)],
