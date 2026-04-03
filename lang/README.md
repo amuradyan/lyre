@@ -239,6 +239,7 @@ The Lyre language currently supports these operations:
 - `(harmony sound1 sound2 ...)` - Play sounds simultaneously, raw sum for manual mixing with `gain`
 - `(mix sound1 sound2 ...)` - Play sounds simultaneously, normalized to avoid clipping
 - `(let (name1 value1 name2 value2 ...) body1 body2 ...)` - Create local bindings, evaluate all body expressions, sequence if multiple
+- `(dc value)` - Constant signal, yields the same value forever
 - `(+ a b)`, `(- a b)`, `(* a b)`, `(/ a b)` - Arithmetic on numbers or sample-by-sample on generators
 
 **Syntactic sugar:**

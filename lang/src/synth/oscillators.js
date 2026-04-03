@@ -143,6 +143,24 @@ export function* triangle(frequency) {
  *   // yields: [sample, 0, Infinity], [sample, 1, Infinity], ...
  * }
  */
+/**
+ * Generates a constant signal at the given value.
+ * @param {number} value - The constant value to yield
+ * @yields {Array} Tuples of [value, n, Infinity]
+ * @example
+ * const one = dc(1);
+ * for (const [sample, n, totalSamples] of one) {
+ *   // yields: [1, 0, Infinity], [1, 1, Infinity], ...
+ * }
+ */
+export function* dc(value) {
+  let n = 0;
+  while (true) {
+    yield [value, n, Infinity];
+    n = n + 1;
+  }
+}
+
 export function* toneWith(oscillatorFn, frequency) {
   const osc = oscillatorFn(frequency);
   let n = 0;

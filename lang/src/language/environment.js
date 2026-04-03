@@ -1,4 +1,4 @@
-import { tone, sawtooth, square, triangle, toneWith } from '../synth/oscillators.js';
+import { tone, sawtooth, square, triangle, toneWith, dc } from '../synth/oscillators.js';
 import { envelope, gain } from '../synth/envelopes.js';
 import { sequence, harmony, mix } from '../synth/composition.js';
 
@@ -148,6 +148,7 @@ export const prelude = [
   ["square", (args) => toneWith(square, args[0])],
   ["triangle", (args) => toneWith(triangle, args[0])],
   ["wave", (args) => tone(args[0])],
+  ["dc", (args) => dc(args[0])],
   ["+", (args) => arithmetic(args, (a, b) => a + b)],
   ["-", (args) => arithmetic(args, (a, b) => a - b)],
   ["*", (args) => arithmetic(args, (a, b) => a * b)],

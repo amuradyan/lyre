@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { oscillate, sawtooth, square, triangle, toneWith } from '../../src/synth/oscillators.js';
+import { oscillate, sawtooth, square, triangle, toneWith, dc } from '../../src/synth/oscillators.js';
 
 console.log('Testing oscillators...');
 
@@ -29,5 +29,15 @@ assert.equal(total, Infinity, 'toneWith should yield Infinity as totalSamples');
 
 const second = tupled.next().value;
 assert.equal(second[1], 1, 'toneWith second sample should have n=1');
+
+const constant = dc(1);
+const [dcSample, dcN, dcTotal] = constant.next().value;
+assert.equal(dcSample, 1, 'dc(1) should yield 1');
+assert.equal(dcN, 0, 'dc first sample should have n=0');
+assert.equal(dcTotal, Infinity, 'dc should yield Infinity as totalSamples');
+
+const dcSecond = constant.next().value;
+assert.equal(dcSecond[0], 1, 'dc(1) should still yield 1');
+assert.equal(dcSecond[1], 1, 'dc second sample should have n=1');
 
 console.log('All oscillator tests passed!');
