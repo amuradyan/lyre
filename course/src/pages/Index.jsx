@@ -57,7 +57,7 @@ const sections = [
   {
     key: 'filter',
     title: 'Filter sounds',
-    starter: '; Fixed brightness\n(lowpass 2000\n  (envelope 0.01 1.0 0 0.5 0\n    (sawtooth 261.63)))\n\n; Brightness that fades\n(lowpass (+ 500 (* 4500\n    (envelope 0 0 1 1.0 0 (dc 1))))\n  (envelope 0.01 1.0 0 0.5 0\n    (sawtooth 261.63)))\n',
+    starter: '; Fixed brightness\n(lowpass 2000\n  (envelope 0.01 1.0 0 0.5 0\n    (sawtooth 261.63)))\n\n; Brightness that fades\n(lowpass (+ 500 (* 4500\n    (envelope 0 0 1 1.0 0 (flat 1))))\n  (envelope 0.01 1.0 0 0.5 0\n    (sawtooth 261.63)))\n',
     entries: [
       {
         signature: '(lowpass cutoff source ...)',
@@ -69,10 +69,10 @@ const sections = [
       },
       {
         signature: '(+ a b)  (- a b)  (* a b)  (/ a b)',
-        description: 'Arithmetic on numbers or sample-by-sample on generators. Use with dc and envelope to build filter sweeps',
+        description: 'Arithmetic on numbers or sample-by-sample on generators. Use with flat and envelope to build filter sweeps',
       },
       {
-        signature: '(dc value)',
+        signature: '(flat value)',
         description: <>Constant signal. Feed through <code>envelope</code> to extract an ADSR curve for filter modulation</>,
       },
     ],

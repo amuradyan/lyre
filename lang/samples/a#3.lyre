@@ -19,7 +19,7 @@
 ; Filter version - triangle base with lowpass sweep
 
 (envelope 0.003 0.8 0 1.2 0
-  (lowpass (+ 800 (* 8000 (envelope 0 0 1 1.0 0 (dc 1))))
+  (lowpass (+ 800 (* 8000 (envelope 0 0 1 1.0 0 (flat 1))))
     (gain
       (harmony
         (triangle 237)

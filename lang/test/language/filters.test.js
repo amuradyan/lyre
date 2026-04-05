@@ -16,7 +16,7 @@ assert(hp && typeof hp.next === 'function', '(highpass 500 (sawtooth 440)) shoul
 const hpSample = hp.next().value;
 assert(Array.isArray(hpSample) && hpSample.length === 3, 'highpass should yield tupled output');
 
-const lpGen = eval_("(lowpass (dc 2000) (sawtooth 440))");
+const lpGen = eval_("(lowpass (flat 2000) (sawtooth 440))");
 assert(lpGen && typeof lpGen.next === 'function', 'lowpass with generator cutoff should return a generator');
 
 const multi = eval_("(lowpass 2000 (sine C4) (sine E4))");

@@ -1,4 +1,4 @@
-import { tone, sawtooth, square, triangle, toneWith, dc } from '../synth/oscillators.js';
+import { raw, wrap } from '../synth/oscillators.js';
 import { envelope, gain } from '../synth/envelopes.js';
 import { sequence, harmony, mix } from '../synth/composition.js';
 import { lowpass, highpass } from '../synth/filters.js';
@@ -116,12 +116,12 @@ export const prelude = [
   ["decay", 0],
   ["sustain", 1],
   ["release", 0.005],
-  ["sine", (args) => tone(args[0])],
-  ["sawtooth", (args) => toneWith(sawtooth, args[0])],
-  ["square", (args) => toneWith(square, args[0])],
-  ["triangle", (args) => toneWith(triangle, args[0])],
-  ["wave", (args) => tone(args[0])],
-  ["dc", (args) => dc(args[0])],
+  ["sine", (args) => wrap(raw.sine, args[0])],
+  ["sawtooth", (args) => wrap(raw.sawtooth, args[0])],
+  ["square", (args) => wrap(raw.square, args[0])],
+  ["triangle", (args) => wrap(raw.triangle, args[0])],
+  ["wave", (args) => wrap(raw.sine, args[0])],
+  ["flat", (args) => wrap(raw.dc, args[0])],
   ["lowpass", (args) => {
     const [cutoff, ...sources] = args;
     if (sources.length === 1) return lowpass(sources[0], cutoff);

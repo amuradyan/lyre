@@ -9,14 +9,14 @@ At its core, sound is represented as infinite streams of samples - generator fun
 A plucked note takes three pieces: an oscillator that generates a wave, an envelope that shapes its amplitude over time, and ADSR parameters that define the shape.
 
 ```js
-import { tone, envelope } from '@lyre/core/synth';
+import { raw, wrap, envelope } from '@lyre/core/synth';
 
 const pluck = envelope(
-  tone(261.63),        // Middle C
-  0.01,                // 10ms attack
-  1.0,                 // 1 second decay
-  0,                   // no sustain
-  0.5                  // 500ms release
+  wrap(raw.sine, 261.63),  // Middle C
+  0.01,                    // 10ms attack
+  1.0,                     // 1 second decay
+  0,                       // no sustain
+  0.5                      // 500ms release
 );
 
 // pluck is a generator - iterate to get samples
@@ -26,29 +26,29 @@ for (const sample of pluck) {
 }
 ```
 
-The tone generates an infinite sine wave at middle C. The envelope wraps it, yielding modified samples that start quiet, rise quickly, decay over a second, and fade out. When the envelope completes, the generator stops.
+The raw oscillator generates samples, `wrap` adds position metadata, and the envelope shapes amplitude over time. When the envelope completes, the generator stops.
 
 ## Generators as audio streams
 
-Everything in Lyre is a generator. The simplest is oscillate, which yields a sine wave forever:
+Everything in Lyre is a generator. Raw oscillators yield plain samples:
 
 ```js
-import { oscillate } from '@lyre/core/synth';
+import { raw } from '@lyre/core/synth';
 
-const wave = oscillate(440);  // A4
+const wave = raw.sine(440);  // A4
 // yields: 0, 0.062, 0.123, 0.182, ...
 ```
 
-The tone function wraps an oscillator in a convenient generator:
+`wrap` converts a raw oscillator into the tupled format the pipeline expects:
 
 ```js
-import { tone } from '@lyre/core/synth';
+import { raw, wrap } from '@lyre/core/synth';
 
-const a4 = tone(440);
-// yields samples forever
+const a4 = wrap(raw.sine, 440);
+// yields: [0, 0, Infinity], [0.062, 1, Infinity], ...
 ```
 
-An envelope takes a source generator and yields modified samples:
+An envelope takes a tupled source and yields shaped samples:
 
 ```js
 const shaped = envelope(a4, 0.01, 0.1, 0.7, 0.2);
@@ -56,7 +56,7 @@ const shaped = envelope(a4, 0.01, 0.1, 0.7, 0.2);
 // stops when the envelope completes
 ```
 
-Because everything follows the same pattern - generators yielding samples - they compose naturally. Each generator takes sources and produces a new stream of samples.
+Because everything follows the same pattern - generators yielding tupled samples - they compose naturally.
 
 ## Composing sound
 
@@ -65,10 +65,12 @@ Sequence plays generators one after another:
 ```js
 import { sequence } from '@lyre/core/synth';
 
+const s = (f) => wrap(raw.sine, f);
+
 const melody = sequence(
-  envelope(tone(261.63), 0.01, 0.1, 0.7, 0.2),  // C
-  envelope(tone(293.66), 0.01, 0.1, 0.7, 0.2),  // D
-  envelope(tone(329.63), 0.01, 0.1, 0.7, 0.2)   // E
+  envelope(s(261.63), 0.01, 0.1, 0.7, 0.2),  // C
+  envelope(s(293.66), 0.01, 0.1, 0.7, 0.2),  // D
+  envelope(s(329.63), 0.01, 0.1, 0.7, 0.2)   // E
 );
 // yields all samples from C, then D, then E
 ```
@@ -79,9 +81,9 @@ Mix plays generators in parallel, normalizing by voice count to avoid clipping:
 import { mix } from '@lyre/core/synth';
 
 const chord = mix(
-  envelope(tone(261.63), 0.01, 1.0, 0, 0.5),  // C
-  envelope(tone(329.63), 0.01, 1.0, 0, 0.5),  // E
-  envelope(tone(392.00), 0.01, 1.0, 0, 0.5)   // G
+  envelope(s(261.63), 0.01, 1.0, 0, 0.5),  // C
+  envelope(s(329.63), 0.01, 1.0, 0, 0.5),  // E
+  envelope(s(392.00), 0.01, 1.0, 0, 0.5)   // G
 );
 // yields normalized sum of all three notes at each sample
 ```
@@ -91,11 +93,11 @@ For manual level control, `harmony` sums samples without normalization - use wit
 Filters shape the frequency content by smoothing the signal:
 
 ```js
-import { sawtooth, filter } from '@lyre/core/synth';
+import { raw, wrap, lowpass } from '@lyre/core/synth';
 
-const mellow = filter(
-  sawtooth(220),  // sawtooth wave (rich in harmonics)
-  1000            // cutoff frequency in Hz
+const mellow = lowpass(
+  wrap(raw.sawtooth, 220),  // sawtooth wave (rich in harmonics)
+  1000                      // cutoff frequency in Hz
 );
 // yields smoothed samples, removing high frequencies
 ```
@@ -220,7 +222,7 @@ for (const sample of generator) {
 
 ### JavaScript API
 
-**Generating waves.** `tone(frequency)` generates an infinite sine wave wrapped in tuples. Four waveforms are available: `sawtooth`, `square`, and `triangle` as raw oscillators. `toneWith(oscillatorFn, frequency)` wraps any raw oscillator into the tupled `[sample, n, Infinity]` format that composition functions expect. `dc(value)` generates a constant signal.
+**Generating waves.** Raw oscillators live under `raw` - `raw.sine`, `raw.sawtooth`, `raw.square`, `raw.triangle` yield plain samples. `raw.dc` yields a constant value. `wrap(oscillatorFn, param)` converts any raw oscillator into the tupled `[sample, n, Infinity]` format the pipeline expects.
 
 **Shaping sound.** `envelope(source, attack, decay, sustain, release, gateTime)` applies an ADSR envelope to a source generator. All times are in seconds. The attack ramps up from silence, decay falls to the sustain level, the sustain holds for the gate time (defaults to 0), then release fades to silence. `gain(source, level)` multiplies all samples by the given level (0 to 1) to control volume. `lowpass(source, cutoff)` applies a low-pass filter, accepting a fixed number or generator as cutoff. `highpass(source, cutoff)` is the high-pass equivalent.
 
@@ -240,7 +242,7 @@ The Lyre language currently supports these operations:
 - `(let (name1 value1 name2 value2 ...) body1 body2 ...)` - Create local bindings, evaluate all body expressions, sequence if multiple
 - `(lowpass cutoff source ...)` - Low-pass filter. Cutoff in Hz, can be a number or generator for modulation
 - `(highpass cutoff source ...)` - High-pass filter. Same cutoff rules as lowpass
-- `(dc value)` - Constant signal, yields the same value forever
+- `(flat value)` - Constant signal, yields the same value forever
 - `(+ a b)`, `(- a b)`, `(* a b)`, `(/ a b)` - Arithmetic on numbers or sample-by-sample on generators
 
 **Syntactic sugar:**

@@ -1,36 +1,36 @@
 import { strict as assert } from 'assert';
-import { oscillate, sawtooth, square, triangle, toneWith, dc } from '../../src/synth/oscillators.js';
+import { raw, wrap } from '../../src/synth/oscillators.js';
 
 console.log('Testing oscillators...');
 
-const sq = square(440);
+const sq = raw.square(440);
 for (let i = 0; i < 100; i++) {
   const sample = sq.next().value;
   assert(sample === 1 || sample === -1, `square wave sample should be 1 or -1, got ${sample}`);
 }
 
-const tri = triangle(440);
+const tri = raw.triangle(440);
 for (let i = 0; i < 100; i++) {
   const sample = tri.next().value;
   assert(sample >= -1 && sample <= 1, `triangle wave sample should be in [-1, 1], got ${sample}`);
 }
 
-const saw = sawtooth(440);
+const saw = raw.sawtooth(440);
 for (let i = 0; i < 100; i++) {
   const sample = saw.next().value;
   assert(sample >= -1 && sample <= 1, `sawtooth wave sample should be in [-1, 1], got ${sample}`);
 }
 
-const tupled = toneWith(square, 440);
-const [sample, n, total] = tupled.next().value;
-assert(sample === 1 || sample === -1, `toneWith(square) should yield square samples, got ${sample}`);
-assert.equal(n, 0, 'toneWith first sample should have n=0');
-assert.equal(total, Infinity, 'toneWith should yield Infinity as totalSamples');
+const wrapped = wrap(raw.square, 440);
+const [sample, n, total] = wrapped.next().value;
+assert(sample === 1 || sample === -1, `wrap(raw.square) should yield square samples, got ${sample}`);
+assert.equal(n, 0, 'wrap first sample should have n=0');
+assert.equal(total, Infinity, 'wrap should yield Infinity as totalSamples');
 
-const second = tupled.next().value;
-assert.equal(second[1], 1, 'toneWith second sample should have n=1');
+const second = wrapped.next().value;
+assert.equal(second[1], 1, 'wrap second sample should have n=1');
 
-const constant = dc(1);
+const constant = wrap(raw.dc, 1);
 const [dcSample, dcN, dcTotal] = constant.next().value;
 assert.equal(dcSample, 1, 'dc(1) should yield 1');
 assert.equal(dcN, 0, 'dc first sample should have n=0');
