@@ -220,9 +220,9 @@ for (const sample of generator) {
 
 ### JavaScript API
 
-**Generating waves.** The foundation is `oscillate(frequency)`, which yields an infinite sine wave at the given frequency. `tone(frequency)` wraps this in a convenient generator that you can pass to other functions. Four waveforms are available: `oscillate` /sine/, `sawtooth`, `square`, and `triangle`. Each yields raw samples. `toneWith(oscillatorFn, frequency)` wraps any raw oscillator into the tupled `[sample, n, Infinity]` format that composition functions expect.
+**Generating waves.** `tone(frequency)` generates an infinite sine wave wrapped in tuples. Four waveforms are available: `sawtooth`, `square`, and `triangle` as raw oscillators. `toneWith(oscillatorFn, frequency)` wraps any raw oscillator into the tupled `[sample, n, Infinity]` format that composition functions expect. `dc(value)` generates a constant signal.
 
-**Shaping sound.** `envelope(source, attack, decay, sustain, release, gateTime)` applies an ADSR envelope to a source generator. All times are in seconds. The attack ramps up from silence, decay falls to the sustain level, the sustain holds for the gate time (defaults to 0), then release fades to silence. `gain(source, level)` multiplies all samples by the given level (0 to 1) to control volume. `filter(source, cutoff)` applies a simple low-pass filter that smooths the signal, removing frequencies above the cutoff.
+**Shaping sound.** `envelope(source, attack, decay, sustain, release, gateTime)` applies an ADSR envelope to a source generator. All times are in seconds. The attack ramps up from silence, decay falls to the sustain level, the sustain holds for the gate time (defaults to 0), then release fades to silence. `gain(source, level)` multiplies all samples by the given level (0 to 1) to control volume. `lowpass(source, cutoff)` applies a low-pass filter, accepting a fixed number or generator as cutoff. `highpass(source, cutoff)` is the high-pass equivalent.
 
 **Composition.** `sequence(...generators)` plays each generator in turn, yielding all samples from the first, then all from the second, and so on. `mix(...generators)` plays generators in parallel, dividing the sum by voice count to prevent clipping. `harmony(...generators)` also plays in parallel but sums samples without normalization - use with `gain` for manual level control. When any generator finishes, it contributes 0 to the sum. When all finish, mix/harmony stops. `repeat(times, generatorFunc)` repeats a generator function N times. Pass a function that returns a new generator each time it's called.
 
@@ -257,7 +257,7 @@ The Lyre language currently supports these operations:
 
 **Language functions.** `tokenize(input)` parses Lyre code into an array of expressions. Each expression is a nested array where the first element is the operator and the rest are operands. For single expressions, it returns an array with one element. For multiple expressions, it returns an array of expressions. `evaluate(expression)` evaluates a single tokenized expression recursively and returns a generator. Numbers in the token array are parsed as floats. Nested arrays are interpreted as operations.
 
-The sampling rate is 48,000 Hz, exported as `samplingRate` from the synth module.
+The sampling rate is 48,000 Hz.
 
 ## License
 

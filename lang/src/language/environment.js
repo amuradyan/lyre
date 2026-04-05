@@ -1,7 +1,7 @@
 import { tone, sawtooth, square, triangle, toneWith, dc } from '../synth/oscillators.js';
 import { envelope, gain } from '../synth/envelopes.js';
 import { sequence, harmony, mix } from '../synth/composition.js';
-import { lowpassTupled, highpassTupled } from '../synth/filters.js';
+import { lowpass, highpass } from '../synth/filters.js';
 
 const isGen = (x) => typeof x?.next === 'function';
 
@@ -152,13 +152,13 @@ export const prelude = [
   ["dc", (args) => dc(args[0])],
   ["lowpass", (args) => {
     const [cutoff, ...sources] = args;
-    if (sources.length === 1) return lowpassTupled(sources[0], cutoff);
-    return sequence(...sources.map(s => lowpassTupled(s, cutoff)));
+    if (sources.length === 1) return lowpass(sources[0], cutoff);
+    return sequence(...sources.map(s => lowpass(s, cutoff)));
   }],
   ["highpass", (args) => {
     const [cutoff, ...sources] = args;
-    if (sources.length === 1) return highpassTupled(sources[0], cutoff);
-    return sequence(...sources.map(s => highpassTupled(s, cutoff)));
+    if (sources.length === 1) return highpass(sources[0], cutoff);
+    return sequence(...sources.map(s => highpass(s, cutoff)));
   }],
   ["+", (args) => arithmetic(args, (a, b) => a + b)],
   ["-", (args) => arithmetic(args, (a, b) => a - b)],

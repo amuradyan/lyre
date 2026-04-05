@@ -6,12 +6,6 @@
 const getSampleRate = () => globalThis.SAMPLE_RATE || 48000;
 
 /**
- * Exported for backward compatibility
- * @deprecated Use getSampleRate() for dynamic sample rate
- */
-export const samplingRate = getSampleRate();
-
-/**
  * Generates an infinite sine wave at the given frequency.
  * @param {number} frequency - Frequency in Hz
  * @yields {number} Audio samples between -1 and 1
@@ -133,17 +127,6 @@ export function* triangle(frequency) {
 }
 
 /**
- * Wraps any raw oscillator function into the tupled [sample, n, Infinity] format.
- * @param {Function} oscillatorFn - A raw oscillator generator function (e.g., sawtooth, square)
- * @param {number} frequency - Frequency in Hz
- * @yields {Array} Tuples of [sample, n, totalSamples] where totalSamples is Infinity
- * @example
- * const sawTone = toneWith(sawtooth, 440);
- * for (const [sample, n, totalSamples] of sawTone) {
- *   // yields: [sample, 0, Infinity], [sample, 1, Infinity], ...
- * }
- */
-/**
  * Generates a constant signal at the given value.
  * @param {number} value - The constant value to yield
  * @yields {Array} Tuples of [value, n, Infinity]
@@ -161,6 +144,17 @@ export function* dc(value) {
   }
 }
 
+/**
+ * Wraps any raw oscillator function into the tupled [sample, n, Infinity] format.
+ * @param {Function} oscillatorFn - A raw oscillator generator function (e.g., sawtooth, square)
+ * @param {number} frequency - Frequency in Hz
+ * @yields {Array} Tuples of [sample, n, totalSamples] where totalSamples is Infinity
+ * @example
+ * const sawTone = toneWith(sawtooth, 440);
+ * for (const [sample, n, totalSamples] of sawTone) {
+ *   // yields: [sample, 0, Infinity], [sample, 1, Infinity], ...
+ * }
+ */
 export function* toneWith(oscillatorFn, frequency) {
   const osc = oscillatorFn(frequency);
   let n = 0;
