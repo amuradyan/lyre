@@ -22,11 +22,11 @@ const result4 = evaluate(expr4, env);
 assert.equal(result4, 5, "let should shadow outer bindings");
 assert.equal(env[0][1], 100, "outer binding should remain unchanged");
 
-const expr5 = tokenize("(let (freq 440) (tone freq))")[0];
+const expr5 = tokenize("(let (freq 440) (sine freq))")[0];
 const gen = evaluate(expr5);
-assert(gen && typeof gen.next === 'function', "let body should return generator from tone");
+assert(gen && typeof gen.next === 'function', "let body should return generator from sine");
 
-const expr6 = tokenize("(let (freq C4) (tone freq))")[0];
+const expr6 = tokenize("(let (freq C4) (sine freq))")[0];
 const gen2 = evaluate(expr6);
 assert(gen2 && typeof gen2.next === 'function', "let should resolve C4 from environment");
 
@@ -41,7 +41,7 @@ const desugared = [
   "notes"
 ];
 
-const expr9 = tokenize("(let (freq 440) (tone freq) (tone freq))")[0];
+const expr9 = tokenize("(let (freq 440) (sine freq) (sine freq))")[0];
 const gen9 = evaluate(expr9);
 assert(gen9 && typeof gen9.next === 'function', "let with multiple bodies should return a sequenced generator");
 

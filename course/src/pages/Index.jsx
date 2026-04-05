@@ -8,10 +8,10 @@ const sections = [
   {
     key: 'produce',
     title: 'Produce sounds',
-    starter: '; Uncomment the lines below to hear the sound\n;\n; (tone 440)     ; Pure tone, alias of sine below\n; (sine 440)     ; Pure tone\n; (square 440)   ; Hollow, clarinet-like\n; (sawtooth 440) ; Bright, buzzy\n; (triangle 440) ; Soft, close to sine\n\n(play 0.5 C4)\n.E4:\n',
+    starter: '; Uncomment the code below to hear the sound\n\n; (sine 440)     ; Pure tone\n; (square 440)   ; Hollow, clarinet-like\n; (sawtooth 440) ; Bright, buzzy\n; (triangle 440) ; Soft, close to sine\n\n(play 0.5 C4)\n.E4:\n',
     entries: [
       {
-        signature: '(tone frequency)',
+        signature: '(sine frequency)',
         description: 'Generates an infinite sine wave. Needs an envelope to stop',
       },
       {
@@ -27,7 +27,7 @@ const sections = [
   {
     key: 'shape',
     title: 'Shape sounds',
-    starter: '(envelope 0.01 1.0 0 0.5 0\n  (tone 261.63)) ; Plucked C4\n\n(gain\n  (envelope 0.01 1.0 0 0.5 0\n    (tone 261.63))\n  0.5) ; Half volume\n',
+    starter: '(envelope 0.01 1.0 0 0.5 0\n  (sine 261.63)) ; Plucked C4\n\n(gain\n  (envelope 0.01 1.0 0 0.5 0\n    (sine 261.63))\n  0.5) ; Half volume\n',
     entries: [
       {
         signature: '(envelope A D S R gate source ...)',

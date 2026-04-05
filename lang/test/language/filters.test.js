@@ -19,7 +19,7 @@ assert(Array.isArray(hpSample) && hpSample.length === 3, 'highpass should yield 
 const lpGen = eval_("(lowpass (dc 2000) (sawtooth 440))");
 assert(lpGen && typeof lpGen.next === 'function', 'lowpass with generator cutoff should return a generator');
 
-const multi = eval_("(lowpass 2000 (tone C4) (tone E4))");
+const multi = eval_("(lowpass 2000 (sine C4) (sine E4))");
 assert(multi && typeof multi.next === 'function', 'lowpass with multiple sources should return a generator');
 
 console.log('All filter tests passed!');

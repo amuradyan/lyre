@@ -164,7 +164,6 @@ export const prelude = [
   ["-", (args) => arithmetic(args, (a, b) => a - b)],
   ["*", (args) => arithmetic(args, (a, b) => a * b)],
   ["/", (args) => arithmetic(args, (a, b) => a / b)],
-  ["tone", (args) => tone(args[0])],
   ["sequence", (args) => sequence(...args)],
   ["harmony", (args) => harmony(...args)],
   ["mix", (args) => mix(...args)],

@@ -110,7 +110,7 @@ import { tokenize, desugar, evaluate } from '@lyre/core';
 const code = `
   (envelope
     0.05 0.05 0.9 0.1 0
-    (tone A4))`;
+    (sine A4))`;
 
 const tokens = desugar(tokenize(code));
 const generator = evaluate(tokens[0]);
@@ -123,37 +123,37 @@ Lyre is a minimal Lisp. Parentheses group expressions, the first element names t
 You can write multiple top-level expressions in a single file, and they will play in sequence:
 
 ```lisp
-(envelope 0.01 0.2 0 0.1 0 (tone C4))
-(envelope 0.01 0.2 0 0.1 0 (tone E4))
-(envelope 0.01 0.2 0 0.1 0 (tone G4))
+(envelope 0.01 0.2 0 0.1 0 (sine C4))
+(envelope 0.01 0.2 0 0.1 0 (sine E4))
+(envelope 0.01 0.2 0 0.1 0 (sine G4))
 ```
 
 Or use syntactic sugar for cleaner composition:
 
 ```lisp
 -(
-  (tone C4)
-  (tone E4)
-  (tone G4))
+  (sine C4)
+  (sine E4)
+  (sine G4))
 
 =(
-  (tone C4)
-  (tone E4)
-  (tone G4))  ; Plays as a chord
+  (sine C4)
+  (sine E4)
+  (sine G4))  ; Plays as a chord
 ```
 
 Use `let` for local bindings:
 
 ```lisp
 (let (note A4 duration 0.5)
-  (envelope 0.01 0.1 0.7 0.2 duration (tone note)))
+  (envelope 0.01 0.1 0.7 0.2 duration (sine note)))
 ```
 
 Note that in Lyre syntax, envelope parameters come before the source: `(envelope attack decay sustain release gate source...)`. All time values are in seconds.
 
 ### Play
 
-`(play ticks note)` wraps a tone in an envelope with default ADSR parameters. The gate time is `ticks * .` where `.` is the tick duration (default 0.5s):
+`(play ticks note)` wraps a note in an envelope with default ADSR parameters. The gate time is `ticks * .` where `.` is the tick duration (default 0.5s):
 
 ```lisp
 (play 1 C4)  ; one tick of middle C
@@ -230,7 +230,6 @@ for (const sample of generator) {
 
 The Lyre language currently supports these operations:
 
-- `(tone frequency)` - Generate sine wave at given frequency
 - `(sine frequency)`, `(sawtooth frequency)`, `(square frequency)`, `(triangle frequency)` - Generate wave at given frequency
 - `(envelope attack decay sustain release gate source1 source2 ...)` - Apply ADSR envelope
 - `(gain source level)` - Control volume (0-1)
