@@ -1,11 +1,11 @@
 (mix
-  (envelope 0.005 0 1 0.005 2 (tone D3))
+  (envelope 0.005 0 1 0.005 2 (sine D3))
   (envelope 0.005 0 1 0.005 0.25
-    (tone A5) (tone 0) (tone F#5) (tone G5)
-    (tone A5) (tone 0) (tone F#5) (tone G5)))
+    (sine A5) (sine 0) (sine F#5) (sine G5)
+    (sine A5) (sine 0) (sine F#5) (sine G5)))
 
 (mix
-  (envelope 0.005 0 1 0.005 2 (tone A2))
+  (envelope 0.005 0 1 0.005 2 (sine A2))
   (envelope 0.005 0 1 0.005 0.25
-    (tone A5) (tone A4) (tone B4) (tone C#5)
-    (tone D5) (tone E5) (tone F#5) (tone G5)))
+    (sine A5) (sine A4) (sine B4) (sine C#5)
+    (sine D5) (sine E5) (sine F#5) (sine G5)))

@@ -11,12 +11,8 @@ const sections = [
     starter: '; Uncomment the code below to hear the sound\n\n; (sine 440)     ; Pure tone\n; (square 440)   ; Hollow, clarinet-like\n; (sawtooth 440) ; Bright, buzzy\n; (triangle 440) ; Soft, close to sine\n\n(play 0.5 C4)\n.E4:\n',
     entries: [
       {
-        signature: '(sine frequency)',
-        description: 'Generates an infinite sine wave. Needs an envelope to stop',
-      },
-      {
         signature: '(sine | square | sawtooth | triangle  frequency)',
-        description: (navigate) => <>Waveform generators. Use as operators or <button className="underline text-purple-600 hover:text-purple-800" onClick={() => navigate(4)}>bind</button> to <code>wave</code> for <code>play</code> to use</>,
+        description: (navigate) => <>Waveform generators. Infinite waves - need an envelope to stop. Use as operators or <button className="underline text-purple-600 hover:text-purple-800" onClick={() => navigate(4)}>bind</button> to <code>wave</code> for <code>play</code> to use</>,
       },
       {
         signature: '(play ticks note) | .note :note',
