@@ -80,7 +80,7 @@ const sections = [
   {
     key: 'bind',
     title: 'Name values',
-    starter: '(let (wave square . 0.25)\n  :C4 .E4 | :G4 .B4 |\n  :C4 .F4 :G4)\n',
+    starter: '(let\n  (wave triangle ; timbre\n   . 0.25        ; tick\n   𝄩 0)          ; rest\n\n  :C4 𝄩: .E4 | :G4 𝄩: .B4 |\n  :C4 .F4 ::𝄩 :G4)\n',
     entries: [
       {
         signature: '(let (name val ...) body ...)',
