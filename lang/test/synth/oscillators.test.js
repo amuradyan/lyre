@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { raw, wrap } from '../../src/synth/oscillators.js';
+import { raw, wrap, modulate } from '../../src/synth/oscillators.js';
 
 console.log('Testing oscillators...');
 
@@ -39,5 +39,42 @@ assert.equal(dcTotal, Infinity, 'dc should yield Infinity as totalSamples');
 const dcSecond = constant.next().value;
 assert.equal(dcSecond[0], 1, 'dc(1) should still yield 1');
 assert.equal(dcSecond[1], 1, 'dc second sample should have n=1');
+
+// atPhase formulas at known phases
+assert.equal(raw.sine.atPhase(0), 0, 'sine at phase 0 should be 0');
+assert(Math.abs(raw.sine.atPhase(Math.PI / 2) - 1) < 1e-10, 'sine at π/2 should be 1');
+assert(Math.abs(raw.sine.atPhase(Math.PI)) < 1e-10, 'sine at π should be 0');
+
+assert.equal(raw.sawtooth.atPhase(0), -1, 'sawtooth at phase 0 should be -1');
+assert(Math.abs(raw.sawtooth.atPhase(Math.PI)) < 1e-10, 'sawtooth at π should be 0');
+
+assert.equal(raw.square.atPhase(0), 1, 'square at phase 0 should be 1');
+assert.equal(raw.square.atPhase(Math.PI), -1, 'square at phase π should be -1');
+
+assert.equal(raw.triangle.atPhase(0), -1, 'triangle at phase 0 should be -1');
+assert.equal(raw.triangle.atPhase(Math.PI), 1, 'triangle at phase π should be 1');
+
+// modulate with a constant freq generator should match fixed-frequency wrap
+function* constFreq(freq) {
+  while (true) yield [freq, 0, Infinity];
+}
+
+const fixed = wrap(raw.sine, 440);
+const modulated = wrap(raw.sine, constFreq(440));
+for (let i = 0; i < 50; i++) {
+  const f = fixed.next().value[0];
+  const m = modulated.next().value[0];
+  assert(Math.abs(f - m) < 1e-10, `sample ${i}: fixed=${f}, modulated=${m}`);
+}
+
+// modulate stops when freq generator stops
+function* gatedFreq(freq, count) {
+  for (let i = 0; i < count; i++) yield [freq, i, count];
+}
+
+const gated = wrap(raw.sine, gatedFreq(440, 100));
+let gatedCount = 0;
+for (const _ of gated) gatedCount++;
+assert.equal(gatedCount, 100, 'wrap should stop when freq generator stops');
 
 console.log('All oscillator tests passed!');

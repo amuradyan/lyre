@@ -1,4 +1,4 @@
-export { raw, wrap } from './oscillators.js';
+export { raw, wrap, modulate } from './oscillators.js';
 export { envelope, adjustAmplitude, gain, gate } from './envelopes.js';
 export { lowpass, highpass } from './filters.js';
 export { sequence, harmony, mix, repeat } from './composition.js';

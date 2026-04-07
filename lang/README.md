@@ -232,7 +232,7 @@ for (const sample of generator) {
 
 The Lyre language currently supports these operations:
 
-- `(sine frequency)`, `(sawtooth frequency)`, `(square frequency)`, `(triangle frequency)` - Generate wave at given frequency
+- `(sine frequency)`, `(sawtooth frequency)`, `(square frequency)`, `(triangle frequency)` - Generate wave at given frequency. Frequency can be a number /fixed/ or a generator /vibrato, FM/
 - `(envelope attack decay sustain release gate source1 source2 ...)` - Apply ADSR envelope
 - `(gate duration source)` - Time-box a source for the given duration in seconds. Hard start, hard stop, no amplitude shaping
 - `(gain source level)` - Control volume (0-1)
