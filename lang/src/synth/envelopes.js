@@ -71,3 +71,23 @@ export function* gain(source, level) {
     yield [sample * level, n, totalSamples];
   }
 }
+
+/**
+ * Time-boxes a source by yielding samples for a fixed duration, then stopping.
+ * Rewrites totalSamples in output tuples to match the gate duration.
+ * @param {number} duration - Duration in seconds
+ * @param {Generator} source - Source audio generator yielding [sample, n, totalSamples]
+ * @yields {Array} Tuples of [sample, n, totalSamples] where totalSamples reflects gate duration
+ * @example
+ * gate(1.5, wrap(raw.sine, 440)) // 1.5 seconds of A4 at full amplitude
+ */
+export function* gate(duration, source) {
+  const samplingRate = getSampleRate();
+  const totalSamples = duration * samplingRate;
+  let n = 0;
+  for (const [sample] of source) {
+    if (n >= totalSamples) return;
+    yield [sample, n, totalSamples];
+    n = n + 1;
+  }
+}

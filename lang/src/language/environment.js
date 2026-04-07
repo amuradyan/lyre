@@ -1,5 +1,5 @@
 import { raw, wrap } from '../synth/oscillators.js';
-import { envelope, gain } from '../synth/envelopes.js';
+import { envelope, gain, gate } from '../synth/envelopes.js';
 import { sequence, harmony, mix } from '../synth/composition.js';
 import { lowpass, highpass } from '../synth/filters.js';
 import { arithmetic } from '../synth/math.js';
@@ -147,6 +147,7 @@ export const prelude = [
         envelope(source, attackTime, decayTime, sustainLevel, releaseTime, gateTime));
     return sequence(...enveloped);
   }],
+  ["gate", (args) => gate(args[0], args[1])],
   ["play", (args, env) => {
     const [ticks, freq] = args;
     const waveFn = lookup('wave', env);

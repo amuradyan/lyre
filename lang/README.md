@@ -234,6 +234,7 @@ The Lyre language currently supports these operations:
 
 - `(sine frequency)`, `(sawtooth frequency)`, `(square frequency)`, `(triangle frequency)` - Generate wave at given frequency
 - `(envelope attack decay sustain release gate source1 source2 ...)` - Apply ADSR envelope
+- `(gate duration source)` - Time-box a source for the given duration in seconds. Hard start, hard stop, no amplitude shaping
 - `(gain source level)` - Control volume (0-1)
 - `(play ticks note)` - Play note for given number of ticks with default ADSR
 - `(sequence sound1 sound2 ...)` - Play sounds in sequence
