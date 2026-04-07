@@ -1,0 +1,57 @@
+; Modulation showcase - generator-as-frequency for oscillators
+;
+; Each top-level expression is played in sequence. They demonstrate
+; what becomes possible when a waveform's frequency parameter accepts
+; a generator instead of a fixed number.
+
+; ─────────────────────────────────────────
+; Vibrato - violin-like pitch wobble
+; 440 Hz center, ±6 Hz depth, 5 Hz rate
+; ─────────────────────────────────────────
+(envelope 0.05 0 1 0.3
+  (gate 1.85
+    (sine (+ 440 (* 6 (sine 5))))))
+
+; ─────────────────────────────────────────
+; Slow alarm - wide cyclic sweep
+; 600 Hz center, ±400 Hz at 0.5 Hz
+; ─────────────────────────────────────────
+(envelope 0.01 0 1 0.5
+  (gate 3.51
+    (sine (+ 600 (* 400 (sine 0.5))))))
+
+; ─────────────────────────────────────────
+; Kick drum - pitch envelope decay
+; Pitch starts at 250 Hz and drops to 50 Hz in 80ms
+; ─────────────────────────────────────────
+(envelope 0.001 0.4 0 0.1
+  (gate 0.501
+    (sine (+ 50 (* 200 (envelope 0 0 1 0.08 (gate 0.08 (flat 1))))))))
+
+; ─────────────────────────────────────────
+; FM bell - DX7-style inharmonic timbre
+; 1.4 modulator ratio for the bell-like inharmonic shimmer
+; Modulation depth itself decays, so the bell starts bright and mellows
+; ─────────────────────────────────────────
+(envelope 0.005 1.5 0 0.5
+  (gate 2.005
+    (sine
+      (+ 440
+        (* (sine 616)
+           (* 2200 (envelope 0 0 1 1.0 (gate 1.0 (flat 1)))))))))
+
+; ─────────────────────────────────────────
+; Sub bass with vibrato
+; 80 Hz sawtooth with subtle 4 Hz wobble
+; ─────────────────────────────────────────
+(envelope 0.02 0 1 0.3
+  (gate 2.32
+    (sawtooth (+ 80 (* 2 (sine 4))))))
+
+; ─────────────────────────────────────────
+; Pitch slide - portamento up
+; 220 Hz climbing to 440 Hz over the attack
+; ─────────────────────────────────────────
+(envelope 0.01 0 1 0.5
+  (gate 2.51
+    (sine (+ 220 (* 220 (envelope 0.5 1.0 1 0.5 (gate 2.0 (flat 1))))))))

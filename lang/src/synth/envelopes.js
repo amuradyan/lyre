@@ -29,32 +29,23 @@ export function adjustAmplitude(n, totalSamples, adsr) {
 
 /**
  * Applies an ADSR envelope to shape the amplitude of a source generator.
- * @param {Generator} source - Source audio generator
+ * Reads totalSamples from the source's tuples - use gate() to set duration.
+ * For infinite sources, the release phase never fires (sustain holds forever).
+ * @param {Generator} source - Source audio generator yielding [sample, n, totalSamples]
  * @param {number} attackTime - Attack time in seconds (ramp up from silence)
  * @param {number} decayTime - Decay time in seconds (fall to sustain level)
  * @param {number} sustainLevel - Sustain level (0-1, amplitude during hold)
  * @param {number} releaseTime - Release time in seconds (fade to silence)
- * @param {number} [gateTime=0] - Gate time in seconds (hold at sustain level)
- * @yields {number} Shaped audio samples between -1 and 1
+ * @yields {Array} Shaped tuples of [sample, n, totalSamples]
  * @example
- * const pluck = envelope(tone(261.63), 0.01, 1.0, 0, 0.5);
- * // Quick attack, 1s decay, no sustain, 500ms release
+ * const pluck = envelope(gate(1.5, wrap(raw.sine, 261.63)), 0.01, 1.0, 0, 0.5);
+ * // 1.5s plucked C4 with quick attack and 500ms release
  */
-export function*
-  envelope(source, attackTime, decayTime, sustainLevel, releaseTime, gateTime = 0) {
-  const samplingRate = getSampleRate();
-  const totalTime = attackTime + decayTime + gateTime + releaseTime;
-  const totalSamples = totalTime * samplingRate;
+export function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {
   const adsr = [attackTime, decayTime, sustainLevel, releaseTime];
-
-  let n = 0;
-  for (const [sample] of source) {
-    if (n >= totalSamples) {
-      return;
-    }
+  for (const [sample, n, totalSamples] of source) {
     const amplitude = adjustAmplitude(n, totalSamples, adsr);
     yield [sample * amplitude, n, totalSamples];
-    n = n + 1;
   }
 }
 

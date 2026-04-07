@@ -21,7 +21,7 @@ let count = 0;
 for (const _ of half) count++;
 assert.equal(count, sampleRate * 0.5, '(gate 0.5 ...) should yield exactly sampleRate * 0.5 samples');
 
-const cut = eval_("(gate 0.1 (envelope 0.01 0.4 0.6 0.5 2.0 (sine 440)))");
+const cut = eval_("(gate 0.1 (envelope 0.01 0.4 0.6 0.5 (sine 440)))");
 let cutCount = 0;
 for (const _ of cut) cutCount++;
 assert.equal(cutCount, sampleRate * 0.1, 'gate should cut envelope short');

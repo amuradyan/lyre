@@ -23,11 +23,15 @@ const sections = [
   {
     key: 'shape',
     title: 'Shape sounds',
-    starter: '(envelope 0.01 1.0 0 0.5 0\n  (sine 261.63)) ; Plucked C4\n\n(gain\n  (envelope 0.01 1.0 0 0.5 0\n    (sine 261.63))\n  0.5) ; Half volume\n',
+    starter: '(envelope 0.01 1.0 0 0.5\n  (gate 1.51 (sine 261.63))) ; Plucked C4\n\n(gain\n  (envelope 0.01 1.0 0 0.5\n    (gate 1.51 (sine 261.63)))\n  0.5) ; Half volume\n',
     entries: [
       {
-        signature: '(envelope A D S R gate source ...)',
-        description: <>ADSR amplitude shaping. <code>A</code>, <code>D</code>, <code>R</code> in seconds. <code>S</code> is amplitude level, typically <code>0-1</code></>,
+        signature: '(envelope A D S R source ...)',
+        description: <>ADSR amplitude shaping. <code>A</code>, <code>D</code>, <code>R</code> in seconds. <code>S</code> is amplitude level. Use <code>gate</code> to set duration</>,
+      },
+      {
+        signature: '(gate duration source)',
+        description: 'Time-box a source for the given duration in seconds',
       },
       {
         signature: '(gain source level)',
@@ -57,7 +61,7 @@ const sections = [
   {
     key: 'filter',
     title: 'Filter sounds',
-    starter: '; Fixed brightness\n(lowpass 2000\n  (envelope 0.01 1.0 0 0.5 0\n    (sawtooth 261.63)))\n\n; Brightness that fades\n(lowpass (+ 500 (* 4500\n    (envelope 0 0 1 1.0 0 (flat 1))))\n  (envelope 0.01 1.0 0 0.5 0\n    (sawtooth 261.63)))\n',
+    starter: '; Fixed brightness\n(lowpass 2000\n  (envelope 0.01 1.0 0 0.5\n    (gate 1.51 (sawtooth 261.63))))\n\n; Brightness that fades\n(lowpass (+ 500 (* 4500\n    (envelope 0 0 1 1.0 (gate 1.0 (flat 1)))))\n  (envelope 0.01 1.0 0 0.5\n    (gate 1.51 (sawtooth 261.63))))\n',
     entries: [
       {
         signature: '(lowpass cutoff source ...)',

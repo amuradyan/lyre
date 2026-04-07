@@ -1,11 +1,11 @@
 (mix
-  (envelope 0.005 0 1 0.005 2 (sine D3))
-  (envelope 0.005 0 1 0.005 0.25
-    (sine A5) (sine 0) (sine F#5) (sine G5)
-    (sine A5) (sine 0) (sine F#5) (sine G5)))
+  (envelope 0.005 0 1 0.005 (gate 2.01 (sine D3)))
+  (envelope 0.005 0 1 0.005
+    (gate 0.26 (sine A5)) (gate 0.26 (sine 0)) (gate 0.26 (sine F#5)) (gate 0.26 (sine G5))
+    (gate 0.26 (sine A5)) (gate 0.26 (sine 0)) (gate 0.26 (sine F#5)) (gate 0.26 (sine G5))))
 
 (mix
-  (envelope 0.005 0 1 0.005 2 (sine A2))
-  (envelope 0.005 0 1 0.005 0.25
-    (sine A5) (sine A4) (sine B4) (sine C#5)
-    (sine D5) (sine E5) (sine F#5) (sine G5)))
+  (envelope 0.005 0 1 0.005 (gate 2.01 (sine A2)))
+  (envelope 0.005 0 1 0.005
+    (gate 0.26 (sine A5)) (gate 0.26 (sine A4)) (gate 0.26 (sine B4)) (gate 0.26 (sine C#5))
+    (gate 0.26 (sine D5)) (gate 0.26 (sine E5)) (gate 0.26 (sine F#5)) (gate 0.26 (sine G5))))

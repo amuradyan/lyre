@@ -23,7 +23,7 @@ const tokens5 = tokenize("(harmony (sine G3) (sine G2))");
 const gen5 = evaluate(tokens5[0]);
 console.assert(gen5 !== null, 'evaluate should return generator for harmony with note names');
 
-const tokens6 = tokenize("(envelope 0.01 0.5 0 0.01 0 (sine C4) (sine G4))");
+const tokens6 = tokenize("(envelope 0.01 0.5 0 0.01 (sine C4) (sine G4))");
 const gen6 = evaluate(tokens6[0]);
 console.assert(gen6 !== null, 'evaluate should return generator for envelope with note names');
 

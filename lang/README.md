@@ -9,14 +9,15 @@ At its core, sound is represented as infinite streams of samples - generator fun
 A plucked note takes three pieces: an oscillator that generates a wave, an envelope that shapes its amplitude over time, and ADSR parameters that define the shape.
 
 ```js
-import { raw, wrap, envelope } from '@lyre/core/synth';
+import { raw, wrap, gate, envelope } from '@lyre/core/synth';
 
 const pluck = envelope(
-  wrap(raw.sine, 261.63),  // Middle C
-  0.01,                    // 10ms attack
-  1.0,                     // 1 second decay
-  0,                       // no sustain
-  0.5                      // 500ms release
+  gate(1.51,                 // 1.51s total duration
+    wrap(raw.sine, 261.63)), // Middle C
+  0.01,                      // 10ms attack
+  1.0,                       // 1 second decay
+  0,                         // no sustain
+  0.5                        // 500ms release
 );
 
 // pluck is a generator - iterate to get samples
@@ -26,7 +27,7 @@ for (const sample of pluck) {
 }
 ```
 
-The raw oscillator generates samples, `wrap` adds position metadata, and the envelope shapes amplitude over time. When the envelope completes, the generator stops.
+The raw oscillator generates samples forever, `wrap` adds position metadata, `gate` time-boxes the signal to 1.51 seconds, and `envelope` shapes the amplitude over that duration. When the gate ends, the generator stops.
 
 ## Generators as audio streams
 
@@ -51,9 +52,8 @@ const a4 = wrap(raw.sine, 440);
 An envelope takes a tupled source and yields shaped samples:
 
 ```js
-const shaped = envelope(a4, 0.01, 0.1, 0.7, 0.2);
-// yields samples multiplied by the envelope curve
-// stops when the envelope completes
+const shaped = envelope(gate(1.0, a4), 0.01, 0.1, 0.7, 0.2);
+// gate sets the duration, envelope shapes amplitude over it
 ```
 
 Because everything follows the same pattern - generators yielding tupled samples - they compose naturally.
@@ -65,12 +65,12 @@ Sequence plays generators one after another:
 ```js
 import { sequence } from '@lyre/core/synth';
 
-const s = (f) => wrap(raw.sine, f);
+const note = (f) => gate(0.4, wrap(raw.sine, f));
 
 const melody = sequence(
-  envelope(s(261.63), 0.01, 0.1, 0.7, 0.2),  // C
-  envelope(s(293.66), 0.01, 0.1, 0.7, 0.2),  // D
-  envelope(s(329.63), 0.01, 0.1, 0.7, 0.2)   // E
+  envelope(note(261.63), 0.01, 0.1, 0.7, 0.2),  // C
+  envelope(note(293.66), 0.01, 0.1, 0.7, 0.2),  // D
+  envelope(note(329.63), 0.01, 0.1, 0.7, 0.2)   // E
 );
 // yields all samples from C, then D, then E
 ```
@@ -80,10 +80,12 @@ Mix plays generators in parallel, normalizing by voice count to avoid clipping:
 ```js
 import { mix } from '@lyre/core/synth';
 
+const note = (f) => gate(1.51, wrap(raw.sine, f));
+
 const chord = mix(
-  envelope(s(261.63), 0.01, 1.0, 0, 0.5),  // C
-  envelope(s(329.63), 0.01, 1.0, 0, 0.5),  // E
-  envelope(s(392.00), 0.01, 1.0, 0, 0.5)   // G
+  envelope(note(261.63), 0.01, 1.0, 0, 0.5),  // C
+  envelope(note(329.63), 0.01, 1.0, 0, 0.5),  // E
+  envelope(note(392.00), 0.01, 1.0, 0, 0.5)   // G
 );
 // yields normalized sum of all three notes at each sample
 ```
@@ -224,7 +226,7 @@ for (const sample of generator) {
 
 **Generating waves.** Raw oscillators live under `raw` - `raw.sine`, `raw.sawtooth`, `raw.square`, `raw.triangle` yield plain samples. `raw.dc` yields a constant value. `wrap(oscillatorFn, param)` converts any raw oscillator into the tupled `[sample, n, Infinity]` format the pipeline expects.
 
-**Shaping sound.** `envelope(source, attack, decay, sustain, release, gateTime)` applies an ADSR envelope to a source generator. All times are in seconds. The attack ramps up from silence, decay falls to the sustain level, the sustain holds for the gate time (defaults to 0), then release fades to silence. `gain(source, level)` multiplies all samples by the given level (0 to 1) to control volume. `lowpass(source, cutoff)` applies a low-pass filter, accepting a fixed number or generator as cutoff. `highpass(source, cutoff)` is the high-pass equivalent.
+**Shaping sound.** `envelope(source, attack, decay, sustain, release)` applies an ADSR amplitude shape to a source generator. All times are in seconds. The total duration comes from the source's tuples - use `gate(duration, source)` to set it explicitly. For infinite sources, the release phase never fires (sustain holds forever). `gain(source, level)` multiplies all samples by the given level (0 to 1) to control volume. `lowpass(source, cutoff)` applies a low-pass filter, accepting a fixed number or generator as cutoff. `highpass(source, cutoff)` is the high-pass equivalent.
 
 **Composition.** `sequence(...generators)` plays each generator in turn, yielding all samples from the first, then all from the second, and so on. `mix(...generators)` plays generators in parallel, dividing the sum by voice count to prevent clipping. `harmony(...generators)` also plays in parallel but sums samples without normalization - use with `gain` for manual level control. When any generator finishes, it contributes 0 to the sum. When all finish, mix/harmony stops. `repeat(times, generatorFunc)` repeats a generator function N times. Pass a function that returns a new generator each time it's called.
 
@@ -233,7 +235,7 @@ for (const sample of generator) {
 The Lyre language currently supports these operations:
 
 - `(sine frequency)`, `(sawtooth frequency)`, `(square frequency)`, `(triangle frequency)` - Generate wave at given frequency. Frequency can be a number /fixed/ or a generator /vibrato, FM/
-- `(envelope attack decay sustain release gate source1 source2 ...)` - Apply ADSR envelope
+- `(envelope attack decay sustain release source1 source2 ...)` - Apply ADSR amplitude shaping. Wrap sources in `gate` to set duration
 - `(gate duration source)` - Time-box a source for the given duration in seconds. Hard start, hard stop, no amplitude shaping
 - `(gain source level)` - Control volume (0-1)
 - `(play ticks note)` - Play note for given number of ticks with default ADSR
