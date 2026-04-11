@@ -144,7 +144,7 @@ export const prelude = [
     const [attackTime, decayTime, sustainLevel, releaseTime, ...sources] = args;
     const enveloped =
       sources.map(source =>
-        envelope(source, attackTime, decayTime, sustainLevel, releaseTime));
+        envelope(attackTime, decayTime, sustainLevel, releaseTime, source));
     return sequence(...enveloped);
   }],
   ["gate", (args) => gate(args[0], args[1])],
@@ -157,7 +157,7 @@ export const prelude = [
     const s = lookup('sustain', env);
     const r = lookup('release', env);
     const total = a + d + gateTime + r;
-    return envelope(gate(total, waveFn([freq], env)), a, d, s, r);
+    return envelope(a, d, s, r, gate(total, waveFn([freq], env)));
   }],
 ];
 

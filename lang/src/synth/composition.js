@@ -4,9 +4,9 @@
  * @yields {number} Audio samples from each generator in order
  * @example
  * const melody = sequence(
- *   envelope(tone(261.63), 0.01, 0.1, 0.7, 0.2), // C
- *   envelope(tone(293.66), 0.01, 0.1, 0.7, 0.2), // D
- *   envelope(tone(329.63), 0.01, 0.1, 0.7, 0.2)  // E
+ *   envelope(0.01, 0.1, 0.7, 0.2, tone(261.63)),  // C
+ *   envelope(0.01, 0.1, 0.7, 0.2, tone(293.66)),  // D
+ *   envelope(0.01, 0.1, 0.7, 0.2, tone(329.63))   // E
  * );
  */
 export function* sequence(...generators) {
@@ -22,9 +22,9 @@ export function* sequence(...generators) {
  * @yields {Array} Tuples of [sample, n, maxTotalSamples] where sample is the sum
  * @example
  * const chord = harmony(
- *   envelope(tone(261.63), 0.01, 1.0, 0, 0.5), // C
- *   envelope(tone(329.63), 0.01, 1.0, 0, 0.5), // E
- *   envelope(tone(392.00), 0.01, 1.0, 0, 0.5)  // G
+ *   envelope(0.01, 1.0, 0, 0.5, tone(261.63)),  // C
+ *   envelope(0.01, 1.0, 0, 0.5, tone(329.63)),  // E
+ *   envelope(0.01, 1.0, 0, 0.5, tone(392.00))   // G
  * );
  */
 export function* harmony(...generators) {
@@ -63,9 +63,9 @@ export function* harmony(...generators) {
  * @yields {Array} Tuples of [sample, n, maxTotalSamples] where sample is the normalized sum
  * @example
  * const chord = mix(
- *   envelope(tone(261.63), 0.01, 1.0, 0, 0.5),  // C
- *   envelope(tone(329.63), 0.01, 1.0, 0, 0.5),  // E
- *   envelope(tone(392.00), 0.01, 1.0, 0, 0.5)   // G
+ *   envelope(0.01, 1.0, 0, 0.5, tone(261.63)),  // C
+ *   envelope(0.01, 1.0, 0, 0.5, tone(329.63)),  // E
+ *   envelope(0.01, 1.0, 0, 0.5, tone(392.00))   // G
  * );
  */
 export function* mix(...generators) {
@@ -81,7 +81,7 @@ export function* mix(...generators) {
  * @param {Function} generatorFunc - Function that returns a new generator each call
  * @yields {number} Audio samples from repeated generators
  * @example
- * const repeated = repeat(3, () => envelope(tone(440), 0.01, 0.1, 0.7, 0.2));
+ * const repeated = repeat(3, () => envelope(0.01, 0.1, 0.7, 0.2, tone(440)));
  * // Plays the same note 3 times
  */
 export function* repeat(times, generatorFunc) {

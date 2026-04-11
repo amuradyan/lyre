@@ -38,10 +38,10 @@ export function adjustAmplitude(n, totalSamples, adsr) {
  * @param {number} releaseTime - Release time in seconds (fade to silence)
  * @yields {Array} Shaped tuples of [sample, n, totalSamples]
  * @example
- * const pluck = envelope(gate(1.5, wrap(raw.sine, 261.63)), 0.01, 1.0, 0, 0.5);
+ * const pluck = envelope(0.01, 1.0, 0, 0.5, gate(1.5, wrap(raw.sine, 261.63)));
  * // 1.5s plucked C4 with quick attack and 500ms release
  */
-export function* envelope(source, attackTime, decayTime, sustainLevel, releaseTime) {
+export function* envelope(attackTime, decayTime, sustainLevel, releaseTime, source) {
   const adsr = [attackTime, decayTime, sustainLevel, releaseTime];
   for (const [sample, n, totalSamples] of source) {
     const amplitude = adjustAmplitude(n, totalSamples, adsr);

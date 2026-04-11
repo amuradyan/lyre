@@ -12,12 +12,12 @@ A plucked note takes three pieces: an oscillator that generates a wave, an envel
 import { raw, wrap, gate, envelope } from '@lyre/core/synth';
 
 const pluck = envelope(
-  gate(1.51,                 // 1.51s total duration
-    wrap(raw.sine, 261.63)), // Middle C
   0.01,                      // 10ms attack
   1.0,                       // 1 second decay
   0,                         // no sustain
-  0.5                        // 500ms release
+  0.5,                       // 500ms release
+  gate(1.51,                 // 1.51s total duration
+    wrap(raw.sine, 261.63))  // Middle C
 );
 
 // pluck is a generator - iterate to get samples
@@ -52,7 +52,7 @@ const a4 = wrap(raw.sine, 440);
 An envelope takes a tupled source and yields shaped samples:
 
 ```js
-const shaped = envelope(gate(1.0, a4), 0.01, 0.1, 0.7, 0.2);
+const shaped = envelope(0.01, 0.1, 0.7, 0.2, gate(1.0, a4));
 // gate sets the duration, envelope shapes amplitude over it
 ```
 
@@ -68,9 +68,9 @@ import { sequence } from '@lyre/core/synth';
 const note = (f) => gate(0.4, wrap(raw.sine, f));
 
 const melody = sequence(
-  envelope(note(261.63), 0.01, 0.1, 0.7, 0.2),  // C
-  envelope(note(293.66), 0.01, 0.1, 0.7, 0.2),  // D
-  envelope(note(329.63), 0.01, 0.1, 0.7, 0.2)   // E
+  envelope(0.01, 0.1, 0.7, 0.2, note(261.63)),  // C
+  envelope(0.01, 0.1, 0.7, 0.2, note(293.66)),  // D
+  envelope(0.01, 0.1, 0.7, 0.2, note(329.63))   // E
 );
 // yields all samples from C, then D, then E
 ```
@@ -83,9 +83,9 @@ import { mix } from '@lyre/core/synth';
 const note = (f) => gate(1.51, wrap(raw.sine, f));
 
 const chord = mix(
-  envelope(note(261.63), 0.01, 1.0, 0, 0.5),  // C
-  envelope(note(329.63), 0.01, 1.0, 0, 0.5),  // E
-  envelope(note(392.00), 0.01, 1.0, 0, 0.5)   // G
+  envelope(0.01, 1.0, 0, 0.5, note(261.63)),  // C
+  envelope(0.01, 1.0, 0, 0.5, note(329.63)),  // E
+  envelope(0.01, 1.0, 0, 0.5, note(392.00))   // G
 );
 // yields normalized sum of all three notes at each sample
 ```
@@ -226,7 +226,7 @@ for (const sample of generator) {
 
 **Generating waves.** Raw oscillators live under `raw` - `raw.sine`, `raw.sawtooth`, `raw.square`, `raw.triangle` yield plain samples. `raw.dc` yields a constant value. `wrap(oscillatorFn, param)` converts any raw oscillator into the tupled `[sample, n, Infinity]` format the pipeline expects.
 
-**Shaping sound.** `envelope(source, attack, decay, sustain, release)` applies an ADSR amplitude shape to a source generator. All times are in seconds. The total duration comes from the source's tuples - use `gate(duration, source)` to set it explicitly. For infinite sources, the release phase never fires (sustain holds forever). `gain(source, level)` multiplies all samples by the given level (0 to 1) to control volume. `lowpass(source, cutoff)` applies a low-pass filter, accepting a fixed number or generator as cutoff. `highpass(source, cutoff)` is the high-pass equivalent.
+**Shaping sound.** `envelope(attack, decay, sustain, release, source)` applies an ADSR amplitude shape to a source generator. All times are in seconds. The total duration comes from the source's tuples - use `gate(duration, source)` to set it explicitly. For infinite sources, the release phase never fires (sustain holds forever). `gain(source, level)` multiplies all samples by the given level (0 to 1) to control volume. `lowpass(source, cutoff)` applies a low-pass filter, accepting a fixed number or generator as cutoff. `highpass(source, cutoff)` is the high-pass equivalent.
 
 **Composition.** `sequence(...generators)` plays each generator in turn, yielding all samples from the first, then all from the second, and so on. `mix(...generators)` plays generators in parallel, dividing the sum by voice count to prevent clipping. `harmony(...generators)` also plays in parallel but sums samples without normalization - use with `gain` for manual level control. When any generator finishes, it contributes 0 to the sum. When all finish, mix/harmony stops. `repeat(times, generatorFunc)` repeats a generator function N times. Pass a function that returns a new generator each time it's called.
 
