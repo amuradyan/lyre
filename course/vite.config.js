@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { cpSync, readFileSync, existsSync } from 'node:fs';
+import { cpSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -41,6 +41,9 @@ export default defineConfig({
         cpSync('notes', 'dist/notes', { recursive: true });
         cpSync('../lang/src', 'dist/lang', { recursive: true });
         cpSync('src/assets', 'dist/assets', { recursive: true });
+        mkdirSync('dist/lang-docs', { recursive: true });
+        cpSync('../lang/On the language.md', 'dist/lang-docs/On the language.md');
+        cpSync('../lang/On the engine.md', 'dist/lang-docs/On the engine.md');
       }
     }
   ],

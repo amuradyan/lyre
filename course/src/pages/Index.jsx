@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import LyreCodeblock from '../components/slide/codeblock/LyreCodeblock.jsx';
 import Playlist from '../components/Playlist.jsx';
+import DocContent from '../components/DocContent.jsx';
 import pachelbelsCanonPlain from '../assets/examples/pachelbels-canon-in-d-plain.lyre?raw';
 import pachelbelsCanonCode from '../assets/examples/pachelbels-canon-in-d.lyre?raw';
 
@@ -115,6 +116,17 @@ export default function Index() {
   const [sectionCode, setSectionCode] = useState(
     () => Object.fromEntries(sections.map(s => [s.key, s.starter]))
   );
+  const [currentHash, setCurrentHash] = useState(() => window.location.hash);
+
+  useEffect(() => {
+    const sync = () => setCurrentHash(window.location.hash);
+    window.addEventListener('hashchange', sync);
+    window.addEventListener('popstate', sync);
+    return () => {
+      window.removeEventListener('hashchange', sync);
+      window.removeEventListener('popstate', sync);
+    };
+  }, []);
 
   const handleSelectExample = useCallback((exampleId, exampleCode) => {
     setSelectedExample(exampleId);
@@ -125,7 +137,20 @@ export default function Index() {
     setSectionCode(prev => ({ ...prev, [key]: value }));
   }, []);
 
+  const goHome = useCallback((e) => {
+    if (e) e.preventDefault();
+    if (window.location.hash) {
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+      setCurrentHash('');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+
   const current = sections[carouselIndex];
+  const docPath =
+    currentHash === '#on-the-language' ? '../lang/On the language.md'
+      : currentHash === '#on-the-engine' ? '../lang/On the engine.md'
+        : null;
 
   return (
     <>
@@ -134,20 +159,51 @@ export default function Index() {
         <div className="container mx-auto px-6 py-12">
 
           {/* Title */}
-          <div className="flex items-end gap-4 mb-10">
-            <img src="/lyre.png" alt="Lyre" className="w-48 h-auto" />
-            <p className="text-l text-gray-600 pb-2">\ a music streaming lisp</p>
+          <div className="flex items-end justify-between flex-wrap gap-y-4 mb-10">
+            <div className="flex items-end gap-4">
+              <a href="#" onClick={goHome} aria-label="Home" className="cursor-pointer">
+                <img src="/lyre.png" alt="Lyre" className="w-48 h-auto" />
+              </a>
+              <p className="text-l text-gray-600 pb-2">\ a music streaming lisp</p>
+            </div>
+            <div className="flex items-center gap-4 pb-2">
+              <a
+                href="#on-the-language"
+                className="text-purple-600 hover:text-purple-800 text-l font-medium transition-colors"
+              >
+                [the language]
+              </a>
+              <a
+                href="#on-the-engine"
+                className="text-purple-600 hover:text-purple-800 text-l font-medium transition-colors"
+              >
+                [the engine]
+              </a>
+              <a
+                href="https://jsr.io/@dekanat/lyre"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-600 hover:text-purple-800 text-l font-medium transition-colors"
+              >
+                [download]
+              </a>
+            </div>
           </div>
 
-          {/* P1: Full width intro */}
-          <div className="mb-8">
-            <p className="text-left text-[17px] text-gray-600 text-justify">
-              Lyre is a duo of a Lisp-like language for writing music and a rather simple synthesizer that streams it.
-              As in any lisp, we write expressions to later evaluate to values - tones of given
-              frequencies, durations and amplitudes in our case. We also write expressions to put
-              these tones in sequence or in parallel and then again for something else for sure.
-            </p>
-          </div>
+          <div key={docPath || 'home'}>
+            {docPath ? (
+              <DocContent markdownPath={docPath} />
+            ) : (
+              <>
+                {/* P1: Full width intro */}
+                <div className="mb-8">
+                  <p className="text-left text-[17px] text-gray-600 text-justify">
+                    Lyre is a duo of a Lisp-like language for writing music and a rather simple synthesizer that streams it.
+                    As in any lisp, we write expressions to later evaluate to values - tones of given
+                    frequencies, durations and amplitudes in our case. We also write expressions to put
+                    these tones in sequence or in parallel and then again for something else for sure.
+                  </p>
+                </div>
 
           {/* P2 P3 + Plain Pachelbel */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start mb-8">
@@ -266,17 +322,20 @@ export default function Index() {
             </div>
           </div>
 
-          <div className="text-center mt-12 space-y-2">
-            <p className="text-gray-500 text-sm">
-              <strong>Note:</strong> For a deeper dive into language implementation, check out the{' '}
-              <a href="#walkthrough" className="text-purple-600 hover:text-purple-800 underline">
-                walkthrough
-              </a>{' '}
-              /always under construction 🚧/
-            </p>
-            <p className="text-gray-400 text-xs">
-              🤖 All the front end is the courtesy of robots, mainly Claude 🤖
-            </p>
+                <div className="text-center mt-12 space-y-2">
+                  <p className="text-gray-500 text-sm">
+                    <strong>Note:</strong> For a deeper dive into language implementation, check out the{' '}
+                    <a href="#walkthrough" className="text-purple-600 hover:text-purple-800 underline">
+                      walkthrough
+                    </a>{' '}
+                    /always under construction 🚧/
+                  </p>
+                  <p className="text-gray-400 text-xs">
+                    🤖 All the front end is the courtesy of robots, mainly Claude 🤖
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

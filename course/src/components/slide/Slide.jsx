@@ -101,9 +101,17 @@ function joinUrlFs(path) {
     if (path.startsWith('/')) {
       return encodeURI(`/@fs${path}`);
     }
-    const absolutePath = `${__WORKSPACE_ROOT__}/${path.replace(/^(\.\.\/)+/, '')}`;
+    const upMatch = path.match(/^((?:\.\.\/)+)/);
+    const upCount = upMatch ? upMatch[1].length / 3 : 0;
+    const rest = path.replace(/^(\.\.\/)+/, '').replace(/^\.\//, '');
+    const rootParts = __WORKSPACE_ROOT__.split('/');
+    const base = rootParts.slice(0, rootParts.length - upCount).join('/');
+    const absolutePath = `${base}/${rest}`;
     return encodeURI(`/@fs${absolutePath}`);
   } else {
+    if (path.startsWith('../lang/')) {
+      return encodeURI(`/lang-docs/${path.slice('../lang/'.length)}`);
+    }
     if (path.includes('/notes/')) {
       const notesIndex = path.indexOf('/notes/');
       return encodeURI(path.substring(notesIndex));
@@ -115,7 +123,7 @@ function joinUrlFs(path) {
   }
 }
 
-export default function SlideExperimental({ initialMarkdownPath }) {
+export default function SlideExperimental({ initialMarkdownPath, stripMermaid = false }) {
   const [mdPath, setMdPath] = useState(initialMarkdownPath);
   const [displayPath, setDisplayPath] = useState(initialMarkdownPath);
   const [content, setContent] = useState('');
@@ -257,7 +265,10 @@ export default function SlideExperimental({ initialMarkdownPath }) {
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
         const text = await res.text();
-        if (!cancelled) setContent(text);
+        const processed = stripMermaid
+          ? text.replace(/```mermaid[\s\S]*?```/g, '\n_— diagram —_\n')
+          : text;
+        if (!cancelled) setContent(processed);
       } catch (e) {
         if (!cancelled) setError(e.message || String(e));
       } finally {
@@ -266,7 +277,7 @@ export default function SlideExperimental({ initialMarkdownPath }) {
     }
     load();
     return () => { cancelled = true; };
-  }, [displayPath]);
+  }, [displayPath, stripMermaid]);
 
   const handleNext = () => {
     const { nextHref } = parsed;

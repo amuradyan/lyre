@@ -192,50 +192,32 @@ A typical modulation pattern uses `envelope` to shape a control signal, scales i
 
 The inner `envelope` receives a constant `flat 1` source, gates it for 1 second, and applies an ADSR shape. The output is a curve from 0 to 1. Multiply by 2500 to get 0 to 2500. Add 500 to get 500 to 3000. Feed that into `lowpass` as the cutoff, and the filter sweeps over time.
 
-## What's NOT in the engine
-
-A few things are deliberately absent:
-
-- **No `repeat`** - exists in JS but not exposed in Lyre. Use `sequence` with the same expression multiple times.
-- **No band-pass or notch filter** - compose them: band-pass = highpass inside lowpass; notch = mix of lowpass and highpass.
-- **No multi-pole filter primitives** - nest `lowpass` calls for steeper slopes /each layer adds 6 dB/octave/.
-- **No `filterEnvelope`** - use `lowpass` with a generator cutoff built from `envelope` and arithmetic.
-- **No `ASR` envelope as a separate curve** - envelope wraps a source. To use the curve as a modulation signal, wrap a `flat 1` source.
-
-The principle is one way to do one thing. Composition replaces convenience primitives.
-
 ## Reference
 
 ### Raw world
 
-| Function | Input | Output |
-|---|---|---|
-| `raw.sine(freq)` | number | numbers |
-| `raw.sawtooth(freq)` | number | numbers |
-| `raw.square(freq)` | number | numbers |
-| `raw.triangle(freq)` | number | numbers |
-| `raw.flat(value)` | number | numbers |
+- `raw.sine(freq)` - number → numbers
+- `raw.sawtooth(freq)` - number → numbers
+- `raw.square(freq)` - number → numbers
+- `raw.triangle(freq)` - number → numbers
+- `raw.flat(value)` - number → numbers
 
 ### Bridge
 
-| Function | Inputs | Output |
-|---|---|---|
-| `wrap(rawFn, param)` | raw fn, number OR tupled generator | tupled |
-| `modulate(atPhase, freqGen)` | phase formula, tupled generator | tupled |
+- `wrap(rawFn, param)` - raw fn + /number or tupled generator/ → tupled
+- `modulate(atPhase, freqGen)` - phase formula + tupled generator → tupled
 
 ### Tupled world
 
-| Function | Inputs | Output | Notes |
-|---|---|---|---|
-| `gate(duration, source)` | number, tupled | tupled | Only time-boxer |
-| `envelope(A, D, S, R, source)` | 4 numbers, tupled | tupled | Reads totalSamples from source |
-| `gain(source, level)` | tupled, number | tupled |  |
-| `lowpass(source, cutoff)` | tupled, number OR tupled | tupled | Cutoff can be modulated |
-| `highpass(source, cutoff)` | tupled, number OR tupled | tupled | Cutoff can be modulated |
-| `harmony(...sources)` | variadic tupled | tupled | Sums without normalization |
-| `mix(...sources)` | variadic tupled | tupled | Sums normalized by voice count |
-| `sequence(...sources)` | variadic tupled | tupled | One after another |
-| `+ - * /` | 2 args, each number OR tupled | number OR tupled | Sample-by-sample when generators |
+- `gate(duration, source)` - number, tupled → tupled. The only time-boxer
+- `envelope(A, D, S, R, source)` - 4 numbers, tupled → tupled. Reads totalSamples from source
+- `gain(source, level)` - tupled, number → tupled
+- `lowpass(source, cutoff)` - tupled + /number or tupled/ → tupled. Cutoff can be modulated
+- `highpass(source, cutoff)` - tupled + /number or tupled/ → tupled. Cutoff can be modulated
+- `harmony(...sources)` - variadic tupled → tupled. Sums without normalization
+- `mix(...sources)` - variadic tupled → tupled. Sums normalized by voice count
+- `sequence(...sources)` - variadic tupled → tupled. One after another
+- `+ - * /` - 2 args, each number or tupled → number or tupled. Sample-by-sample when any operand is a generator
 
 ### Lyre prelude additions
 
