@@ -1,3 +1,5 @@
+<!-- cspell:words tupled lowpass highpass modgen dagre rolloff buzzy ADSR totalSamples freqGen rawFn atPhase -->
+
 # On the engine
 
 This document explains the architecture of the Lyre synth engine - what the primitives are, how they connect, and how signals flow through the system.
@@ -12,35 +14,34 @@ The engine is split into two layers separated by a single bridge function. Every
 The raw world is small - just five oscillators. The tupled world is everything else: shapers, filters, combinators, arithmetic. The bridge between them is `wrap`.
 
 ```mermaid
-flowchart TD
-    raw[raw oscillators] -->|numbers| wrap{{wrap}}
-    wrap --> ts(((tupled signal)))
+---
+config:
+  layout: dagre
+  flowchart:
+    nodeSpacing: 25
+    rankSpacing: 55
+    curve: linear
+---
+flowchart LR
+    raw["raw oscillators<br/>sine · sawtooth · square · triangle · flat"]
 
-    subgraph timebox["time-boxer"]
-        gate
-    end
-    subgraph shapers["shapers"]
-        envelope
-        gain
-        lowpass
-        highpass
-        math["+ - * /"]
-    end
-    subgraph combiners["combiners"]
-        harmony
-        mix
-        sequence
+    raw ==>|"raw<br/>&nbsp;"| wrap["wrap<br/><i>fixed or modulating frequency</i>"]
+
+    subgraph primitives["tupled primitives · any-to-any"]
+        direction LR
+        gate ~~~ envelope ~~~ gain
+        lowpass ~~~ highpass ~~~ math["+  -  *  /"]
+        sequence ~~~ harmony ~~~ mix
     end
 
-    ts <--> timebox
-    ts <--> shapers
-    ts <--> combiners
-
-    ts --> output([output])
-    ts -.modulation.-> wrap
+    wrap ==>|"tupled<br/>&nbsp;"| primitives
+    primitives ==>|"tupled<br/>&nbsp;"| primitives
+    primitives ==>|"tupled<br/>&nbsp;"| output([output])
 ```
 
-The middle node /the circled `tupled signal`/ is a **type**, not a function. Every category around it both reads from and writes to that type - the bidirectional arrows say so. This means `harmony` can take the output of `envelope` or `gain` or another `harmony`, and so can every other function. The categories are just stylistic groupings - composability comes from sharing the type. The dashed line is modulation feedback - any tupled signal can loop back to `wrap` as a frequency input for vibrato or FM.
+Edges are labeled with what flows along them. The `raw -> wrap` edge is the only one carrying raw numbers; everything after `wrap` is tupled.
+
+The self-loop on `primitives` is the composability claim: any tupled output can feed any tupled input. The single arrow into `output` is the other half: nothing else consumes. Two worlds, one bridge, one sink.
 
 ## The raw world
 
@@ -59,21 +60,31 @@ Raw oscillators are stateless to the user - you give them a frequency, they yiel
 `wrap` lifts a raw oscillator into the tupled world. Its behavior depends on what you pass as the second argument:
 
 ```mermaid
+---
+config:
+  layout: dagre
+  flowchart:
+    nodeSpacing: 25
+    rankSpacing: 55
+    curve: linear
+---
 flowchart LR
-    wrap{{wrap}}
-    fixed["number param<br/>(fixed frequency)"]
-    modgen["generator param<br/>(varying frequency)"]
+    wrap[wrap]
+    fixed["number param<br/>/fixed frequency/"]
+    modgen["generator param<br/>/varying frequency/"]
     modulate
     out([tupled signal])
 
     fixed --> wrap
     modgen --> wrap
-    wrap -->|number path| out
-    wrap -->|generator path| modulate
+    wrap -->|"number path<br/>&nbsp;"| out
+    wrap -->|"generator path<br/>&nbsp;"| modulate
     modulate --> out
 ```
 
 When the parameter is a number, `wrap` calls the raw oscillator and lifts each yielded sample into a tuple. When the parameter is a generator, `wrap` delegates to `modulate`, which reads a fresh frequency from the generator each sample and recomputes phase increment.
+
+`modulate` is the generator-path half of the bridge. We refer to the pair as `wrap` in composition diagrams; `modulate` surfaces in the reference because it's a callable in its own right.
 
 This is what makes vibrato possible. `(sine (+ 440 (* 10 (sine 5))))` evaluates the inner expression to a generator yielding values around 440. `wrap` sees a generator, dispatches to `modulate`, and produces a 440 Hz sine that wobbles ±10 Hz at 5 Hz.
 
@@ -87,7 +98,9 @@ Only one primitive turns infinite signals into finite ones:
 
 - `gate(duration, source)` - yields samples for `duration` seconds, then stops
 
-That's the only way to set a duration. Everything else is duration-agnostic.
+That's the only way to set a duration. Everything else is duration-agnostic - you set the duration once with `gate`, and the rest of the pipeline just shapes whatever's inside.
+
+If you feed `wrap` a finite modulator, the oscillator inherits that finiteness - but this is signal flow, not a second time-boxer. `gate` remains the only primitive that introduces a duration.
 
 ### Shapers
 
@@ -97,7 +110,7 @@ Take a tupled source and yield a transformed tupled signal of the same length:
 - `gain(source, level)` - multiplies every sample by `level`
 - `lowpass(source, cutoff)` - first-order low-pass filter. Cutoff can be a number or a tupled generator for filter sweeps and wobbles.
 - `highpass(source, cutoff)` - first-order high-pass filter. Same cutoff rules.
-- `+ - * /` - sample-by-sample arithmetic. Each operand can be a number or a tupled generator. Used for tremolo, ring modulation, signal arithmetic.
+- `+ - * /` - sample-by-sample arithmetic. Operates as a **shaper** when one operand is a scalar /tremolo depth, DC offset/ and as a **combiner** when both are signals /ring modulation, signal sums/. Each operand can be a number or a tupled generator.
 
 ### Combinators
 
@@ -107,46 +120,39 @@ Variadic - take multiple tupled sources and combine them:
 - `harmony(sources...)` - sums samples in parallel without normalization
 - `mix(sources...)` - sums and divides by voice count to prevent clipping
 
-### Time-boxers vs continuous
-
-```mermaid
-flowchart LR
-    subgraph timebox["Time-boxer"]
-        gate
-    end
-    subgraph cont["Continuous /transform whatever flows through/"]
-        envelope
-        gain
-        lowpass
-        highpass
-        math["+ - * /"]
-        harmony
-        mix
-        sequence
-    end
-```
-
-There's exactly one primitive that creates a finite output from an infinite input: `gate`. Everything else preserves the duration of what flows through it. This is the rule that makes composition simple - you set the duration once with `gate`, and the rest of the pipeline just shapes whatever's inside.
-
-`wrap` is also technically a time-boxer in its modulated path - if you feed it a finite frequency generator, the resulting oscillator stops when the modulator stops.
-
 ## Composing a pluck
 
 The canonical example: a plucked string sound.
 
 ```mermaid
+---
+config:
+  layout: dagre
+  flowchart:
+    nodeSpacing: 25
+    rankSpacing: 55
+    curve: linear
+---
 flowchart LR
-    raw[raw.sine] --> wrap{{wrap}}
-    wrap -->|infinite| gate
-    gate -->|1.5s of tuples| envelope
-    envelope -->|ADSR-shaped| output([output])
+    raw["raw.sine<br/>440 Hz"]
+    wrap["wrap"]
+    gate["gate<br/>1.5 s"]
+    env["envelope<br/>A 0.01 · D 0.4 · S 0 · R 0.5"]
+    out([output])
+
+    raw ==>|"raw<br/>&nbsp;"| wrap
+    wrap ==>|"tupled · infinite<br/>&nbsp;"| gate
+    gate ==>|"tupled · 1.5 s<br/>&nbsp;"| env
+    env ==>|"shaped<br/>&nbsp;"| out
 ```
 
 Three steps, three concerns:
 
-1. **Generate** - `raw.sine` produces samples
+1. **Generate** - `raw.sine` produces samples at 440 Hz
 2. **Time-box** - `gate` decides the note lasts 1.5 seconds
 3. **Shape** - `envelope` applies the ADSR curve over those 1.5 seconds
+
+Each stage's parameters live in its box; each edge's label tells you what kind of signal arrives at the next stage. The boundary between the two worlds is the `raw -> wrap` edge - the only one carrying raw samples.
 
 In Lyre:
 
@@ -168,14 +174,7 @@ Each primitive does one thing. The composition tells the story.
 
 ## Modulation
 
-The modulation path is what makes the engine more than a fixed pipeline. Any tupled signal can be used as a parameter for another tupled signal that accepts modulation. Three places this happens:
-
-```mermaid
-flowchart LR
-    src[any tupled signal] -.->|frequency| wrap{{wrap}}
-    src -.->|cutoff| lowpass
-    src -.->|cutoff| highpass
-```
+The modulation path is what makes the engine more than a fixed pipeline. Any tupled signal can be used as a parameter for another tupled signal that accepts modulation - anywhere a scalar parameter is accepted, a tupled generator may be substituted. Three places this surfaces:
 
 - **`wrap.param`** - frequency modulation /vibrato, FM, pitch envelopes/
 - **`lowpass.cutoff`** and **`highpass.cutoff`** - filter modulation /sweeps, wah-wah/
@@ -191,6 +190,47 @@ A typical modulation pattern uses `envelope` to shape a control signal, scales i
 ```
 
 The inner `envelope` receives a constant `flat 1` source, gates it for 1 second, and applies an ADSR shape. The output is a curve from 0 to 1. Multiply by 2500 to get 0 to 2500. Add 500 to get 500 to 3000. Feed that into `lowpass` as the cutoff, and the filter sweeps over time.
+
+Read that expression as a patch:
+
+```mermaid
+---
+config:
+  layout: dagre
+  flowchart:
+    nodeSpacing: 25
+    rankSpacing: 55
+    curve: linear
+---
+flowchart LR
+    subgraph cv["control path · CV"]
+        direction LR
+        flat["flat 1<br/>DC source"]
+        g1["gate<br/>1 s"]
+        env["envelope<br/>A 0 · D 0 · S 1 · R 1"]
+        mul["× 2500<br/>depth"]
+        add["+ 500<br/>offset"]
+        flat --> g1 --> env --> mul --> add
+    end
+
+    subgraph audio["audio path"]
+        direction LR
+        saw["sawtooth<br/>220 Hz"]
+        g2["gate<br/>1 s"]
+        saw ==> g2
+    end
+
+    lp["lowpass<br/>source · cutoff"]
+    out([output])
+
+    g2 ==>|"source<br/>&nbsp;"| lp
+    add -->|"cutoff CV<br/>&nbsp;"| lp
+    lp ==> out
+```
+
+Two paths, two rail thicknesses. The **audio path** /thick/ carries the sawtooth from oscillator through filter to output. The **control path** /thin/ builds a CV - *control voltage*, modular-synth jargon for a signal used to modulate parameters rather than be heard. A DC source is gated to 1 second, envelope-shaped into a 0-to-1 ramp, scaled to 0-2500, offset by 500, and patched into `lowpass`'s cutoff jack.
+
+Same primitives as the audio path - `gate`, `envelope`, arithmetic - but wired for control, not sound. That's the whole trick: the engine has no separate CV world. A tupled signal becomes modulation the moment it lands on a parameter port.
 
 ## Reference
 

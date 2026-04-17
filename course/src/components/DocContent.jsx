@@ -8,16 +8,33 @@ mermaid.initialize({
   startOnLoad: false,
   theme: 'base',
   themeVariables: {
-    primaryColor: '#ede9fe',
-    primaryBorderColor: '#a78bfa',
+    primaryColor: '#faf5ff',
+    primaryBorderColor: '#c4b5fd',
     primaryTextColor: '#374151',
     lineColor: '#6b7280',
     secondaryColor: '#f5f3ff',
     tertiaryColor: '#faf5ff',
+    edgeLabelBackground: 'transparent',
     fontFamily: 'Inter, sans-serif',
     fontSize: '14px',
   },
-  flowchart: { htmlLabels: true, curve: 'basis' },
+  themeCSS: `
+    .edgeLabel, .edgeLabel p, .edgeLabel span, .edgeLabel div, .edgeLabel foreignObject > div {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+    .edgeLabel > rect, rect.labelBkg {
+      fill: none !important;
+      stroke: none !important;
+    }
+  `,
+  flowchart: {
+    htmlLabels: true,
+    curve: 'basis',
+    nodeSpacing: 40,
+    rankSpacing: 70,
+    diagramPadding: 8,
+  },
 });
 
 function joinUrlFs(path) {
