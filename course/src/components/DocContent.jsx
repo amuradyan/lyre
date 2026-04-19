@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import mermaid from 'mermaid';
 import { parseMarkdown } from '../toolbox/slides/slideParser.js';
 import LyreCodeblock from './slide/codeblock/LyreCodeblock.jsx';
+import PlayableLyreJsCodeblock from './slide/codeblock/PlayableLyreJsCodeblock.jsx';
 import Flow from './Flow.jsx';
 
 mermaid.initialize({
@@ -172,16 +173,21 @@ function renderBlock(item, i) {
           <Html html={item.content} />
         </p>
       );
-    case 'list':
+    case 'list': {
+      const Tag = item.ordered ? 'ol' : 'ul';
+      const listCls = item.ordered
+        ? 'list-decimal list-inside space-y-1 ml-8 text-gray-700'
+        : 'list-disc list-inside space-y-1 ml-8 text-gray-700';
       return (
-        <ul key={i} className="list-disc list-inside space-y-1 ml-8 text-gray-700">
+        <Tag key={i} className={listCls}>
           {item.items.map((li, j) => (
             <li key={j}>
               <Html html={li} />
             </li>
           ))}
-        </ul>
+        </Tag>
       );
+    }
     case 'blockquote':
       return (
         <blockquote
@@ -213,28 +219,53 @@ function renderBlock(item, i) {
           className="max-w-full h-auto my-6 mx-auto block"
         />
       );
-    case 'codeblock': {
-      if (item.language === 'flow') {
-        return <Flow key={i} slug={item.code.trim()} />;
-      }
-      if (item.language === 'mermaid') {
-        return <Mermaid key={i} chart={item.code} />;
-      }
-      if (item.language === 'lyre' || item.language === 'lisp') {
-        return <LyreCodeblock key={i} code={item.code} showContainer={true} />;
-      }
+    case 'codeblock':
+      return renderCodeblockItem(item, i);
+    case 'codeblock-group':
       return (
-        <pre
-          key={i}
-          className="bg-white/60 border border-purple-100 p-3 text-xs overflow-x-auto font-mono rounded-sm"
-        >
-          <code>{item.code}</code>
-        </pre>
+        <div key={i} className="flex flex-col md:flex-row gap-4 items-start my-6">
+          {item.blocks.map((block, j) => (
+            <div key={j} className="flex-1 min-w-0 w-full">
+              <div className="text-xs font-mono text-gray-500 mb-1 uppercase tracking-wide">
+                {columnLabel(block.language)}
+              </div>
+              {renderCodeblockItem(block, j)}
+            </div>
+          ))}
+        </div>
       );
-    }
     default:
       return null;
   }
+}
+
+function columnLabel(language) {
+  if (language === 'lyre' || language === 'lisp') return 'Lyre';
+  if (language === 'javascript') return 'JS';
+  return language || '';
+}
+
+function renderCodeblockItem(item, i) {
+  if (item.language === 'flow') {
+    return <Flow key={i} slug={item.code.trim()} />;
+  }
+  if (item.language === 'mermaid') {
+    return <Mermaid key={i} chart={item.code} />;
+  }
+  if (item.language === 'lyre' || item.language === 'lisp') {
+    return <LyreCodeblock key={i} code={item.code} showContainer={true} />;
+  }
+  if (item.language === 'javascript') {
+    return <PlayableLyreJsCodeblock key={i} code={item.code} />;
+  }
+  return (
+    <pre
+      key={i}
+      className="bg-white/60 border border-purple-100 p-3 text-xs overflow-x-auto font-mono rounded-sm"
+    >
+      <code>{item.code}</code>
+    </pre>
+  );
 }
 
 export default function DocContent({ markdownPath }) {

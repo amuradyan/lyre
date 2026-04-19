@@ -12,6 +12,7 @@ const inlineNavigation = /^#####\s+(Next|Back|Skip):\s+\[([^\]]+)\]\(([^)]+)\)/i
 
 const startsWithHash = /^#/;
 const bulletPoint = /^[*+-]\s+/;
+const orderedBullet = /^\d+\.\s+/;
 const fourOrMoreSpaces = /^\s{4,}/;
 const twoOrMoreTabs = /^\t{2,}/;
 const collapsibleMarker = /^>\+\s+/;
@@ -20,6 +21,7 @@ const horizontalRule = /^-{4,}\s*$/;
 const imageMarkdown = /^!\[([^\]]*)\]\(([^)]*)\)\s*$/;
 
 const bulletContentCapture = /^\s*[*+-]\s+(.+)$/;
+const orderedBulletContentCapture = /^\s*\d+\.\s+(.+)$/;
 const blockquoteContentCapture = /^\s*>\s+(.+)$/;
 const fourSpaces = /^\s{4}/;
 const twoTabs = /^\t{2}/;
@@ -85,6 +87,7 @@ const isCodeFence = (line) => line.startsWith('```');
 const isHeader = (line) => startsWithHash.test(line);
 const isEmpty = (line) => line.trim() === '';
 const isBulletPoint = (line) => bulletPoint.test(line.trim()) && !fourOrMoreSpaces.test(line) && !twoOrMoreTabs.test(line);
+const isOrderedBullet = (line) => orderedBullet.test(line.trim()) && !fourOrMoreSpaces.test(line) && !twoOrMoreTabs.test(line);
 const isCollapsible = (line) => collapsibleMarker.test(line.trim());
 const isBlockquote = (line) => blockquoteMarker.test(line) && !isCollapsible(line);
 const isIndentedContent = (line) => fourOrMoreSpaces.test(line) || twoOrMoreTabs.test(line);
@@ -100,14 +103,20 @@ const createParagraph = (lines) => {
   };
 };
 
-const createList = (items) =>
+const createList = (items, ordered = false) =>
   items.length ? {
     type: 'list',
+    ordered,
     items: items.map(item => processInlineCode(item.trim()))
   } : null;
 
 const extractBulletContent = (line) => {
   const match = line.match(bulletContentCapture);
+  return match ? match[1].trim() : '';
+};
+
+const extractOrderedBulletContent = (line) => {
+  const match = line.match(orderedBulletContentCapture);
   return match ? match[1].trim() : '';
 };
 
@@ -312,6 +321,7 @@ const createInitialState = () => ({
     inCode: false,
     currentPara: [],
     currentList: [],
+    currentListOrdered: false,
     currentBlockquote: [],
     currentIndented: [],
     currentCollapsible: [],
@@ -333,14 +343,14 @@ const flushParagraph = (state) => {
 };
 
 const flushList = (state) => {
-  const list = createList(state.context.currentList);
-  return list 
+  const list = createList(state.context.currentList, state.context.currentListOrdered);
+  return list
     ? {
         ...state,
         content: [...state.content, list],
-        context: { ...state.context, currentList: [] }
+        context: { ...state.context, currentList: [], currentListOrdered: false }
       }
-    : { ...state, context: { ...state.context, currentList: [] } };
+    : { ...state, context: { ...state.context, currentList: [], currentListOrdered: false } };
 };
 
 const flushBlockquote = (state) => {
@@ -515,10 +525,33 @@ const processLine = (lines) => (state, line, index) => {
     const flushed = flushParagraph(state);
     const flushedBlockquote = flushBlockquote(flushed);
     const flushedIndented = flushIndented(flushedBlockquote);
+    const listFlushed = flushedIndented.context.currentListOrdered ? flushList(flushedIndented) : flushedIndented;
     const bulletContent = extractBulletContent(line);
     return {
-      ...flushedIndented,
-      context: { ...flushedIndented.context, currentList: [...flushedIndented.context.currentList, bulletContent] }
+      ...listFlushed,
+      context: {
+        ...listFlushed.context,
+        currentList: [...listFlushed.context.currentList, bulletContent],
+        currentListOrdered: false
+      }
+    };
+  }
+
+  if (!context.inCode && isOrderedBullet(line)) {
+    const flushed = flushParagraph(state);
+    const flushedBlockquote = flushBlockquote(flushed);
+    const flushedIndented = flushIndented(flushedBlockquote);
+    const listFlushed = (flushedIndented.context.currentList.length > 0 && !flushedIndented.context.currentListOrdered)
+      ? flushList(flushedIndented)
+      : flushedIndented;
+    const bulletContent = extractOrderedBulletContent(line);
+    return {
+      ...listFlushed,
+      context: {
+        ...listFlushed.context,
+        currentList: [...listFlushed.context.currentList, bulletContent],
+        currentListOrdered: true
+      }
     };
   }
   

@@ -141,7 +141,7 @@ export default function LyreCodeblock({
 
   if (showContainer) {
     return (
-      <div className="bg-white/70 backdrop-blur shadow-sm overflow-hidden relative">
+      <div className="bg-white/70 backdrop-blur material-shadow overflow-hidden relative">
         {editorContent}
       </div>
     );
