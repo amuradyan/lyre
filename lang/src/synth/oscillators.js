@@ -75,9 +75,9 @@ export const raw = {
   },
 };
 
-raw.sine.atPhase     = (phase) => Math.sin(phase);
+raw.sine.atPhase = (phase) => Math.sin(phase);
 raw.sawtooth.atPhase = (phase) => -1 + 2 * (phase / (2 * Math.PI));
-raw.square.atPhase   = (phase) => phase < Math.PI ? 1 : -1;
+raw.square.atPhase = (phase) => phase < Math.PI ? 1 : -1;
 raw.triangle.atPhase = (phase) => {
   const normalized = phase / (2 * Math.PI);
   return normalized < 0.5 ? -1 + 4 * normalized : 3 - 4 * normalized;

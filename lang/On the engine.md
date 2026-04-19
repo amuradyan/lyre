@@ -13,35 +13,13 @@ The engine is split into two layers separated by a single bridge function. Every
 
 The raw world is small - just five oscillators. The tupled world is everything else: shapers, filters, combinators, arithmetic. The bridge between them is `wrap`.
 
-```mermaid
----
-config:
-  layout: dagre
-  flowchart:
-    nodeSpacing: 25
-    rankSpacing: 55
-    curve: linear
----
-flowchart LR
-    raw["raw oscillators<br/>sine · sawtooth · square · triangle · flat"]
-
-    raw ==>|"raw<br/>&nbsp;"| wrap["wrap<br/><i>fixed or modulating frequency</i>"]
-
-    subgraph primitives["tupled primitives · any-to-any"]
-        direction LR
-        gate ~~~ envelope ~~~ gain
-        lowpass ~~~ highpass ~~~ math["+  -  *  /"]
-        sequence ~~~ harmony ~~~ mix
-    end
-
-    wrap ==>|"tupled<br/>&nbsp;"| primitives
-    primitives ==>|"tupled<br/>&nbsp;"| primitives
-    primitives ==>|"tupled<br/>&nbsp;"| output([output])
+```flow
+engine-main
 ```
 
-Edges are labeled with what flows along them. The `raw -> wrap` edge is the only one carrying raw numbers; everything after `wrap` is tupled.
+The `raw -> wrap` edge is the only one carrying raw numbers; everything after `wrap` is tupled. `wrap` feeds the bus once; from then on, every primitive is a tap on the same line.
 
-The self-loop on `primitives` is the composability claim: any tupled output can feed any tupled input. The single arrow into `output` is the other half: nothing else consumes. Two worlds, one bridge, one sink.
+Any tap's output can flow into any other tap's input - that's what "any-to-any" means and why all the primitives share one rail. The bus drains into `output`; nothing else consumes. Two worlds, one bridge, one sink.
 
 ## The raw world
 
@@ -53,7 +31,7 @@ Five oscillators live under the `raw` namespace. They take a number and yield nu
 - `raw.triangle` - softer, odd harmonics with sharper rolloff than square
 - `raw.flat` - constant value forever /not really an oscillator, but lives in raw for uniformity/
 
-Raw oscillators are stateless to the user - you give them a frequency, they yield numbers. The Lyre prelude never exposes them directly. They always go through `wrap` first.
+Raw oscillators carry no visible state - you give them a frequency, they yield numbers. The Lyre prelude never exposes them directly. They always go through `wrap` first.
 
 ## The bridge - wrap
 
@@ -70,8 +48,8 @@ config:
 ---
 flowchart LR
     wrap[wrap]
-    fixed["number param<br/>/fixed frequency/"]
-    modgen["generator param<br/>/varying frequency/"]
+    fixed["number param<br/>/fixed frequency/<br/><i>e.g. 440</i>"]
+    modgen["generator param<br/>/varying frequency/<br/><i>e.g. (+ 440 (sine 5))</i>"]
     modulate
     out([tupled signal])
 
@@ -84,7 +62,7 @@ flowchart LR
 
 When the parameter is a number, `wrap` calls the raw oscillator and lifts each yielded sample into a tuple. When the parameter is a generator, `wrap` delegates to `modulate`, which reads a fresh frequency from the generator each sample and recomputes phase increment.
 
-`modulate` is the generator-path half of the bridge. We refer to the pair as `wrap` in composition diagrams; `modulate` surfaces in the reference because it's a callable in its own right.
+`modulate` is the generator-path half of the bridge. In composition diagrams, the pair appears as `wrap`. `modulate` surfaces in the reference - it's callable in its own right.
 
 This is what makes vibrato possible. `(sine (+ 440 (* 10 (sine 5))))` evaluates the inner expression to a generator yielding values around 440. `wrap` sees a generator, dispatches to `modulate`, and produces a 440 Hz sine that wobbles ±10 Hz at 5 Hz.
 
@@ -114,7 +92,7 @@ Take a tupled source and yield a transformed tupled signal of the same length:
 
 ### Combinators
 
-Variadic - take multiple tupled sources and combine them:
+Variadic - fold multiple sources into one:
 
 - `sequence(sources...)` - plays each source one after another
 - `harmony(sources...)` - sums samples in parallel without normalization
@@ -122,7 +100,7 @@ Variadic - take multiple tupled sources and combine them:
 
 ## Composing a pluck
 
-The canonical example: a plucked string sound.
+The canonical example - a plucked string:
 
 ```mermaid
 ---
@@ -152,29 +130,23 @@ Three steps, three concerns:
 2. **Time-box** - `gate` decides the note lasts 1.5 seconds
 3. **Shape** - `envelope` applies the ADSR curve over those 1.5 seconds
 
-Each stage's parameters live in its box; each edge's label tells you what kind of signal arrives at the next stage. The boundary between the two worlds is the `raw -> wrap` edge - the only one carrying raw samples.
-
-In Lyre:
+Each stage's parameters live in its box; each edge's label tells you what kind of signal arrives at the next stage. The boundary between the two worlds is the `raw -> wrap` edge - the only one carrying raw samples. Note how in Lyre, you do not have to `wrap`, the system will do it for you.
 
 ```lisp
 (envelope 0.01 0.4 0 0.5
   (gate 1.5 (sine 440)))
 ```
 
-In JS:
-
-```js
-envelope(
-  0.01, 0.4, 0, 0.5,
-  gate(1.5, wrap(raw.sine, 440))
-)
+```javascript
+envelope(0.01, 0.4, 0, 0.5,
+  gate(1.5, wrap(raw.sine, 440)))
 ```
 
 Each primitive does one thing. The composition tells the story.
 
 ## Modulation
 
-The modulation path is what makes the engine more than a fixed pipeline. Any tupled signal can be used as a parameter for another tupled signal that accepts modulation - anywhere a scalar parameter is accepted, a tupled generator may be substituted. Three places this surfaces:
+Modulation is what lifts the engine above a fixed pipeline. Anywhere a scalar is accepted, a tupled generator can substitute. Three places this surfaces:
 
 - **`wrap.param`** - frequency modulation /vibrato, FM, pitch envelopes/
 - **`lowpass.cutoff`** and **`highpass.cutoff`** - filter modulation /sweeps, wah-wah/
@@ -220,11 +192,11 @@ flowchart LR
         saw ==> g2
     end
 
-    lp["lowpass<br/>source · cutoff"]
+    lp["lowpass<br/>cutoff · source"]
     out([output])
 
-    g2 ==>|"source<br/>&nbsp;"| lp
     add -->|"cutoff CV<br/>&nbsp;"| lp
+    g2 ==>|"source<br/>&nbsp;"| lp
     lp ==> out
 ```
 

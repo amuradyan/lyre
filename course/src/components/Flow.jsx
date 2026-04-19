@@ -31,10 +31,18 @@ export default function Flow({ slug }) {
   }
 
   return (
-    <div className="my-6">
+    <div>
       <div
-        style={{ width: '100%', height: diagram.height || 400 }}
-        className="rounded-sm"
+        style={{
+          width: '100%',
+          height: diagram.height || 400,
+          transformOrigin: 'center',
+          willChange: 'transform',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+          WebkitFontSmoothing: 'antialiased',
+        }}
+        className="rounded-sm transition-transform duration-1200 ease-in-out hover:scale-[1.2]"
       >
         <ReactFlow
           nodes={diagram.nodes}
@@ -52,7 +60,7 @@ export default function Flow({ slug }) {
           zoomOnDoubleClick={false}
           preventScrolling={false}
           fitView
-          fitViewOptions={{ padding: 0.15 }}
+          fitViewOptions={{ padding: 0 }}
           proOptions={{ hideAttribution: true }}
         >
           <Background gap={24} size={1} color="#e9d5ff" />
