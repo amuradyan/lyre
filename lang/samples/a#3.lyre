@@ -27,3 +27,19 @@
           (gain (sine 473) 1.5)
           (gain (sine 947) 1.2))
         1.5))))
+
+; -------------------------------------------------------
+; FM version - frequency modulation with decaying index
+;
+; A sine carrier at 237 Hz modulated by another sine at 237 Hz.
+; The modulation depth starts high /many sidebands = bright/ and
+; decays to zero /only the carrier remains = mellow/ in 0.5 seconds.
+; The ratio 1:1 produces integer harmonics like a real plucked string,
+; and the irregular Bessel amplitudes give the characteristic timbre.
+
+(envelope 0.003 1.5 0 0.5
+  (gate 2.0
+    (sine
+      (+ 237
+         (* (sine 237)
+            (* 2500 (envelope 0 0 1 0.5 (gate 0.5 (flat 1)))))))))
