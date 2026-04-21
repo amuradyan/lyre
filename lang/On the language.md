@@ -115,28 +115,23 @@ Now `play` uses `triangle` instead of `sine`, quarter-second ticks, and differen
 
 ## Syntactic sugar
 
-Three sugar forms exist. They're expanded by `desugar` before evaluation.
+Three sugar forms are expanded by `desugar` before evaluation.
 
-### Sequence and mix prefixes
-
-```lisp
--(expr1 expr2 ...)   →   (sequence expr1 expr2 ...)
-=(expr1 expr2 ...)   →   (mix expr1 expr2 ...)
+```text
+source          desugared               meaning
+--------        ------------------      -----------------------------
+-(a b c)        (sequence a b c)        play a, then b, then c
+=(a b c)        (mix a b c)             sum normalized by voice count
+.C4             (play 1 C4)             one tick
+:G4             (play 2 G4)             two ticks
+.:A4            (play 3 A4)             three ticks  /. = 1, : = 2/
+C4.             (play 0.5 C4)           half tick    /suffix divides/
+C4:             (play 0.25 C4)          quarter tick
 ```
 
-The `-` and `=` only trigger as sugar when they appear before a parenthesized group. Inside an expression like `(- a b)`, they remain arithmetic operators. The desugar pass protects operator position - only arguments get sugar-expanded.
+Prefix `.` and `:` multiply the tick count; suffix versions divide. The formula is `prefixSum / suffixSum`, with each `.` worth 1 and each `:` worth 2.
 
-### Dot notation
-
-```lisp
-.C4      →   (play 1 C4)       ; one tick
-:G4      →   (play 2 G4)       ; two ticks
-.:A4     →   (play 3 A4)       ; three ticks
-C4.      →   (play 0.5 C4)     ; half tick /suffix divides/
-C4:      →   (play 0.25 C4)    ; quarter tick
-```
-
-Prefix dots and colons multiply tick count. Suffix dots and colons divide. Each `.` = 1, each `:` = 2. The formula is `prefixSum / suffixSum`.
+The `-` and `=` only trigger as sugar when they appear before a parenthesized group. Inside an expression like `(- a b)`, they remain arithmetic operators - only arguments get sugar-expanded.
 
 ### Bar separator
 
