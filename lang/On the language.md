@@ -30,17 +30,8 @@ Every section below zooms into one of these stages.
 
 ## Evaluation
 
-```mermaid
-flowchart TD
-    expr[expression] --> isStr{string?}
-    isStr -->|yes| isNum{number?}
-    isNum -->|yes| num[return number]
-    isNum -->|no| look[lookup in env]
-    isStr -->|no| isLet{operator = let?}
-    isLet -->|yes| let[bind names, evaluate bodies]
-    isLet -->|no| eval[evaluate all operands]
-    eval --> fn[lookup operator]
-    fn --> call[call function with evaluated args]
+```flow
+language-evaluator
 ```
 
 The evaluator is twelve lines of code. It handles two cases:
