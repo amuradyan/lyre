@@ -16,6 +16,18 @@ Parentheses group. The first position names the operation. The rest are argument
 
 That's the whole syntax. Comments start with `;` and run to end of line.
 
+## The path of a note
+
+A single expression - `.C4` - travels through every stage of the language on its way to the speakers. Each stage below picks up one transition from this spine.
+
+```flow
+language-spine
+```
+
+The arrows are the transforms; the code under each box is what the expression looks like at that stage. `.C4` starts as typed text, becomes nested arrays of strings, gets sugar-expanded into `(play 1 C4)`, resolves `C4` to 261.63 Hz in the prelude, runs as a generator yielding `[sample, n, totalSamples]` tuples, and ends in the audio worklet.
+
+Every section below zooms into one of these stages.
+
 ## Evaluation
 
 ```mermaid
