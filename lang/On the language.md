@@ -1,3 +1,5 @@
+<!-- cspell:words Lyre variadic desugar ADSR tupled lowpass highpass sawtooth freqGen rawFn -->
+
 # On the language
 
 This document explains the Lyre language - its syntax, evaluation model, syntactic sugar, and what it could become.
@@ -62,7 +64,9 @@ Every name resolves through the same lookup. User bindings from `let` shadow pre
 
 ### Functions take arrays
 
-Prelude functions receive `(args, env)` - the evaluated arguments as an array, and the current environment. This means any function can be variadic:
+> Every prelude function receives `(args, env)` - an array of evaluated arguments plus the current environment.
+
+That single convention is what makes every function variadic by default:
 
 ```lisp
 (envelope 0.01 0.1 0.7 0.2    ; ADSR params
