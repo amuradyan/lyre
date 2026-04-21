@@ -5,6 +5,7 @@ import { bridgeWrap } from './bridgeWrap.jsx';
 import { modulationPatch } from './modulationPatch.jsx';
 import { languageSpine } from './languageSpine.jsx';
 import { languageEvaluator } from './languageEvaluator.jsx';
+import { languagePrelude } from './languagePrelude.jsx';
 
 export const diagrams = {
   'engine-main': engineMain,
@@ -13,6 +14,7 @@ export const diagrams = {
   'modulation-patch': modulationPatch,
   'language-spine': languageSpine,
   'language-evaluator': languageEvaluator,
+  'language-prelude': languagePrelude,
 };
 
 export const nodeTypes = sharedNodeTypes;

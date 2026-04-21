@@ -1,4 +1,4 @@
-<!-- cspell:words Lyre variadic desugar ADSR tupled lowpass highpass sawtooth freqGen rawFn filt -->
+<!-- cspell:words Lyre variadic desugar desugared ADSR tupled lowpass highpass sawtooth freqGen rawFn filt -->
 
 # On the language
 
@@ -56,21 +56,8 @@ Every leaf is a string until evaluation. Numbers are parsed, names are looked up
 
 The prelude is a flat list of `[name, value]` pairs. Functions are values - looked up the same way notes are. This is the Lisp-1 property: `sine` lives in the same namespace as `A4`.
 
-```mermaid
-flowchart LR
-    subgraph values["values"]
-        notes["C1 ... G6<br/>note → frequency"]
-        defaults[". attack decay<br/>sustain release"]
-        wave["wave → sine"]
-    end
-    subgraph functions["functions"]
-        osc["sine sawtooth<br/>square triangle flat"]
-        shape["envelope gain gate"]
-        filt["lowpass highpass"]
-        comp["sequence harmony mix"]
-        arith["+ - * /"]
-        sugar["play"]
-    end
+```flow
+language-prelude
 ```
 
 Every name resolves through the same lookup. User bindings from `let` shadow prelude entries - lookup searches backwards from the most recent binding.
