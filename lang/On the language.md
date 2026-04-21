@@ -1,4 +1,4 @@
-<!-- cspell:words Lyre variadic desugar ADSR tupled lowpass highpass sawtooth freqGen rawFn -->
+<!-- cspell:words Lyre variadic desugar ADSR tupled lowpass highpass sawtooth freqGen rawFn filt -->
 
 # On the language
 
@@ -37,7 +37,17 @@ The evaluator is twelve lines of code. It handles two cases:
 
 **Arrays** - the first element is the operator, the rest are operands. If the operator is `let`, it's a special form /bind names, evaluate bodies/. Otherwise: evaluate all operands first, look up the operator, call it with the results.
 
-There are no macros, no lazy evaluation, no short-circuiting. Every argument is fully evaluated before the function sees it. This is as simple as an evaluator gets.
+What the evaluator walks is plain nested arrays - the same expression in Lyre and in the exact JavaScript object the evaluator receives:
+
+```lisp
+(sine (+ 440 10))
+```
+
+```javascript
+["sine", ["+", "440", "10"]]
+```
+
+Every leaf is a string until evaluation. Numbers are parsed, names are looked up, and the tree drives itself. There are no macros, no lazy evaluation, no short-circuiting. Every argument is fully evaluated before the function sees it. This is as simple as an evaluator gets.
 
 ## The prelude
 
