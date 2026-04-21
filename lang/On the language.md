@@ -84,15 +84,18 @@ The `-` and `=` only trigger as sugar when they appear before a parenthesized gr
 
 ## Evaluation
 
+Every Lyre expression takes one of these shapes:
+
 ```flow
-language-evaluator
+language-grammar
 ```
 
-The evaluator is twelve lines of code. It handles two cases:
+The evaluator is twelve lines of code. It dispatches on shape:
 
-**Strings** - try to parse as a number. If that works, return it. Otherwise look it up in the environment. This is how `A4` becomes `440` and `sine` becomes a function.
-
-**Arrays** - the first element is the operator, the rest are operands. If the operator is `let`, it's a special form /bind names, evaluate bodies/. Otherwise: evaluate all operands first, look up the operator, call it with the results.
+- **`number`** - returned unchanged. A string that `parseFloat` consumed.
+- **`name`** - looked up in the current environment, falling back to the prelude. This is how `A4` resolves to `440` and `sine` to a function.
+- **`let-form`** - the only special form. Binds names sequentially, then evaluates bodies in the new scope.
+- **`call`** - evaluate each operand, look up the operator, call it with the evaluated args.
 
 What the evaluator walks is plain nested arrays - the same expression in Lyre and in the exact JavaScript object the evaluator receives:
 

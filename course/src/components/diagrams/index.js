@@ -4,7 +4,7 @@ import { pluck } from './pluck.jsx';
 import { bridgeWrap } from './bridgeWrap.jsx';
 import { modulationPatch } from './modulationPatch.jsx';
 import { languageSpine } from './languageSpine.jsx';
-import { languageEvaluator } from './languageEvaluator.jsx';
+import { languageGrammar } from './languageGrammar.jsx';
 import { languagePrelude } from './languagePrelude.jsx';
 
 export const diagrams = {
@@ -13,7 +13,7 @@ export const diagrams = {
   'bridge-wrap': bridgeWrap,
   'modulation-patch': modulationPatch,
   'language-spine': languageSpine,
-  'language-evaluator': languageEvaluator,
+  'language-grammar': languageGrammar,
   'language-prelude': languagePrelude,
 };
 
