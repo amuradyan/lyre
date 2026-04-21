@@ -28,6 +28,60 @@ The arrows are the transforms; the code under each box is what the expression lo
 
 Every section below zooms into one of these stages.
 
+## Syntax as tree
+
+The tokenizer is a single-pass character scanner. It walks the source one character at a time, opening arrays on `(`, closing on `)`, splitting on whitespace or pipes, and stripping comments that start with `;`. The output is nested arrays of strings, ready for `desugar`.
+
+```text
+"(sine A4)"   →  tokenize  →  [["sine", "A4"]]
+                                    ↓
+                              desugar  →  [["sine", "A4"]]   /no sugar here/
+
+".C4 .E4"     →  tokenize  →  [".C4", ".E4"]
+                                    ↓
+                              desugar  →  [["play", "1", "C4"], ["play", "1", "E4"]]
+```
+
+Top-level expressions come back as an array so the runner can play them in sequence. Every leaf is a string - numbers, names, operators all arrive in string form. The evaluator is what turns them into values.
+
+## Syntactic sugar
+
+Three sugar forms are expanded by `desugar` before evaluation.
+
+```text
+source          desugared               meaning
+--------        ------------------      -----------------------------
+-(a b c)        (sequence a b c)        play a, then b, then c
+=(a b c)        (mix a b c)             sum normalized by voice count
+.C4             (play 1 C4)             one tick
+:G4             (play 2 G4)             two ticks
+.:A4            (play 3 A4)             three ticks  /. = 1, : = 2/
+C4.             (play 0.5 C4)           half tick    /suffix divides/
+C4:             (play 0.25 C4)          quarter tick
+```
+
+Prefix `.` and `:` multiply the tick count; suffix versions divide. The formula is `prefixSum / suffixSum`, with each `.` worth 1 and each `:` worth 2.
+
+The `-` and `=` only trigger as sugar when they appear before a parenthesized group. Inside an expression like `(- a b)`, they remain arithmetic operators - only arguments get sugar-expanded.
+
+### Bar separator
+
+`|` is whitespace. It does nothing but helps visually:
+
+```lisp
+-(.C4 .C4 .G4 .G4 | .A4 .A4 :G4
+  .F4 .F4 .E4 .E4 | .D4 .D4 :C4)
+```
+
+### Rests
+
+`(play N 0)` or `.0` produces silence. Frequency 0 means the oscillator generates nothing, and the envelope runs for the specified ticks. Useful for rhythmic gaps:
+
+```lisp
+-(play 0.5 0)       ; half-tick rest
+-(.C4 .0 .E4 .0)   ; notes with rests between
+```
+
 ## Evaluation
 
 ```flow
@@ -103,44 +157,6 @@ Override any default with `let`:
 
 Now `play` uses `triangle` instead of `sine`, quarter-second ticks, and different ADSR.
 
-## Syntactic sugar
-
-Three sugar forms are expanded by `desugar` before evaluation.
-
-```text
-source          desugared               meaning
---------        ------------------      -----------------------------
--(a b c)        (sequence a b c)        play a, then b, then c
-=(a b c)        (mix a b c)             sum normalized by voice count
-.C4             (play 1 C4)             one tick
-:G4             (play 2 G4)             two ticks
-.:A4            (play 3 A4)             three ticks  /. = 1, : = 2/
-C4.             (play 0.5 C4)           half tick    /suffix divides/
-C4:             (play 0.25 C4)          quarter tick
-```
-
-Prefix `.` and `:` multiply the tick count; suffix versions divide. The formula is `prefixSum / suffixSum`, with each `.` worth 1 and each `:` worth 2.
-
-The `-` and `=` only trigger as sugar when they appear before a parenthesized group. Inside an expression like `(- a b)`, they remain arithmetic operators - only arguments get sugar-expanded.
-
-### Bar separator
-
-`|` is whitespace. It does nothing but helps visually:
-
-```lisp
--(.C4 .C4 .G4 .G4 | .A4 .A4 :G4
-  .F4 .F4 .E4 .E4 | .D4 .D4 :C4)
-```
-
-### Rests
-
-`(play N 0)` or `.0` produces silence. Frequency 0 means the oscillator generates nothing, and the envelope runs for the specified ticks. Useful for rhythmic gaps:
-
-```lisp
--(play 0.5 0)       ; half-tick rest
--(.C4 .0 .E4 .0)   ; notes with rests between
-```
-
 ## `let` - the only special form
 
 `let` binds names to values in a new scope:
@@ -161,18 +177,11 @@ Bindings are sequential - later bindings can reference earlier ones. Multiple bo
 
 `let` is the only form the evaluator handles specially. Everything else - `envelope`, `gate`, `play`, `sine` - goes through the same evaluate-then-call path.
 
-## What the tokenizer does
+## What's next
 
-The tokenizer is a single-pass character scanner. It builds nested arrays from parentheses, splits on whitespace/pipes, strips comments, and hands the result to `desugar`.
+The language is deliberately small. Two things would let it grow without losing that:
 
-```
-"(sine A4)"  →  tokenize  →  [["sine", "A4"]]
-                                    ↓
-                              desugar  →  [["sine", "A4"]]  (no sugar here)
+- **Patches** /user-defined functions/. A `patch` special form returning a callable would let users compose reusable shapes - n-pole filters, notch and band-pass built from lowpass plus highpass, custom envelopes - without touching the engine primitives.
+- **Modules and imports**. Separating the mechanical parts of a piece /scales, patterns, patches/ from the piece itself, and sharing them between pieces.
 
-".C4 .E4"   →  tokenize  →  [".C4", ".E4"]
-                                    ↓
-                              desugar  →  [["play", "1", "C4"], ["play", "1", "E4"]]
-```
-
-Top-level expressions are returned as an array. Multiple top-level expressions are played in sequence by the runner.
+Error reporting is a third thing missing, but that's plumbing, not design.
