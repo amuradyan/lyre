@@ -6,11 +6,7 @@ This document explains the Lyre language - its syntax, evaluation model, syntact
 
 ## A minimal Lisp
 
-Lyre is a Lisp-1. One namespace, one evaluation rule, one special form. Everything else is a function looked up in the prelude.
-
-```
-(operator arg1 arg2 ...)
-```
+Lyre is a Lisp-1. One namespace, one evaluation rule, one special form. Everything else is a function looked up in the prelude: `(operator arg1 arg2 ...)`.
 
 Parentheses group. The first position names the operation. The rest are arguments. Nested expressions are evaluated before the outer one. Numbers are numbers. Names resolve to values - a frequency, a function, a default parameter.
 
@@ -162,12 +158,7 @@ Now `play` uses `triangle` instead of `sine`, quarter-second ticks, and differen
 
 ## `let` - the only special form
 
-`let` binds names to values in a new scope:
-
-```lisp
-(let (name1 value1 name2 value2 ...)
-  body1 body2 ...)
-```
+`let` binds names to values in a new scope: `(let (name1 value1 name2 value2 ...) body1 body2 ...)`.
 
 Bindings are sequential - later bindings can reference earlier ones. Multiple bodies are sequenced. The bound names shadow anything in the enclosing scope.
 
