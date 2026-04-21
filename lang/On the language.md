@@ -93,17 +93,13 @@ The evaluator is twelve lines of code. It dispatches on shape:
 - **`let-form`** - the only special form. Binds names sequentially, then evaluates bodies in the new scope.
 - **`call`** - evaluate each operand, look up the operator, call it with the evaluated args.
 
-What the evaluator walks is plain nested arrays - the same expression in Lyre and in the exact JavaScript object the evaluator receives:
+What the evaluator walks is plain nested arrays. This Lyre expression:
 
 ```lisp
 (sine (+ 440 10))
 ```
 
-```javascript
-["sine", ["+", "440", "10"]]
-```
-
-Every leaf is a string until evaluation. Numbers are parsed, names are looked up, and the tree drives itself. There are no macros, no lazy evaluation, no short-circuiting. Every argument is fully evaluated before the function sees it. This is as simple as an evaluator gets.
+becomes the JavaScript array `["sine", ["+", "440", "10"]]` - the exact object the evaluator receives. Every leaf is a string until evaluation. Numbers are parsed, names are looked up, and the tree drives itself. There are no macros, no lazy evaluation, no short-circuiting. Every argument is fully evaluated before the function sees it. This is as simple as an evaluator gets.
 
 ## The prelude
 
