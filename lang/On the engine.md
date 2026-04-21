@@ -37,27 +37,8 @@ Raw oscillators carry no visible state - you give them a frequency, they yield n
 
 `wrap` lifts a raw oscillator into the tupled world. Its behavior depends on what you pass as the second argument:
 
-```mermaid
----
-config:
-  layout: dagre
-  flowchart:
-    nodeSpacing: 25
-    rankSpacing: 55
-    curve: linear
----
-flowchart LR
-    wrap[wrap]
-    fixed["number param<br/>/fixed frequency/<br/><i>e.g. 440</i>"]
-    modgen["generator param<br/>/varying frequency/<br/><i>e.g. (+ 440 (sine 5))</i>"]
-    modulate
-    out([tupled signal])
-
-    fixed --> wrap
-    modgen --> wrap
-    wrap -->|"number path<br/>&nbsp;"| out
-    wrap -->|"generator path<br/>&nbsp;"| modulate
-    modulate --> out
+```flow
+bridge-wrap
 ```
 
 When the parameter is a number, `wrap` calls the raw oscillator and lifts each yielded sample into a tuple. When the parameter is a generator, `wrap` delegates to `modulate`, which reads a fresh frequency from the generator each sample and recomputes phase increment.
@@ -102,26 +83,8 @@ Variadic - fold multiple sources into one:
 
 The canonical example - a plucked string:
 
-```mermaid
----
-config:
-  layout: dagre
-  flowchart:
-    nodeSpacing: 25
-    rankSpacing: 55
-    curve: linear
----
-flowchart LR
-    raw["raw.sine<br/>440 Hz"]
-    wrap["wrap"]
-    gate["gate<br/>1.5 s"]
-    env["envelope<br/>A 0.01 · D 0.4 · S 0 · R 0.5"]
-    out([output])
-
-    raw ==>|"raw<br/>&nbsp;"| wrap
-    wrap ==>|"tupled · infinite<br/>&nbsp;"| gate
-    gate ==>|"tupled · 1.5 s<br/>&nbsp;"| env
-    env ==>|"shaped<br/>&nbsp;"| out
+```flow
+pluck
 ```
 
 Three steps, three concerns:
@@ -165,39 +128,8 @@ The inner `envelope` receives a constant `flat 1` source, gates it for 1 second,
 
 Read that expression as a patch:
 
-```mermaid
----
-config:
-  layout: dagre
-  flowchart:
-    nodeSpacing: 25
-    rankSpacing: 55
-    curve: linear
----
-flowchart LR
-    subgraph cv["control path · CV"]
-        direction LR
-        flat["flat 1<br/>DC source"]
-        g1["gate<br/>1 s"]
-        env["envelope<br/>A 0 · D 0 · S 1 · R 1"]
-        mul["× 2500<br/>depth"]
-        add["+ 500<br/>offset"]
-        flat --> g1 --> env --> mul --> add
-    end
-
-    subgraph audio["audio path"]
-        direction LR
-        saw["sawtooth<br/>220 Hz"]
-        g2["gate<br/>1 s"]
-        saw ==> g2
-    end
-
-    lp["lowpass<br/>cutoff · source"]
-    out([output])
-
-    add -->|"cutoff CV<br/>&nbsp;"| lp
-    g2 ==>|"source<br/>&nbsp;"| lp
-    lp ==> out
+```flow
+modulation-patch
 ```
 
 Two paths, two rail thicknesses. The **audio path** /thick/ carries the sawtooth from oscillator through filter to output. The **control path** /thin/ builds a CV - *control voltage*, modular-synth jargon for a signal used to modulate parameters rather than be heard. A DC source is gated to 1 second, envelope-shaped into a 0-to-1 ramp, scaled to 0-2500, offset by 500, and patched into `lowpass`'s cutoff jack.

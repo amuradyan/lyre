@@ -1,193 +1,48 @@
 /* cspell:words xyflow tupled */
-import { Handle, Position, MarkerType } from '@xyflow/react';
+import {
+  primitiveStyle,
+  outputStyle,
+  wrapStyle,
+  arrowDeep,
+  arrowStub,
+  boldEdgeStyle,
+  thinEdgeStyle,
+  H_COMPACT,
+  H_STANDARD,
+  H_EMPHASIS,
+  H_BUS,
+  TwoLineLabel,
+} from './shared.jsx';
 
+// Dimensions
 const PRIMITIVE_W = 90;
-const PRIMITIVE_H = 40;
 const EDGE_W = 160;
-const EDGE_H = 50;
-const RAW_H = 66;
-const WRAP_H = 100;
-const WRAP_W = 135;
 const BUS_W = 520;
-const BUS_H = 24;
 const OUTPUT_W = 70;
 
+// Layout — everything on the main row shares BASELINE_Y
+const BASELINE_Y = 135;
+const BUS_Y = BASELINE_Y - H_BUS / 2;
+const RAW_Y = BASELINE_Y - H_EMPHASIS / 2;
+const WRAP_Y = BASELINE_Y - H_EMPHASIS / 2;
+const OUTPUT_Y = BASELINE_Y - H_STANDARD / 2;
+
 const RAW_X = 0;
-const WRAP_X = 210;
-const BUS_X = 420;
-const OUTPUT_X = 990;
-const MAIN_Y = 110;
-const BUS_Y = 123;
-const RAW_Y = 135 - RAW_H / 2;
-const WRAP_Y = 135 - WRAP_H / 2;
+const WRAP_X = 247;
+const BUS_X = 502;
+const OUTPUT_X = 1109;
 
 const ABOVE_Y = 50;
 const BELOW_Y = 190;
 
-const aboveCenters = [472, 576, 680, 784, 888];
-const belowCenters = [485, 615, 745, 875];
-
+const aboveCenters = [554, 658, 762, 866, 970];
+const belowCenters = [567, 697, 827, 957];
 const abovePercents = ['10%', '30%', '50%', '70%', '90%'];
 const belowPercents = ['12.5%', '37.5%', '62.5%', '87.5%'];
 
-const primitiveStyle = {
-  background: '#ddd6fe',
-  border: 'none',
-  borderRadius: 4,
-  padding: '6px 10px',
-  fontSize: 13,
-  fontWeight: 500,
-  color: '#374151',
-  fontFamily: 'Inter, sans-serif',
-  textAlign: 'center',
-  width: PRIMITIVE_W,
-  height: PRIMITIVE_H,
-  boxSizing: 'border-box',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
+const primitiveBoxStyle = { ...primitiveStyle, width: PRIMITIVE_W, height: H_COMPACT };
 
-const edgePieceStyle = {
-  ...primitiveStyle,
-  width: EDGE_W,
-  height: EDGE_H,
-};
-
-const rawStyle = {
-  ...edgePieceStyle,
-  height: RAW_H,
-  flexDirection: 'column',
-  lineHeight: 1.15,
-};
-
-const wrapStyle = {
-  ...edgePieceStyle,
-  width: WRAP_W,
-  height: WRAP_H,
-  background: '#ddd6fe',
-  border: 'none',
-  color: '#374151',
-  fontWeight: 600,
-  flexDirection: 'column',
-  lineHeight: 1.15,
-};
-
-const outputStyle = {
-  ...edgePieceStyle,
-  width: OUTPUT_W,
-  borderRadius: 9999,
-  background: '#ede9fe',
-  border: 'none',
-  color: '#111827',
-  fontWeight: 500,
-};
-
-const busStyle = {
-  width: BUS_W,
-  height: BUS_H,
-  borderRadius: 6,
-  background: '#9ca3af',
-  border: 'none',
-  color: '#1f2937',
-  fontFamily: 'Inter, sans-serif',
-  fontWeight: 600,
-  fontSize: 12,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  boxSizing: 'border-box',
-  position: 'relative',
-  lineHeight: 1,
-};
-
-const hiddenHandle = {
-  width: 6,
-  height: 6,
-  background: 'transparent',
-  border: 'none',
-  minWidth: 0,
-  minHeight: 0,
-};
-
-function MultiHandleNode({ data }) {
-  const style = data.style || primitiveStyle;
-  return (
-    <div style={style}>
-      <Handle type="target" position={Position.Top} id="t-in" style={hiddenHandle} />
-      <Handle type="target" position={Position.Right} id="r-in" style={hiddenHandle} />
-      <Handle type="target" position={Position.Bottom} id="b-in" style={hiddenHandle} />
-      <Handle type="target" position={Position.Left} id="l-in" style={hiddenHandle} />
-      <Handle type="source" position={Position.Top} id="t-out" style={hiddenHandle} />
-      <Handle type="source" position={Position.Right} id="r-out" style={hiddenHandle} />
-      <Handle type="source" position={Position.Bottom} id="b-out" style={hiddenHandle} />
-      <Handle type="source" position={Position.Left} id="l-out" style={hiddenHandle} />
-      {data.label}
-    </div>
-  );
-}
-
-function EdgeLabelNode({ data }) {
-  return (
-    <div
-      style={{
-        fontFamily: 'Inter, sans-serif',
-        textAlign: 'center',
-        lineHeight: 1,
-        pointerEvents: 'none',
-        background: 'transparent',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 6,
-      }}
-    >
-      <div style={{ fontSize: 11, color: '#4b5563', fontWeight: 500 }}>{data.top}</div>
-      <div style={{ fontSize: 11, color: '#4b5563', fontWeight: 500 }}>{data.bottom}</div>
-    </div>
-  );
-}
-
-function BusNode({ data }) {
-  return (
-    <div style={busStyle}>
-      <Handle type="target" position={Position.Left} id="l-in" style={hiddenHandle} />
-      <Handle type="source" position={Position.Right} id="r-out" style={hiddenHandle} />
-      {abovePercents.map((left, i) => (
-        <Handle
-          key={`t-${i}`}
-          type="target"
-          position={Position.Top}
-          id={`t-${i}`}
-          style={{ ...hiddenHandle, left }}
-        />
-      ))}
-      {belowPercents.map((left, i) => (
-        <Handle
-          key={`b-${i}`}
-          type="target"
-          position={Position.Bottom}
-          id={`b-${i}`}
-          style={{ ...hiddenHandle, left }}
-        />
-      ))}
-      {data.label}
-    </div>
-  );
-}
-
-export const nodeTypes = {
-  multi: MultiHandleNode,
-  bus: BusNode,
-  edgeLabel: EdgeLabelNode,
-};
-
-const wrapLabel = (
-  <div className="flex flex-col items-center leading-tight">
-    <div>wrap</div>
-    <div className="text-[10px] italic text-purple-700 mt-2">fixed or varying frequency</div>
-  </div>
-);
-
+// Waveform icons for the raw-oscillators label
 const wavePaths = {
   sine: 'M 0 6 Q 5 -4 10 6 T 20 6',
   saw: 'M 0 11 L 20 1 L 20 11',
@@ -247,145 +102,122 @@ const nodes = [
   {
     id: 'raw',
     type: 'multi',
-    data: { label: rawLabel, style: rawStyle },
+    data: {
+      label: rawLabel,
+      style: { ...primitiveStyle, width: EDGE_W, height: H_EMPHASIS, flexDirection: 'column', lineHeight: 1.15 },
+    },
     position: { x: RAW_X, y: RAW_Y },
-    draggable: false,
-    selectable: false,
-    connectable: false,
+    draggable: false, selectable: false, connectable: false,
   },
   {
     id: 'wrap',
     type: 'multi',
-    data: { label: wrapLabel, style: wrapStyle },
+    data: {
+      label: <TwoLineLabel top="wrap" bottom="fixed or varying frequency" />,
+      style: { ...wrapStyle, width: EDGE_W, height: H_EMPHASIS },
+    },
     position: { x: WRAP_X, y: WRAP_Y },
-    draggable: false,
-    selectable: false,
-    connectable: false,
+    draggable: false, selectable: false, connectable: false,
   },
   {
     id: 'bus',
     type: 'bus',
-    data: { label: 'tupled bus · any-to-any' },
+    data: {
+      label: 'tupled bus · any-to-any',
+      style: { width: BUS_W, height: H_BUS },
+      topHandles: abovePercents,
+      bottomHandles: belowPercents,
+    },
     position: { x: BUS_X, y: BUS_Y },
-    draggable: false,
-    selectable: false,
-    connectable: false,
+    draggable: false, selectable: false, connectable: false,
   },
   {
     id: 'output',
     type: 'multi',
-    data: { label: 'output', style: outputStyle },
-    position: { x: OUTPUT_X, y: MAIN_Y },
-    draggable: false,
-    selectable: false,
-    connectable: false,
+    data: {
+      label: 'output',
+      style: { ...outputStyle, width: OUTPUT_W, height: H_STANDARD },
+    },
+    position: { x: OUTPUT_X, y: OUTPUT_Y },
+    draggable: false, selectable: false, connectable: false,
   },
   {
     id: 'label-raw',
     type: 'edgeLabel',
     data: { top: 'raw', bottom: 'signal' },
-    position: { x: 165, y: 122 },
-    draggable: false,
-    selectable: false,
-    connectable: false,
+    position: { x: 183, y: 122 },
+    draggable: false, selectable: false, connectable: false,
   },
   {
     id: 'label-wrap-bus',
     type: 'edgeLabel',
     data: { top: 'tupled', bottom: 'signal' },
-    position: { x: 362, y: 122 },
-    draggable: false,
-    selectable: false,
-    connectable: false,
+    position: { x: 434, y: 122 },
+    draggable: false, selectable: false, connectable: false,
   },
   {
     id: 'label-bus-output',
     type: 'edgeLabel',
     data: { top: 'tupled', bottom: 'signal' },
-    position: { x: 945, y: 122 },
-    draggable: false,
-    selectable: false,
-    connectable: false,
+    position: { x: 1045, y: 122 },
+    draggable: false, selectable: false, connectable: false,
   },
   ...abovePrimitives.map((id, i) => ({
     id,
     type: 'multi',
-    data: { label: primitiveLabels[id] },
+    data: { label: primitiveLabels[id], style: primitiveBoxStyle },
     position: { x: aboveCenters[i] - PRIMITIVE_W / 2, y: ABOVE_Y },
-    draggable: false,
-    selectable: false,
-    connectable: false,
+    draggable: false, selectable: false, connectable: false,
   })),
   ...belowPrimitives.map((id, i) => ({
     id,
     type: 'multi',
-    data: { label: primitiveLabels[id] },
+    data: { label: primitiveLabels[id], style: primitiveBoxStyle },
     position: { x: belowCenters[i] - PRIMITIVE_W / 2, y: BELOW_Y },
-    draggable: false,
-    selectable: false,
-    connectable: false,
+    draggable: false, selectable: false, connectable: false,
   })),
 ];
 
-const purpleDeep = '#7c3aed';
-const gray = '#9ca3af';
-
-const arrowDeep = { type: MarkerType.ArrowClosed, color: purpleDeep, width: 14, height: 14 };
-const arrowStub = { type: MarkerType.ArrowClosed, color: gray, width: 8, height: 8 };
-
-const boldEdgeStyle = { stroke: purpleDeep, strokeWidth: 1.75 };
-const stubEdgeStyle = { stroke: gray, strokeWidth: 1, strokeOpacity: 0.7 };
-
-const baseEdges = [
+const edges = [
   {
     id: 'e-raw-wrap',
-    source: 'raw',
-    target: 'wrap',
-    sourceHandle: 'r-out',
-    targetHandle: 'l-in',
+    source: 'raw', target: 'wrap',
+    sourceHandle: 'r-out', targetHandle: 'l-in',
     type: 'smoothstep',
     markerEnd: arrowDeep,
     style: boldEdgeStyle,
   },
   {
     id: 'e-wrap-bus',
-    source: 'wrap',
-    target: 'bus',
-    sourceHandle: 'r-out',
-    targetHandle: 'l-in',
+    source: 'wrap', target: 'bus',
+    sourceHandle: 'r-out', targetHandle: 'l-in',
     type: 'smoothstep',
     markerEnd: arrowDeep,
     style: boldEdgeStyle,
   },
   {
     id: 'e-bus-output',
-    source: 'bus',
-    target: 'output',
-    sourceHandle: 'r-out',
-    targetHandle: 'l-in',
+    source: 'bus', target: 'output',
+    sourceHandle: 'r-out', targetHandle: 'l-in',
     type: 'smoothstep',
     markerEnd: arrowDeep,
     style: boldEdgeStyle,
   },
   ...abovePrimitives.map((id, i) => ({
     id: `stub-${id}`,
-    source: id,
-    target: 'bus',
-    sourceHandle: 'b-out',
-    targetHandle: `t-${i}`,
+    source: id, target: 'bus',
+    sourceHandle: 'b-out', targetHandle: `t-${i}`,
     type: 'straight',
-    style: stubEdgeStyle,
+    style: thinEdgeStyle,
     markerStart: arrowStub,
     markerEnd: arrowStub,
   })),
   ...belowPrimitives.map((id, i) => ({
     id: `stub-${id}`,
-    source: id,
-    target: 'bus',
-    sourceHandle: 't-out',
-    targetHandle: `b-${i}`,
+    source: id, target: 'bus',
+    sourceHandle: 't-out', targetHandle: `b-${i}`,
     type: 'straight',
-    style: stubEdgeStyle,
+    style: thinEdgeStyle,
     markerStart: arrowStub,
     markerEnd: arrowStub,
   })),
@@ -393,7 +225,7 @@ const baseEdges = [
 
 export const engineMain = {
   nodes,
-  edges: baseEdges,
+  edges,
   tooltips: {
     raw: 'Five stateless generators that yield plain numbers: sine, sawtooth, square, triangle, flat',
     wrap: 'Lifts a raw oscillator into the tupled world. Dispatches to modulate when given a generator frequency',
