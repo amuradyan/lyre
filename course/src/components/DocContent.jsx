@@ -261,7 +261,8 @@ function renderCodeblockItem(item, i) {
   return (
     <pre
       key={i}
-      className="bg-white/60 border border-purple-100 p-3 text-xs overflow-x-auto font-mono rounded-sm"
+      className="material-shadow overflow-x-auto py-2 px-4 text-sm leading-5"
+      style={{ background: '#faf5ff', fontFamily: 'IBM Plex Mono, monospace' }}
     >
       <code>{item.code}</code>
     </pre>
