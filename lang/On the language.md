@@ -197,12 +197,3 @@ Bindings are sequential - later bindings can reference earlier ones. Multiple bo
     (envelope 0.01 1.0 0 0.5 (gate 1.51 (sine root)))
     (envelope 0.01 1.0 0 0.5 (gate 1.51 (sine fifth)))))
 ```
-
-## What's next
-
-The language is deliberately small. Two things would let it grow without losing that:
-
-- **Patches** /user-defined functions/. A `patch` special form returning a callable would let users compose reusable shapes - n-pole filters, notch and band-pass built from lowpass plus highpass, custom envelopes - without touching the engine primitives.
-- **Modules and imports**. Separating the mechanical parts of a piece /scales, patterns, patches/ from the piece itself, and sharing them between pieces.
-
-Error reporting is a third thing missing, but that's plumbing, not design.
