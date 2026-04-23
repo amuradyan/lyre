@@ -174,25 +174,29 @@ Override any default with `let`:
 
 Now `play` uses `triangle` instead of `sine`, quarter-second ticks, and different ADSR.
 
-## `let` - the only special form
+## `let` - the binder
 
-`let` binds names to values in a new scope:
+`let` introduces a local scope and binds names inside it. Values can be anything - a frequency, a waveform, a rest symbol, a whole sub-expression - and the names become available to every body that follows.
 
 ```text
-(let (name1 value1 name2 value2 ...)
+(let
+  (name1 value1
+   name2 value2 ...)
+
   body1 body2 ...)
 ```
 
 Bindings are sequential - later bindings can reference earlier ones. Multiple bodies are sequenced automatically, so wrapping them in `-(...)` inside a `let` is redundant. The bound names shadow anything in the enclosing scope.
 
 ```lisp
-(let (root 220 fifth (* root 1.5))
+(let
+  (root 220
+   fifth (* root 1.5))
+
   =(
     (envelope 0.01 1.0 0 0.5 (gate 1.51 (sine root)))
     (envelope 0.01 1.0 0 0.5 (gate 1.51 (sine fifth)))))
 ```
-
-`let` is the only form the evaluator handles specially. Everything else - `envelope`, `gate`, `play`, `sine` - goes through the same evaluate-then-call path.
 
 ## What's next
 
