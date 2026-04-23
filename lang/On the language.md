@@ -42,23 +42,42 @@ Top-level expressions come back as an array so the runner can play them in seque
 
 ## Syntactic sugar
 
-Three sugar forms are expanded by `desugar` before evaluation.
+A handful of shorthand forms get expanded before evaluation to make music code read naturally.
+
+### Composition
+
+`-(...)` and `=(...)` wrap their operands in `sequence` and `mix`:
 
 ```text
 source          desugared               meaning
 --------        ------------------      -----------------------------
 -(a b c)        (sequence a b c)        play a, then b, then c
 =(a b c)        (mix a b c)             sum normalized by voice count
-.C4             (play 1 C4)             one tick
-:G4             (play 2 G4)             two ticks
-.:A4            (play 3 A4)             three ticks  /. = 1, : = 2/
-C4.             (play 0.5 C4)           half tick    /suffix divides/
-C4:             (play 0.25 C4)          quarter tick
 ```
 
-Prefix `.` and `:` multiply the tick count; suffix versions divide. The formula is `prefixSum / suffixSum`, with each `.` worth 1 and each `:` worth 2.
+They only trigger before a parenthesized group. Inside an expression like `(- a b)`, they remain arithmetic operators - only arguments get sugar-expanded.
 
-The `-` and `=` only trigger as sugar when they appear before a parenthesized group. Inside an expression like `(- a b)`, they remain arithmetic operators - only arguments get sugar-expanded.
+### Dot notation
+
+`.C4`, `:G4`, `.:A4:` and friends are shorthand for `(play N note)`. The notation is loosely borrowed from sheet music - where a dot after a note extends it by half, and a second dot halves that half - but repurposed here for arbitrary fractions.
+
+A bare name on its own is left alone: `A3` resolves to its prelude frequency of 220 Hz and plays no tone until at least one dot or colon is attached.
+
+Dots and colons count on both sides of the note name. Each `.` is worth one, each `:` is worth two, and they are interchangeable: `:` is the same as `..`, and `:.:` the same as `.....`. The tick count is the left-side sum over the right-side sum, with either side defaulting to one when empty. Left dots multiply, right dots divide, and mixing the two gives fractions:
+
+```text
+token          ticks        note
+--------       --------     -----------------------------------
+.A3            1/1 = 1      one tick
+:A3            2/1 = 2      two ticks       /same as ..A3/
+.:A3           3/1 = 3      three ticks     /same as :.A3 or ...A3/
+:.:A3          5/1 = 5      five ticks
+A3:            1/2 = 0.5    half tick
+A3::           1/4 = 0.25   quarter
+.:A3::         3/4 = 0.75   three quarters
+```
+
+This is the only route to fractional ticks short of writing `(play 0.75 A3)` by hand.
 
 ### Bar separator
 
@@ -71,11 +90,14 @@ The `-` and `=` only trigger as sugar when they appear before a parenthesized gr
 
 ### Rests
 
-`(play N 0)` or `.0` produces silence. Frequency 0 means the oscillator generates nothing, and the envelope runs for the specified ticks. Useful for rhythmic gaps:
+`(play N 0)` or `.0` produces silence. Frequency 0 means the oscillator generates nothing, and the envelope runs for the specified ticks- useful for rhythmic gaps. A tip to make it read like sheet music is to bind `𝄽` to `0` and use that for rests.
 
 ```lisp
 (play 0.5 0)       ; half-tick rest
 -(.C4 .0 .E4 .0)   ; notes with rests between
+
+(let (𝄽 0)         ; same via a sheet-music rest
+  .C4 .𝄽 .E4 .𝄽 )
 ```
 
 ## Evaluation
@@ -154,9 +176,14 @@ Now `play` uses `triangle` instead of `sine`, quarter-second ticks, and differen
 
 ## `let` - the only special form
 
-`let` binds names to values in a new scope: `(let (name1 value1 name2 value2 ...) body1 body2 ...)`.
+`let` binds names to values in a new scope:
 
-Bindings are sequential - later bindings can reference earlier ones. Multiple bodies are sequenced. The bound names shadow anything in the enclosing scope.
+```text
+(let (name1 value1 name2 value2 ...)
+  body1 body2 ...)
+```
+
+Bindings are sequential - later bindings can reference earlier ones. Multiple bodies are sequenced automatically, so wrapping them in `-(...)` inside a `let` is redundant. The bound names shadow anything in the enclosing scope.
 
 ```lisp
 (let (root 220 fifth (* root 1.5))
