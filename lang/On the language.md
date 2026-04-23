@@ -74,7 +74,7 @@ The `-` and `=` only trigger as sugar when they appear before a parenthesized gr
 `(play N 0)` or `.0` produces silence. Frequency 0 means the oscillator generates nothing, and the envelope runs for the specified ticks. Useful for rhythmic gaps:
 
 ```lisp
--(play 0.5 0)       ; half-tick rest
+(play 0.5 0)       ; half-tick rest
 -(.C4 .0 .E4 .0)   ; notes with rests between
 ```
 
