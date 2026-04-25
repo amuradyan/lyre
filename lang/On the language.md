@@ -108,12 +108,10 @@ Every Lyre expression takes one of these shapes:
 language-grammar
 ```
 
-The evaluator is twelve lines of code. It dispatches on shape:
+Shape drives the dispatch:
 
-- **`number`** - returned unchanged. A string that `parseFloat` consumed.
-- **`name`** - looked up in the current environment, falling back to the prelude. This is how `A4` resolves to `440` and `sine` to a function.
-- **`let-form`** - the only special form. Binds names sequentially, then evaluates bodies in the new scope.
-- **`call`** - evaluate each operand, look up the operator, call it with the evaluated args.
+- A **string** is either<br>&nbsp;&nbsp;&nbsp;&nbsp;a `number` /when `parseFloat` consumes it, returned as-is/, or<br>&nbsp;&nbsp;&nbsp;&nbsp;a `name` /otherwise, looked up in the env and then the prelude/.
+- An **array** is either<br>&nbsp;&nbsp;&nbsp;&nbsp;a `let-form` /when the first element is `let`; binds names sequentially and evaluates the bodies in the new scope/, or<br>&nbsp;&nbsp;&nbsp;&nbsp;a `call` /otherwise; evaluates operands, looks up the operator, runs `fn(args, env)`/.
 
 What the evaluator walks is plain nested arrays. This Lyre expression:
 
@@ -121,7 +119,7 @@ What the evaluator walks is plain nested arrays. This Lyre expression:
 (sine (+ 440 10))
 ```
 
-becomes the JavaScript array `["sine", ["+", "440", "10"]]` - the exact object the evaluator receives. Every leaf is a string until evaluation. Numbers are parsed, names are looked up, and the tree drives itself. There are no macros, no lazy evaluation, no short-circuiting. Every argument is fully evaluated before the function sees it. This is as simple as an evaluator gets.
+becomes the JavaScript array `["sine", ["+", "440", "10"]]` - the exact object the evaluator receives. Every leaf is a string until evaluation. Numbers are parsed, names are looked up, and the tree drives itself. Evaluation is eager - every operand runs in full before the operator sees it, with no macros and no short-circuiting. This is as simple as an evaluator gets.
 
 ## The prelude
 
