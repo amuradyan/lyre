@@ -31,6 +31,25 @@ function StageLabel({ stage, value }) {
   );
 }
 
+function SpeakerIcon() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#6b21a8"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M11 5 L6 9 H2 v6 h4 l5 4 Z" />
+      <path d="M15.54 8.46 a5 5 0 0 1 0 7.07" />
+      <path d="M19.07 4.93 a10 10 0 0 1 0 14.14" />
+    </svg>
+  );
+}
+
 const nodes = [
   {
     id: 'source',
@@ -86,8 +105,8 @@ const nodes = [
     id: 'speaker',
     type: 'multi',
     data: {
-      label: '🔊',
-      style: { ...outputStyle, width: 60, height: H, fontSize: 22 },
+      label: <SpeakerIcon />,
+      style: { ...outputStyle, width: 60, height: H },
     },
     position: { x: 1060, y: Y },
     draggable: false, selectable: false, connectable: false,
@@ -132,5 +151,5 @@ export const languageSpine = {
     generator: 'A JavaScript generator yielding [sample, n, totalSamples] tuples',
     speaker: 'The audio worklet consumes samples and streams them to the speakers',
   },
-  height: 140,
+  height: 100,
 };

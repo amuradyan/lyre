@@ -2,31 +2,40 @@
 import {
   primitiveStyle,
   boldEdgeStyle,
-  H_COMPACT,
-  H_STANDARD,
+  arrowDeep,
   TwoLineLabel,
 } from './shared.jsx';
 
-const twoLineBox = { ...primitiveStyle, flexDirection: 'column', lineHeight: 1.15 };
+const H_LEAF = 46;
+const H_ROOT = 34;
+
+const twoLineBox = {
+  ...primitiveStyle,
+  flexDirection: 'column',
+  lineHeight: 1.15,
+  fontSize: 13,
+  padding: '4px 10px',
+};
 
 const rootStyle = {
   ...primitiveStyle,
-  height: H_COMPACT,
+  fontSize: 13,
   fontWeight: 600,
   background: '#c4b5fd',
   color: '#2e1065',
+  padding: '4px 10px',
 };
 
-const ROOT_Y = 10;
-const LEVEL1_Y = 90;
-const LEVEL2_Y = 175;
+const ROOT_Y = 6;
+const LEVEL1_Y = 60;
+const LEVEL2_Y = 128;
 
 const nodes = [
   {
     id: 'expression',
     type: 'multi',
-    data: { label: 'expression', style: { ...rootStyle, width: 120 } },
-    position: { x: 350, y: ROOT_Y },
+    data: { label: 'expression', style: { ...rootStyle, width: 108, height: H_ROOT } },
+    position: { x: 235, y: ROOT_Y },
     draggable: false, selectable: false, connectable: false,
   },
   {
@@ -34,9 +43,9 @@ const nodes = [
     type: 'multi',
     data: {
       label: <TwoLineLabel top="number" bottom="440  ·  1.5" />,
-      style: { ...twoLineBox, width: 140, height: H_STANDARD },
+      style: { ...twoLineBox, width: 92, height: H_LEAF },
     },
-    position: { x: 140, y: LEVEL1_Y },
+    position: { x: 100, y: LEVEL1_Y },
     draggable: false, selectable: false, connectable: false,
   },
   {
@@ -44,9 +53,9 @@ const nodes = [
     type: 'multi',
     data: {
       label: <TwoLineLabel top="name" bottom="A4  ·  sine  ·  wave" />,
-      style: { ...twoLineBox, width: 180, height: H_STANDARD },
+      style: { ...twoLineBox, width: 134, height: H_LEAF },
     },
-    position: { x: 320, y: LEVEL1_Y },
+    position: { x: 222, y: LEVEL1_Y },
     draggable: false, selectable: false, connectable: false,
   },
   {
@@ -54,9 +63,9 @@ const nodes = [
     type: 'multi',
     data: {
       label: <TwoLineLabel top="array" bottom="( … )" />,
-      style: { ...twoLineBox, width: 120, height: H_STANDARD },
+      style: { ...twoLineBox, width: 92, height: H_LEAF },
     },
-    position: { x: 560, y: LEVEL1_Y },
+    position: { x: 386, y: LEVEL1_Y },
     draggable: false, selectable: false, connectable: false,
   },
   {
@@ -64,9 +73,9 @@ const nodes = [
     type: 'multi',
     data: {
       label: <TwoLineLabel top="let-form" bottom="(let bindings body+)" />,
-      style: { ...twoLineBox, width: 200, height: H_STANDARD },
+      style: { ...twoLineBox, width: 168, height: H_LEAF },
     },
-    position: { x: 430, y: LEVEL2_Y },
+    position: { x: 279, y: LEVEL2_Y },
     draggable: false, selectable: false, connectable: false,
   },
   {
@@ -74,9 +83,9 @@ const nodes = [
     type: 'multi',
     data: {
       label: <TwoLineLabel top="call" bottom="(op args*)" />,
-      style: { ...twoLineBox, width: 140, height: H_STANDARD },
+      style: { ...twoLineBox, width: 108, height: H_LEAF },
     },
-    position: { x: 650, y: LEVEL2_Y },
+    position: { x: 477, y: LEVEL2_Y },
     draggable: false, selectable: false, connectable: false,
   },
 ];
@@ -85,7 +94,8 @@ const edge = (id, source, target) => ({
   id,
   source, target,
   sourceHandle: 'b-out', targetHandle: 't-in',
-  type: 'smoothstep',
+  type: 'straight',
+  markerEnd: arrowDeep,
   style: boldEdgeStyle,
 });
 
@@ -108,5 +118,6 @@ export const languageGrammar = {
     'let-form': 'The only special form. Binds names sequentially, evaluates bodies in the new scope',
     call: 'Function call. Evaluate operands, look up the operator, call with the evaluated args',
   },
-  height: 240,
+  height: 200,
+  noZoom: true,
 };

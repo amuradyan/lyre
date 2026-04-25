@@ -92,7 +92,7 @@ const primitiveLabels = {
   gain: 'gain',
   lowpass: 'lowpass',
   highpass: 'highpass',
-  math: '+  −  ×  ÷',
+  math: '+  -  *  /',
   sequence: 'sequence',
   harmony: 'harmony',
   mix: 'mix',

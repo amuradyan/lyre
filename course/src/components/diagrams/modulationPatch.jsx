@@ -49,7 +49,7 @@ const nodes = [
   {
     id: 'mul',
     type: 'multi',
-    data: { label: <TwoLineLabel top="× 2500" bottom="depth" />, style: { ...twoLineBox, width: 90 } },
+    data: { label: <TwoLineLabel top="* 2500" bottom="depth" />, style: { ...twoLineBox, width: 90 } },
     position: { x: 430, y: CV_Y },
     draggable: false, selectable: false, connectable: false,
   },

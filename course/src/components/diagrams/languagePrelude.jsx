@@ -1,4 +1,6 @@
-/* cspell:words Lyre tupled lowpass highpass sawtooth desugar */
+/* cspell:words Lyre tupled lowpass highpass sawtooth desugar ADSR buzzy */
+import { useContext } from 'react';
+import { TooltipContext } from '../tooltipContext.js';
 
 const pillStyle = {
   background: '#ede9fe',
@@ -11,10 +13,48 @@ const pillStyle = {
   whiteSpace: 'nowrap',
   lineHeight: 1.2,
   fontFamily: 'Inter, sans-serif',
+  cursor: 'help',
 };
 
-function Pill({ children }) {
-  return <span style={pillStyle}>{children}</span>;
+const pillTooltips = {
+  'C1 … A#3 … F4 … G6': 'Musical pitches resolved to frequencies in Hz',
+  '.': 'Tick duration in seconds /default 0.5/',
+  'wave': 'Default oscillator used by play /default sine/',
+  'attack': 'ADSR attack time in seconds /default 0.005/',
+  'decay': 'ADSR decay time in seconds /default 0/',
+  'sustain': 'ADSR sustain amplitude /default 1/',
+  'release': 'ADSR release time in seconds /default 0.005/',
+  'sine': 'Pure sine wave oscillator',
+  'sawtooth': 'Sawtooth wave - bright and buzzy',
+  'square': 'Square wave - hollow, clarinet-like',
+  'triangle': 'Triangle wave - soft, close to sine',
+  'flat': 'Constant DC signal at a given value',
+  'envelope': 'ADSR amplitude shaping over time',
+  'gain': 'Scales amplitude by a factor',
+  'lowpass': 'Lowpass filter - cuts above the cutoff frequency',
+  'highpass': 'Highpass filter - cuts below the cutoff frequency',
+  'sequence': 'Play sources one after another',
+  'harmony': 'Sum sources sample-by-sample - raw mix',
+  'mix': 'Harmony normalized by voice count',
+  '+': 'Add - on numbers or sample-by-sample on generators',
+  '-': 'Subtract - on numbers or sample-by-sample on generators',
+  '*': 'Multiply - on numbers or sample-by-sample on generators',
+  '/': 'Divide - on numbers or sample-by-sample on generators',
+  'gate': 'Run a source for N seconds, then stop',
+  'play': 'Wraps tone with default ADSR, tick, and waveform',
+};
+
+function Pill({ name, groupTooltip }) {
+  const { setTooltip } = useContext(TooltipContext);
+  return (
+    <span
+      style={pillStyle}
+      onMouseEnter={() => setTooltip(pillTooltips[name] || null)}
+      onMouseLeave={() => setTooltip(groupTooltip)}
+    >
+      {name}
+    </span>
+  );
 }
 
 const blobStyle = {
@@ -25,6 +65,7 @@ const blobStyle = {
   position: 'relative',
   boxSizing: 'border-box',
   minHeight: 86,
+  cursor: 'help',
 };
 
 const blobLabelStyle = {
@@ -38,9 +79,26 @@ const blobLabelStyle = {
   fontWeight: 500,
 };
 
+const groupTooltips = {
+  'Tones': 'Musical pitches in Hz - the frequencies a note resolves to',
+  'Control knobs': 'Defaults play reads from the environment - tick, wave, ADSR',
+  'Raw signals': 'Infinite waveform generators - feed through gate to bound them',
+  'Shapers': 'Amplitude transforms over time - applied to a single source',
+  'Filters': 'Frequency-domain transforms - cut above or below a cutoff',
+  'Composers': 'Combine multiple sources - serially or in parallel',
+  'Arithmetic': 'Scalar math, also operates sample-by-sample on generators',
+  'Framing': 'Bound an infinite signal in time - finishers',
+};
+
 function Blob({ label, entries }) {
+  const { setTooltip } = useContext(TooltipContext);
+  const groupTooltip = groupTooltips[label] || null;
   return (
-    <div style={blobStyle}>
+    <div
+      style={blobStyle}
+      onMouseEnter={() => setTooltip(groupTooltip)}
+      onMouseLeave={() => setTooltip(null)}
+    >
       <div style={blobLabelStyle}>{label}</div>
       <div
         style={{
@@ -51,7 +109,7 @@ function Blob({ label, entries }) {
         }}
       >
         {entries.map((e, i) => (
-          <Pill key={i}>{e}</Pill>
+          <Pill key={i} name={e} groupTooltip={groupTooltip} />
         ))}
       </div>
     </div>
@@ -59,13 +117,13 @@ function Blob({ label, entries }) {
 }
 
 const groups = [
-  { label: 'Tones', entries: ['C1 … G6'] },
+  { label: 'Tones', entries: ['C1 … A#3 … F4 … G6'] },
   { label: 'Control knobs', entries: ['.', 'wave', 'attack', 'decay', 'sustain', 'release'] },
   { label: 'Raw signals', entries: ['sine', 'sawtooth', 'square', 'triangle', 'flat'] },
   { label: 'Shapers', entries: ['envelope', 'gain'] },
   { label: 'Filters', entries: ['lowpass', 'highpass'] },
   { label: 'Composers', entries: ['sequence', 'harmony', 'mix'] },
-  { label: 'Arithmetic', entries: ['+', '−', '×', '÷'] },
+  { label: 'Arithmetic', entries: ['+', '-', '*', '/'] },
   null,
   { label: 'Framing', entries: ['gate', 'play'] },
 ];
@@ -131,9 +189,6 @@ const nodes = [
 export const languagePrelude = {
   nodes,
   edges: [],
-  tooltips: {
-    namespace:
-      'Every name resolves through the same lookup - notes, knobs, and functions side by side. The groupings are a reading aid; the namespace is flat',
-  },
+  tooltips: {},
   height: 360,
 };
