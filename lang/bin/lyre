@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { stream } from '../src/language/runner.js';
+import { compute, stream } from '../src/language/runner.js';
 import { tokenize, desugar } from '../src/language/tokenizer.js';
 import { readFileSync } from 'fs';
 import { spawn } from 'child_process';
@@ -7,6 +7,8 @@ import { spawn } from 'child_process';
 const args = process.argv.slice(2);
 const playMode = args.includes('--play');
 const desugarMode = args.includes('--desugar');
+const debugMode = args.includes('--debug');
+const streamMode = args.includes('--stream') || playMode;
 const filePath = args.find(arg => !arg.startsWith('--'));
 
 if (desugarMode) {
@@ -16,7 +18,16 @@ if (desugarMode) {
   process.exit(0);
 }
 
-const value = stream(filePath);
+const value = streamMode ? stream(filePath) : compute(filePath);
+
+if (debugMode) {
+  console.log('sample\tn\ttotal');
+  for (const [sample, n, total] of value) {
+    console.log(`${sample}\t${n}\t${total}`);
+  }
+  process.exit(0);
+}
+
 const buffer = Buffer.allocUnsafe(4);
 
 if (playMode) {

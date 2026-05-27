@@ -187,7 +187,7 @@ Override defaults with `let`:
 
 ## Command line
 
-The `lyre` command reads a `.lyre` file and outputs audio.
+The `lyre` command reads a `.lyre` file and writes the resulting samples.
 
 **Play directly:**
 
@@ -201,23 +201,29 @@ lyre sample.lyre --play
 lyre sample.lyre --desugar
 ```
 
+**Inspect the tuple stream:**
+
+```bash
+lyre sample.lyre --debug
+```
+
+Prints a tab-separated `sample\tn\ttotal` table - one row per yielded tuple. Add `--stream` to include the zero-padding that surrounds audio output.
+
 **Stream raw PCM to stdout:**
 
 ```bash
-lyre sample.lyre | ffplay -f f32le -ar 48000 -autoexit -
+lyre sample.lyre --stream | ffplay -f f32le -ar 48000 -autoexit -
 ```
 
-The `-f f32le` flag tells ffplay to expect 32-bit little-endian floats, `-ar 48000` sets the sample rate, and `-autoexit` quits when the audio finishes.
+`--stream` wraps the output with 4800 zero-samples on each side - 100 ms of silence that prevents clicks at the start and end of playback. `--play` implies `--stream` automatically. The `-f f32le` flag tells ffplay to expect 32-bit little-endian floats, `-ar 48000` sets the sample rate, and `-autoexit` quits when the audio finishes.
 
-For programmatic use, the `stream(filePath)` function reads a file and yields samples:
+For programmatic use, `compute(filePath)` yields raw evaluation results and `stream(filePath)` adds zero-padding on each side:
 
 ```js
-import { stream } from '@lyre/core';
+import { compute, stream } from '@lyre/core';
 
-const generator = stream('melody.lyre');
-for (const sample of generator) {
-  // process sample
-}
+for (const sample of compute('math.lyre')) { /* raw samples */ }
+for (const sample of stream('melody.lyre')) { /* padded for playback */ }
 ```
 
 ## Reference
