@@ -16,7 +16,7 @@ if (desugarMode) {
   process.exit(0);
 }
 
-const generator = stream(filePath);
+const value = stream(filePath);
 const buffer = Buffer.allocUnsafe(4);
 
 if (playMode) {
@@ -24,14 +24,14 @@ if (playMode) {
     stdio: ['pipe', 'inherit', 'inherit']
   });
 
-  for (const [sample] of generator) {
+  for (const [sample] of value) {
     buffer.writeFloatLE(sample, 0);
     ffplay.stdin.write(Buffer.from(buffer));
   }
 
   ffplay.stdin.end();
 } else {
-  for (const [sample] of generator) {
+  for (const [sample] of value) {
     buffer.writeFloatLE(sample, 0);
     process.stdout.write(Buffer.from(buffer));
   }

@@ -12,10 +12,17 @@ export function* stream(filePath) {
     yield [0, 0, 0];
   }
 
+  const isGen = (x) => typeof x?.next === 'function';
+
   for (const expr of tokens) {
-    const generator = evaluate(expr);
-    for (const sample of generator) {
-      yield sample;
+    const value = evaluate(expr);
+
+    if (isGen(value)) {
+      for (const sample of value) {
+        yield sample;
+      }
+    } else {
+      yield [value, 0, 1];
     }
   }
 
