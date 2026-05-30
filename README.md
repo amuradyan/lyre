@@ -126,6 +126,7 @@ npm run lint    # Run ESLint
 **CLI:**
 
 - `--play` flag for direct playback
+- `--eval '<code>'` for inline evaluation without a file
 - `--desugar` flag to inspect desugared tokens
 - Stream raw PCM for piping to other tools
 - Read `.lyre` files and generate audio

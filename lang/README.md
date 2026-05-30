@@ -187,13 +187,22 @@ Override defaults with `let`:
 
 ## Command line
 
-The `lyre` command reads a `.lyre` file and writes the resulting samples.
+The `lyre` command evaluates Lyre code - either from a `.lyre` file or an inline string - and writes the resulting samples.
 
 **Play directly:**
 
 ```bash
 lyre sample.lyre --play
 ```
+
+**Evaluate an inline string:**
+
+```bash
+lyre --eval '(+ 1 2)' --debug
+lyre --eval '(play 1 C4)' --play
+```
+
+`--eval` reads the code from the next argument instead of from a file. The other flags compose with it freely. Pass either a file path or `--eval`, not both.
 
 **Inspect desugared tokens:**
 
@@ -217,13 +226,13 @@ lyre sample.lyre --stream | ffplay -f f32le -ar 48000 -autoexit -
 
 `--stream` wraps the output with 4800 zero-samples on each side - 100 ms of silence that prevents clicks at the start and end of playback. `--play` implies `--stream` automatically. The `-f f32le` flag tells ffplay to expect 32-bit little-endian floats, `-ar 48000` sets the sample rate, and `-autoexit` quits when the audio finishes.
 
-For programmatic use, `compute(filePath)` yields raw evaluation results and `stream(filePath)` adds zero-padding on each side:
+For programmatic use, `compute(code)` yields raw evaluation results and `stream(code)` adds zero-padding on each side:
 
 ```js
 import { compute, stream } from '@lyre/core';
 
-for (const sample of compute('math.lyre')) { /* raw samples */ }
-for (const sample of stream('melody.lyre')) { /* padded for playback */ }
+for (const sample of compute('(+ 1 2)')) { /* raw samples */ }
+for (const sample of stream('(play 1 C4)')) { /* padded for playback */ }
 ```
 
 ## Reference

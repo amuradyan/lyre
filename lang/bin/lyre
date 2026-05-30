@@ -9,16 +9,30 @@ const playMode = args.includes('--play');
 const desugarMode = args.includes('--desugar');
 const debugMode = args.includes('--debug');
 const streamMode = args.includes('--stream') || playMode;
-const filePath = args.find(arg => !arg.startsWith('--'));
+
+const evalIdx = args.indexOf('--eval');
+const evalMode = evalIdx >= 0;
+const evalValue = evalMode ? args[evalIdx + 1] : null;
+
+const die = (msg) => { console.error(msg); process.exit(1); };
+
+if (evalMode && evalValue === undefined) die('Error: --eval requires a code string');
+
+const skipIdx = evalMode ? evalIdx + 1 : -1;
+const filePath = args.find((a, i) => !a.startsWith('--') && i !== skipIdx);
+
+if (evalMode && filePath) die('Error: --eval and a file path cannot be used together');
+if (!evalMode && !filePath) die('Usage: lyre [file.lyre | --eval <code>] [--play|--stream|--debug|--desugar]');
+
+const code = evalMode ? evalValue : readFileSync(filePath, 'utf-8');
 
 if (desugarMode) {
-  const code = readFileSync(filePath, 'utf-8');
   const tokens = desugar(tokenize(code));
   console.log(JSON.stringify(tokens, null, 2));
   process.exit(0);
 }
 
-const value = streamMode ? stream(filePath) : compute(filePath);
+const value = streamMode ? stream(code) : compute(code);
 
 if (debugMode) {
   console.log('sample\tn\ttotal');

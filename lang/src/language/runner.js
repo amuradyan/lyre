@@ -1,9 +1,7 @@
-import { readFileSync } from 'fs';
 import { tokenize, desugar } from './tokenizer.js';
 import { evaluate } from './evaluator.js';
 
-export function* compute(filePath) {
-  const code = readFileSync(filePath, 'utf-8');
+export function* compute(code) {
   const tokens = desugar(tokenize(code));
 
   const isGen = (x) => typeof x?.next === 'function';
@@ -19,14 +17,14 @@ export function* compute(filePath) {
   }
 }
 
-export function* stream(filePath) {
+export function* stream(code) {
   const padding = 4800;
 
   for (let i = 0; i < padding; i++) {
     yield [0, 0, 0];
   }
 
-  yield* compute(filePath);
+  yield* compute(code);
 
   for (let i = 0; i < padding; i++) {
     yield [0, 0, 0];
