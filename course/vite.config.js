@@ -44,6 +44,7 @@ export default defineConfig({
         mkdirSync('dist/lang-docs', { recursive: true });
         cpSync('../lang/On the language.md', 'dist/lang-docs/On the language.md');
         cpSync('../lang/On the engine.md', 'dist/lang-docs/On the engine.md');
+        cpSync('../lang/On modules and lambdas.md', 'dist/lang-docs/On modules and lambdas.md');
       }
     }
   ],

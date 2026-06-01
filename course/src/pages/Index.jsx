@@ -150,7 +150,8 @@ export default function Index() {
   const docPath =
     currentHash === '#on-the-language' ? '../lang/On the language.md'
       : currentHash === '#on-the-engine' ? '../lang/On the engine.md'
-        : null;
+        : currentHash === '#on-modules-and-lambdas' ? '../lang/On modules and lambdas.md'
+          : null;
 
   return (
     <>
@@ -178,6 +179,12 @@ export default function Index() {
                 className="text-purple-600 hover:text-purple-800 text-l font-medium transition-colors"
               >
                 [the engine]
+              </a>
+              <a
+                href="#on-modules-and-lambdas"
+                className="text-purple-600 hover:text-purple-800 text-l font-medium transition-colors"
+              >
+                [modules and lambdas]
               </a>
               <a
                 href="https://jsr.io/@dekanat/lyre"
