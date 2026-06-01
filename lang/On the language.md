@@ -174,17 +174,17 @@ Now `play` uses `triangle` instead of `sine`, quarter-second ticks, and differen
 
 ## `let` - the binder
 
-`let` introduces a local scope and binds names inside it. Values can be anything - a frequency, a waveform, a rest symbol, a whole sub-expression - and the names become available to every body that follows.
+`let` introduces a local scope and binds names inside it. Values can be anything - a frequency, a waveform, a rest symbol, a whole sub-expression - and the names become available to the body.
 
 ```text
 (let
   (name1 value1
    name2 value2 ...)
 
-  body1 body2 ...)
+  body)
 ```
 
-Bindings are sequential - later bindings can reference earlier ones. Multiple bodies are sequenced automatically, so wrapping them in `-(...)` inside a `let` is redundant. The bound names shadow anything in the enclosing scope.
+Bindings are sequential - later bindings can reference earlier ones. The bound names shadow anything in the enclosing scope. The body is a single expression; for multiple operations, wrap them explicitly with `-(...)` /sequence/ or `=(...)` /mix/.
 
 ```lisp
 (let

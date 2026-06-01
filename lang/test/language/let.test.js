@@ -41,8 +41,10 @@ const desugared = [
   "notes"
 ];
 
-const expr9 = tokenize("(let (freq 440) (sine freq) (sine freq))")[0];
-const gen9 = evaluate(expr9);
-assert(gen9 && typeof gen9.next === 'function', "let with multiple bodies should return a sequenced generator");
+assert.throws(
+  () => evaluate(tokenize("(let (freq 440) (sine freq) (sine freq))")[0]),
+  /exactly one body/,
+  "let with multiple bodies should throw"
+);
 
 console.log('All let tests passed!');

@@ -1,4 +1,3 @@
-import { sequence } from '../synth/composition.js';
 import { lookup } from './environment.js';
 
 const isClosure = (x) => x && typeof x === 'object' && x.kind === 'closure';
@@ -27,7 +26,10 @@ export function evaluate(expression, env = []) {
     const [operator, ...operands] = expression;
 
     if (operator === "let") {
-      const [bindings, ...bodies] = operands;
+      if (operands.length !== 2) {
+        throw new Error(`let expects exactly one body expression; got ${operands.length - 1}`);
+      }
+      const [bindings, body] = operands;
 
       const newEnv = [...env];
 
@@ -37,8 +39,7 @@ export function evaluate(expression, env = []) {
         newEnv.push([name, value]);
       }
 
-      const evaluated = bodies.map(body => evaluate(body, newEnv));
-      return evaluated.length === 1 ? evaluated[0] : sequence(...evaluated);
+      return evaluate(body, newEnv);
     }
 
     if (operator === "patch") {

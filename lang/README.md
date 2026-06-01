@@ -265,7 +265,7 @@ The Lyre language currently supports these operations:
 - `(sequence sound1 sound2 ...)` - Play sounds in sequence
 - `(harmony sound1 sound2 ...)` - Play sounds simultaneously, raw sum for manual mixing with `gain`
 - `(mix sound1 sound2 ...)` - Play sounds simultaneously, normalized to avoid clipping
-- `(let (name1 value1 name2 value2 ...) body1 body2 ...)` - Create local bindings, evaluate all body expressions, sequence if multiple
+- `(let (name1 value1 name2 value2 ...) body)` - Create local bindings, evaluate the body
 - `(patch (arg1 arg2 ...) body)` - Closure literal. Captures the env at definition site, takes positional args, evaluates body when applied. Bind with `let` to name it
 - `(lowpass cutoff source ...)` - Low-pass filter. Cutoff in Hz, can be a number or generator for modulation
 - `(highpass cutoff source ...)` - High-pass filter. Same cutoff rules as lowpass
