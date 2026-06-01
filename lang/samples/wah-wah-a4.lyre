@@ -1,0 +1,8 @@
+; wah-wah on a sawtooth at A4
+; cutoff sweeps between 200 Hz and 2000 Hz at 3 Hz, applied to a 3-second gated sawtooth
+
+(let (wah-wah (patch (top bottom rate source)
+                (let (center (/ (+ top bottom) 2)
+                      swing  (/ (- top bottom) 2))
+                  (lowpass (+ center (* (sine rate) swing)) source))))
+  (wah-wah 2000 200 3 (gate 3 (sawtooth A4))))

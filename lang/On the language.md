@@ -2,7 +2,7 @@
 
 # On the language
 
-This document explains the Lyre language - its syntax, evaluation model, syntactic sugar, and what it could become.
+This document explains the Lyre language - its syntax, evaluation model and syntactic sugar.
 
 ## A minimal Lisp
 
@@ -195,3 +195,33 @@ Bindings are sequential - later bindings can reference earlier ones. Multiple bo
     (envelope 0.01 1.0 0 0.5 (gate 1.51 (sine root)))
     (envelope 0.01 1.0 0 0.5 (gate 1.51 (sine fifth)))))
 ```
+
+## `patch` - the closure
+
+`patch` packages a body together with the env it was defined in. Apply it later with positional args, and the body runs in that captured env extended with the bindings. Any composition of primitives becomes a reusable unit you can name and call.
+
+```text
+(patch
+  (arg1 arg2 ...)
+  body)
+```
+
+Bind the closure with `let` to give it a name, then call it like any prelude operation. The body sees the args plus whatever was in scope at definition.
+
+```lisp
+(let (bandpass (patch (top bottom source)
+                 (lowpass top (highpass bottom source))))
+
+  (bandpass 1500 300 (sawtooth A4)))
+```
+
+`bandpass` is now a closure that takes a top, bottom, and source. Applying it builds a fresh `lowpass`-of-`highpass` chain over the source - the body produces a new filter graph each call.
+
+A patch whose body returns a value behaves like a function:
+
+```lisp
+(let (add (patch (x y) (+ x y)))
+  (add 2 3))
+```
+
+A patch whose body returns a generator behaves like a generator factory - applying it yields a new generator. Either way, patches compose with each other and with prelude primitives uniformly.

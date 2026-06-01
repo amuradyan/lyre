@@ -155,6 +155,14 @@ Use `let` for local bindings:
 
 Note that in Lyre syntax, envelope parameters come before the source: `(envelope attack decay sustain release gate source...)`. All time values are in seconds.
 
+Use `patch` for reusable closures - take args, capture the surrounding env, produce a generator /audio/ or value /math/ on application:
+
+```lisp
+(let (bandpass (patch (top bottom source)
+                 (lowpass top (highpass bottom source))))
+  (bandpass 1500 300 (sawtooth A4)))
+```
+
 ### Play
 
 `(play ticks note)` wraps a note in an envelope with default ADSR parameters. The gate time is `ticks * .` where `.` is the tick duration (default 0.5s):
@@ -258,6 +266,7 @@ The Lyre language currently supports these operations:
 - `(harmony sound1 sound2 ...)` - Play sounds simultaneously, raw sum for manual mixing with `gain`
 - `(mix sound1 sound2 ...)` - Play sounds simultaneously, normalized to avoid clipping
 - `(let (name1 value1 name2 value2 ...) body1 body2 ...)` - Create local bindings, evaluate all body expressions, sequence if multiple
+- `(patch (arg1 arg2 ...) body)` - Closure literal. Captures the env at definition site, takes positional args, evaluates body when applied. Bind with `let` to name it
 - `(lowpass cutoff source ...)` - Low-pass filter. Cutoff in Hz, can be a number or generator for modulation
 - `(highpass cutoff source ...)` - High-pass filter. Same cutoff rules as lowpass
 - `(flat value)` - Constant signal, yields the same value forever
